@@ -1,0 +1,9 @@
+<?php
+
+use Illuminate\Support\Facades\Auth;
+
+Auth::routes([
+    'register' => false, // Register Routes...
+    'reset' => false, // Reset Password Routes...
+    'verify' => false, // Email Verification Routes...
+]);
