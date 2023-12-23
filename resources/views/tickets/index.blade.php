@@ -85,7 +85,7 @@
             @endisset
             
         </div>
-        <div class="mt-5">
+        <div class="pag mt-5">
             @isset($tickets)
             {{$tickets->links()}}
             @endisset
