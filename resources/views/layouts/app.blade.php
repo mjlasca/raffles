@@ -21,14 +21,17 @@
     <div class="flex">
         <!--Sidebar-->
         <div class="md:flex h-screen bg-gray-800">
-
+            
             <div class="w-64 bg-gray-100">
                 <div class="bg-blue-500 py-4 h-40 flex flex-col items-center">
                     <img src="{{ asset('img/logo.png') }}" alt="Logo" class="w-20">
-                    <span class="text-white text-lg font-semibold mt-2">Company Name</span>
+                    <span class="text-white text-lg font-semibold mt-2">Company Name </span>
                 </div>
                 <nav class="mt-8 tx-blue-700">
                     <ul class="flex flex-col items-center text-white">
+
+                        @if (auth()->user()->role === 'Administrador')
+
                         <li class="mb-2">
                             <a href="/usuarios" class="inline-flex @if( str_contains( request()->path(),'usuarios') ) bg-green-500 @else bg-blue-500 @endif items-center px-3 py-3 border  text-sm font-lg rounded-md  hover:bg-green-500 hover:text-white focus:outline-none transition ease-in-out duration-150 w-40">
                                 <span class="mr-2 p-1 rounded-md bg-blue-500">
@@ -39,6 +42,8 @@
                                 </p>
                             </a>
                         </li>
+
+                        @endif
                         
                         <li class="mb-2">
                             <a href="/dashboard" class="inline-flex  @if(request()->is('dashboard')) bg-green-500 @else bg-blue-500 @endif items-center px-3 py-3 border  text-sm font-lg rounded-md  hover:bg-green-500 hover:text-white focus:outline-none transition ease-in-out duration-150 w-40">
@@ -50,6 +55,8 @@
                                 </p>
                             </a>
                         </li>
+
+                        @if (auth()->user()->role === 'Administrador' || auth()->user()->role === 'Secretaria')
                         <li class="mb-2">
                             <a href="/rifas" class="inline-flex items-center @if( str_contains( request()->path(),'rifas') ) bg-green-500 @else bg-blue-500 @endif  px-3 py-3 border  text-sm font-lg rounded-md  hover:bg-green-500 hover:text-white focus:outline-none transition ease-in-out duration-150 w-40">
                                 <span class="mr-2 p-1 rounded-md bg-blue-500">
@@ -60,6 +67,8 @@
                                 </p>
                             </a>
                         </li>
+                        
+
                         <li class="mb-2">
                             <a href="/asignaciones" class="inline-flex items-center  @if( str_contains( request()->path(),'asignaciones') ) bg-green-500 @else bg-blue-500 @endif px-3 py-3 border  text-sm font-lg rounded-md  hover:bg-green-500 hover:text-white focus:outline-none transition ease-in-out duration-150 w-40">
                                 <span class="mr-2 p-1 rounded-md bg-blue-500">
@@ -70,6 +79,9 @@
                                 </p>
                             </a>
                         </li>
+
+                        @endif
+
                         <li class="mb-2">
                             <a href="/boletas" class="inline-flex items-center @if( str_contains( request()->path(),'boletas') ) bg-green-500 @else bg-blue-500 @endif px-3 py-3 border  text-sm font-lg rounded-md  hover:bg-green-500 hover:text-white focus:outline-none transition ease-in-out duration-150 w-40">
                                 <span class="mr-2 p-1 rounded-md bg-blue-500">
@@ -80,6 +92,7 @@
                                 </p>
                             </a>
                         </li>
+                        @if (auth()->user()->role === 'Administrador' || auth()->user()->role === 'Secretaria')
                         <li class="mb-2">
                             <a href="/premios" class="inline-flex items-center @if( str_contains( request()->path(),'premios') ) bg-green-500 @else bg-blue-500 @endif px-3 py-3 border  text-sm font-lg rounded-md  hover:bg-green-500 hover:text-white focus:outline-none transition ease-in-out duration-150 w-40">
                                 <span class="mr-2 p-1 rounded-md bg-blue-500">
@@ -120,6 +133,7 @@
                                 </p>
                             </a>
                         </li>
+                        @endif
                     </ul>
                 </nav>
             </div>

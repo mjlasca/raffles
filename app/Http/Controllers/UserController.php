@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
@@ -33,6 +34,7 @@ class UserController extends Controller
     {
         $user = Auth::user();
         $data = $request->all();
+        $data['password'] = Hash::make($request->input('password'));
         $data['create_user'] = $user->id;
         $data['edit_user'] = $user->id;
         $result = User::create($data);
@@ -62,8 +64,17 @@ class UserController extends Controller
      */
     public function update(Request $request, string $id)
     {
+        $current_user =  Auth::user();
         $user = User::find($id);
-        $user->update($request->all());
+        if ($request->has('password')) {
+            $data = $request->all();
+            $data['password'] = Hash::make($request->input('password'));
+        } else {
+            $data = $request->except('password');
+        }
+        $data['edit_user'] = $current_user->id;
+        $user->update($data);
+
         return redirect()->route('usuarios.index');
     }
 

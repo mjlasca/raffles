@@ -36,6 +36,16 @@
                 </div>
 
                 <div class="mb-4 md:w-1/2">
+                    <label for="role" class="block text-gray-700 text-sm font-bold mb-2">Rifa</label>
+                    <select name="role" id="role" class="w-full border rounded-md py-2 px-3" required>
+                        <option value="">Seleccione el rol</option>
+                        <option value="Administrador">Administrador</option>
+                        <option value="Secretaria">Secretaria</option>
+                        <option value="Vendedor">Vendedor</option>
+                    </select>
+                </div>
+
+                <div class="mb-4 md:w-1/2">
                     <label for="phone" class="block text-gray-700 text-sm font-bold mb-2">Teléfono:</label>
                     <input type="text" name="phone" maxlength="10" id="phone" class="w-full border rounded-md py-2 px-3" required>
                 </div>

@@ -31,6 +31,26 @@
                     <input type="text" name="address" id="address" class="w-full border rounded-md py-2 px-3"  value="{{ $user->address }}" required>
                 </div>
 
+                <div class="mb-4 md:w-1/2">
+                    <label for="role" class="block text-gray-700 text-sm font-bold mb-2">Rifa</label>
+                    <select name="role" id="role" class="w-full border rounded-md py-2 px-3" required>
+                        <option value="">Seleccione el rol</option>
+                        <option value="Administrador">Administrador</option>
+                        <option value="Secretaria">Secretaria</option>
+                        <option value="Vendedor">Vendedor</option>
+                    </select>
+                </div>
+
+                <div class="mb-4 md:w-1/2">
+                    <label for="password" class="block text-gray-700 text-sm font-bold mb-2">Contraseña:</label>
+                    <input type="password" name="password" id="password" class="w-full border rounded-md py-2 px-3"  maxlength="8" >
+                </div>
+
+                <div class="mb-4 md:w-1/2">
+                    <label for="password1" class="block text-gray-700 text-sm font-bold mb-2">Repita la contraseña:</label>
+                    <input type="password" name="password1" id="password1" class="w-full border rounded-md py-2 px-3" maxlength="8"  >
+                </div>
+
                 <button type="submit" class="bg-blue-500 text-white py-2 px-4 rounded-md">Actualizar</button>
             </form>
         </div>

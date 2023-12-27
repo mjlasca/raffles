@@ -20,6 +20,7 @@ return new class extends Migration
             $table->string('address')->nullable();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
+            $table->string('role',20)->nullable();
             $table->unsignedBigInteger('create_user')->nullable(); 
             $table->foreign('create_user')->references('id')->on('users')->onDelete('cascade');
             $table->unsignedBigInteger('edit_user')->nullable(); 
