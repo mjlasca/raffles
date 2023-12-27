@@ -11,44 +11,40 @@
                 @csrf
 
                 <div class="md:flex">
-                    <div class="mb-4 md:w-1/2 mr-2">
-                        <label for="raffle_id" class="block text-gray-700 text-sm font-bold mb-2">Rifa</label>
-                        <select name="raffle_id" id="raffle_id" class="w-full border rounded-md py-2 px-3" required>
-                            <option value="">Seleccione una rifa</option>
-                            @foreach($raffles as $raffle)
-                                <option value="{{ $raffle->id }}">{{ $raffle->name }}</option>
+                    <div class="mb-4 md:w-1/3 mr-2">
+                        <label for="delivery_id" class="block text-gray-700 text-sm font-bold mb-2">Entrega</label>
+                        <select name="delivery_id" id="delivery_id" class="w-full border rounded-md py-2 px-3" required>
+                            <option value="">Seleccione una entrega</option>
+                            @foreach($deliveries as $delivery)
+                                <option value="{{ $delivery->id }}">{{ $delivery->raffle->name }} - {{ $delivery->user->name }} {{ $delivery->user->lastname }} $ {{ $delivery->total }} </option>
                             @endforeach
                         </select>
                     </div>
-                    @if ($current_user->role === 'Administrador' || $current_user->role === 'Secretaria')
-                        <div class="mb-4 md:w-1/2">
-                            <label for="user_id" class="block text-gray-700 text-sm font-bold mb-2">Vendedor(es)</label>
-                            <select name="user_id" id="user_id" class="w-full border rounded-md py-2 px-3"  required>
-                                <option value="">Seleccione un(a) vendedor(a)</option>
-                                @foreach($sellers_users as $seller)
-                                    <option value="{{ $seller->id }}">{{ $seller->name }}</option>
-                                @endforeach
-                            </select>
-                        </div>    
-                    @else
+                    @if ($current_user->role === 'Vendedor')
                         <input type="hidden" name="user_id" id="user_id" value="{{$current_user->id}}">
+                    @else
+                        <input type="hidden" name="user_id" id="user_id" value="">
                     @endif
+                        <input type="hidden" name="raffle_id" id="raffle_id" value="">
                     
+                    
+                    
+                </div>
+                <div class="delivery-data bg-gray-100 mb-4">
                 </div>
 
                 <div class="mb-4 tickets-pay">
-                    <div class="row-ticket flex">
-                        <input type="number" class="ticket-number w-full border rounded-md py-2 px-3" placeholder="#Boleta" autocomplete="off" required>
-                        <input type="number" class="ticket-payment w-full border rounded-md py-2 px-3" placeholder="#Abono" autocomplete="off" required>    
-                        <div class="flex">
-                            <button type="button" class="bg-blue-500 text-white more px-3 rounded-md">+</button>
-                            <button type="button" class="bg-red-500 text-white  less px-3 rounded-md">-</button>
-                        </div>
+                    <div class="row-ticket flex mb-2">
+                        <input type="number" name="ticket_number[]" class="ticket-number w-full border rounded-md py-2 px-3" placeholder="#Boleta" autocomplete="off" required>
+                        <input type="number" name="ticket_payment[]" class="ticket-payment w-full border rounded-md py-2 px-3" placeholder="#Abono" autocomplete="off" required>    
+                        <button type="button" class="bg-gray-100 text-white  px-3 rounded-md">-</button>
                     </div>
                 </div>
-
+                <button type="button" class="bg-blue-500 text-white more py-2 px-4 rounded-md">+</button>
                 <button type="submit" class="bg-blue-500 text-white py-2 px-4 rounded-md">Realizar pago</button>
             </form>
         </div>
     </div>
+
+    <script src="{{ asset('js/tickets-pay.js') }}"></script>
 @endsection

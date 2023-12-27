@@ -23,6 +23,7 @@ class CreatePaymentTicketsTable extends Migration
             $table->foreign('edit_user')->references('id')->on('users')->onDelete('cascade');
             $table->double('payment_value')->nullable();
             $table->integer('status')->default(0);
+            $table->text('detail')->nullable();
             $table->timestamps();
         });
     }

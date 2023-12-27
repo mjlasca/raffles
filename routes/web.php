@@ -17,6 +17,7 @@ Auth::routes([
 Route::resource('rifas', RaffleController::class)->middleware(['auth'])->parameters([
     'rifas' => 'raffles',
 ]);
+
 Route::resource('usuarios', UserController::class)->middleware(['auth'])->parameters([
     'usuarios' => 'user',
 ]);
@@ -30,7 +31,8 @@ Route::resource('boletas', TicketController::class)->middleware(['auth'])->param
 ]);
 
 Route::get('/tickets/pago', [TicketController::class, 'pay'])->middleware(['auth'])->name('boletas.pay');
-Route::post('/tickets/setpay', [TicketController::class, 'pay'])->middleware(['auth'])->name('tickets.setpay');
+Route::get('/tickets/checkticket', [TicketController::class, 'checkticket'])->middleware(['auth'])->name('checkticket');
+Route::post('/tickets/setpay', [TicketController::class, 'setpay'])->middleware(['auth'])->name('tickets.setpay');
 
 Route::resource('entregas', DeliveryController::class)->middleware(['auth'])->parameters([
     'entregas' => 'deliveries',

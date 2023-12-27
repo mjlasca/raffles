@@ -28,7 +28,7 @@ class DeliveryController extends Controller
      */
     public function create()
     {
-        $raffles = Raffle::where('raffle_status',0)->select('id','name')->get();
+        $raffles = Raffle::where('raffle_status',1)->select('id','name')->get();
         $sellers_users = User::select('id','name')->where('role','Vendedor')->get();
         return view('deliveries.create', compact('raffles','sellers_users'));
     }
@@ -55,9 +55,11 @@ class DeliveryController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show($id, Request $req)
     {
         $delivery = Delivery::find($id);
+        if(!empty($req->input('format')))
+            return response()->json($delivery);
         return view('deliveries.show', compact('delivery'));
     }
 

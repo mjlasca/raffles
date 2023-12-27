@@ -59,6 +59,7 @@
                                 <th class="py-2 px-4 border-b">No. Boleta</th>
                                 <th class="py-2 px-4 border-b">Vendedor(a)</th>
                                 <th class="py-2 px-4 border-b">Valor</th>
+                                <th class="py-2 px-4 border-b">Abonado</th>
                                 <th class="py-2 px-4 border-b">Acciones</th>
                             </tr>
                         </thead>
@@ -68,7 +69,8 @@
                                     <td class="py-2 px-4">{{ $ticket->raffle->name }}</td>
                                     <td class="py-2 px-4">{{ $ticket->ticket_number }}</td>
                                     <td class="py-2 px-4">{{ $ticket->user->name }} {{ $ticket->user->lastname }}</td>
-                                    <td class="py-2 px-4">${{ $ticket->raffle->price }}</td>
+                                    <td class="py-2 px-4 text-right">${{ $ticket->price }}</td>
+                                    <td class="py-2 px-4 text-right">${{ $ticket->payment }}</td>
                                     <td class="py-2 px-4 flex">
                                         <a href="{{ route('boletas.show', $ticket->id) }}" class="text-blue-500 hover:bg-green-500 p-1 bg-blue-500 rounded-md mr-1">
                                             <img class="h-5" src="{{ asset('img/icons/show-icon.svg') }}" alt="Ver registro" title="Ver registro">

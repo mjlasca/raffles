@@ -14,6 +14,7 @@ class Ticket extends Model
         'title',
         'user_id',
         'description',
+        'payment',
         'raffle_id',
         'create_user',
         'edit_user'

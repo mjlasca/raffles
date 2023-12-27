@@ -28,7 +28,7 @@
                                     
                                     <td class="py-2 px-4"><a href="rifas/{{ $assignment->raffle->id }}"> {{ $assignment->raffle->name }} </a></td>
                                     <td></td>
-                                    <td>{{ $assignment->raffle->tickets_number }}</td>
+                                    <td class="text-right">{{ $assignment->raffle->tickets_number }}</td>
                                     <td class="py-2 px-4 flex">
                                         <a href="{{ route('asignaciones.destroy', $assignment->id) }}" class="text-yellow-500 hover:bg-green-500 p-1 bg-red-500 rounded-md mr-1">
                                             <img class="h-5" src="{{ asset('img/icons/delete-icon.svg') }}" alt="Eliminar" title="Eliminar">
@@ -42,7 +42,7 @@
                                 <td class="py-2 px-4">
                                     {{ $assignment->user->name }}
                                 </td>
-                                <td class="py-2 px-4">
+                                <td class="py-2 px-4 text-right">
                                     {{ $assignment->tickets_total }}
                                 </td>
                                 <td class="py-2 px-4 flex">

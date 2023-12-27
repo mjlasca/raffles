@@ -15,6 +15,7 @@ class Delivery extends Model
         'total',
         'description',
         'status',
+        'used',
         'create_user',
         'edit_user',
     ];

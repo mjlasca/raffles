@@ -18,6 +18,8 @@
                             <th class="py-2 px-4 border-b">Descripción</th>
                             <th class="py-2 px-4 border-b">Rifa</th>
                             <th class="py-2 px-4 border-b">Vendedor</th>
+                            <th class="py-2 px-4 border-b">Valor entrega</th>
+                            <th class="py-2 px-4 border-b">Canjeado</th>
                             <th class="py-2 px-4 border-b">Acciones</th>
                         </tr>
                     </thead>
@@ -28,6 +30,8 @@
                                 <td class="py-2 px-4">{{ $deliverie->description }}</td>
                                 <td class="py-2 px-4">{{ $deliverie->raffle->name }}</td>
                                 <td class="py-2 px-4">{{ $deliverie->user->name }} {{ $deliverie->user->lastname }}</td>
+                                <td class="py-2 px-4">{{ $deliverie->total }}</td>
+                                <td class="py-2 px-4">{{ $deliverie->used }}</td>
                                 
                                 <td class="py-2 px-4 flex">
                                     <a href="{{ route('entregas.show', $deliverie->id) }}" class="text-blue-500 hover:bg-green-500 p-1 bg-blue-500 rounded-md mr-1">

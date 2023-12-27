@@ -13,6 +13,7 @@ class PaymentTicket extends Model
         'delivery_id',
         'payment_value',
         'status',
+        'detail',
         'create_user',
         'edit_user',
     ];

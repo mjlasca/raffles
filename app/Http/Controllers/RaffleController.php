@@ -52,9 +52,11 @@ class RaffleController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show($id, Request $req)
     {
         $raffle = Raffle::find($id);
+        if(!empty($req->input('format')))
+            return response()->json($raffle);
         return view('raffles.show', compact('raffle'));
     }
 

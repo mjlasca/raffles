@@ -25,6 +25,7 @@ class CreateDeliveriesTable extends Migration
             $table->foreign('edit_user')->references('id')->on('users')->onDelete('cascade');
             $table->text('description')->nullable();
             $table->double('total')->nullable();
+            $table->double('used')->default(0);
             $table->integer('status')->default(0);
             $table->timestamps();
         });

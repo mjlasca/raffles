@@ -65,8 +65,8 @@ class AssignmentController extends Controller
 
     private function setAssignment(Array $users, Raffle $raffle, $dataCreate){
         $current_user = Auth::user();
-        $tickets_numbers = ($raffle->tickets_number - 1);
-        $available = range(0,$tickets_numbers);
+        $tickets_numbers = $raffle->tickets_number;
+        $available = range(1,$tickets_numbers);
         $parts = $this->parts($tickets_numbers, count($users));
         
         $resultAvailable = $available;
@@ -80,7 +80,8 @@ class AssignmentController extends Controller
                 $data[] = [
                     'user_id' => $user,
                     'raffle_id' => $raffle->id,
-                    'ticket_number' => $ticketNumber,
+                    'ticket_number' => ($ticketNumber - 1),
+                    'price' => $raffle->price,
                     'create_user' => $current_user->id,
                     'edit_user' => $current_user->id,
                 ];
@@ -92,7 +93,7 @@ class AssignmentController extends Controller
             if(Ticket::insert($data)){
                 $dataCreate['tickets_numbers'] = implode(",",$randArray);
                 $dataCreate['user_id'] = $user;
-                $dataCreate['tickets_total'] = $raffle->tickets_number;
+                $dataCreate['tickets_total'] = count($randArray);
                 Assignment::create($dataCreate);
                 $raffle->update([
                     'raffle_status' => 1
