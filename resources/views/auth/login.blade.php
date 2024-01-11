@@ -20,7 +20,7 @@
         </div>
 
         <div class="">
-            <label for="password" class="">{{ __('Password') }}</label>
+            <label for="password" class="">{{ __('Contraseña') }}</label>
 
             <div class="">
                 <input id="password" type="password" class="w-full p-2 my-2 border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm @error('password') is-invalid @enderror" name="password" required autocomplete="current-password">
@@ -41,7 +41,7 @@
 
                 @if (Route::has('password.request'))
                     <a class="btn btn-link" href="{{ route('password.request') }}">
-                        {{ __('Forgot Your Password?') }}
+                        {{ __('¿Olvidaste tu contraseña?') }}
                     </a>
                 @endif
             </div>

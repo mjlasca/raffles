@@ -36,7 +36,8 @@
                 <div class="mb-4 tickets-pay">
                     <div class="row-ticket flex mb-2">
                         <input type="number" name="ticket_number[]" class="ticket-number w-full border rounded-md py-2 px-3" placeholder="#Boleta" autocomplete="off" required>
-                        <input type="number" name="ticket_payment[]" class="ticket-payment w-full border rounded-md py-2 px-3" placeholder="#Abono" autocomplete="off" required>    
+                        <input type="number" name="ticket_payment[]" class="ticket-payment w-full border rounded-md py-2 px-3" placeholder="$Abono" autocomplete="off" required>    
+                        <input type="text" name="ticket_[]" class="ticket w-full border rounded-md py-2 px-3" placeholder="Nombre" autocomplete="off" >    
                         <button type="button" class="bg-gray-100 text-white  px-3 rounded-md">-</button>
                     </div>
                 </div>

@@ -24,7 +24,7 @@
                         @endforeach
                     </select>
                 </div>
-
+                
                 <div class="mb-4 md:w-1/2">
                     <label for="user_id" class="block text-gray-700 text-sm font-bold mb-2">Vendedor(es)</label>
                     <select name="user_id[]" id="user_id" class="w-full border rounded-md py-2 px-3" multiple required>
@@ -32,6 +32,9 @@
                             <option value="{{ $seller->id }}">{{ $seller->name }}</option>
                         @endforeach
                     </select>
+                </div>
+                <div>
+                    <textarea class="w-full border rounded-md py-2 px-3" name="tickets" id="tickets" cols="30" rows="10"></textarea>
                 </div>
 
                 <button type="submit" class="bg-blue-500 text-white py-2 px-4 rounded-md">Guardar</button>

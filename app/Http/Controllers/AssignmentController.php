@@ -38,6 +38,8 @@ class AssignmentController extends Controller
     {
         $user = Auth::user();
         $data = $request->all();
+        $tickets =  explode("\r\n",$data['tickets'] );
+        dd($tickets);
         $data['create_user'] = $user->id;
         $data['edit_user'] = $user->id;
         $raffle = Raffle::where('id',$data['raffle_id'])->select('id','tickets_number','price','ticket_commission')->get();

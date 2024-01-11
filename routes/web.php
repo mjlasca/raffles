@@ -26,6 +26,10 @@ Route::resource('asignaciones', AssignmentController::class)->middleware(['auth'
     'asignaciones' => 'assignment',
 ]);
 
+Route::resource('premios', AssignmentController::class)->middleware(['auth'])->parameters([
+    'premios' => 'prize',
+]);
+
 Route::resource('boletas', TicketController::class)->middleware(['auth'])->parameters([
     'boletas' => 'ticket',
 ]);
