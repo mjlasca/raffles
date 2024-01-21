@@ -20,7 +20,7 @@
     
     <div class="flex">
         <!--Sidebar-->
-        <div class="md:flex h-screen bg-gray-800">
+        <div class="sm:flex h-screen bg-gray-800 hidden">
             
             <div class="w-64 bg-gray-100">
                 <div class="bg-blue-500 py-4 h-40 flex flex-col items-center">
@@ -171,28 +171,42 @@
                                 </li>
                             </ul>
                         </div>
-            
-                        <!-- Hamburger -->
-                        <div class="-mr-2 flex items-center sm:hidden">
-                            <button class="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 focus:text-gray-500 transition duration-150 ease-in-out">
-                                <svg class="h-6 w-6" stroke="currentColor" fill="none" viewBox="0 0 24 24">
-                                    <path :class="{'hidden': open, 'inline-flex': ! open }" class="inline-flex" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
-                                    <path :class="{'hidden': ! open, 'inline-flex': open }" class="hidden" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-                                </svg>
-                            </button>
+
+                        <!--Rigth-->
+                        <div class="flex">
+                            <div class="flex items-center">
+                            
+                                <p class="mr-2">
+                                    {{auth()->user()->name}}
+                                </p>
+                                <div>
+                                    <a class="hidden md:block px-2 py-1 border  text-sm rounded-md text-blue-100 bg-white-100 hover:bg-green-500" href="{{ route('logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                                        Cerrar sesión
+                                    </a>
+                                    
+                                    <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+                                        @csrf
+                                    </form>
+                                </div>
+                                
+                                
+                                
+                                
+                            </div>
+                            <!-- Hamburger -->
+                            <div class="-mr-2 flex items-center sm:hidden">
+                                <button class="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 focus:text-gray-500 transition duration-150 ease-in-out">
+                                    <svg class="h-6 w-6" stroke="currentColor" fill="none" viewBox="0 0 24 24">
+                                        <path :class="{'hidden': open, 'inline-flex': ! open }" class="inline-flex" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                                        <path :class="{'hidden': ! open, 'inline-flex': open }" class="hidden" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                                    </svg>
+                                </button>
+                            </div>
                         </div>
-                    </div>
-                </div>
-        
-                
-            
-                <!-- Responsive Navigation Menu -->
-                <div :class="{'block': open, 'hidden': ! open}" class="hidden sm:hidden">
-                    <div class="pt-2 pb-3 space-y-1">
                         
                     </div>
-            
                 </div>
+            
             </nav>
             <main class="py-4">
                 @yield('content')

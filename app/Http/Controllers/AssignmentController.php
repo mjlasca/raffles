@@ -9,6 +9,7 @@ use App\Models\Ticket;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Validator;
 
 class AssignmentController extends Controller
 {
@@ -17,7 +18,7 @@ class AssignmentController extends Controller
      */
     public function index()
     {
-        $assignments = Assignment::with('user')->with('raffle')->paginate(10);
+        $assignments = Assignment::paginate(10);
         return view('assignment.index', compact('assignments'));
     }
 
@@ -39,70 +40,71 @@ class AssignmentController extends Controller
         $user = Auth::user();
         $data = $request->all();
         $tickets =  explode("\r\n",$data['tickets'] );
-        dd($tickets);
+        $raffle = Raffle::where('id',$data['raffle_id'])->select('id','tickets_number','price','ticket_commission')->get();
+        $existingIds = Ticket::whereIn('ticket_number', $tickets)->pluck('ticket_number')->toArray();
+        $invalidValues = [];
+        foreach ($tickets as $val) {
+            if ($val >= $raffle[0]->tickets_number) {
+                $invalidValues[] = $val;
+            }
+        }
+
+        $request->validate(
+            [
+                'tickets' => ['required', 'tickets_exists','length_ticket:'.$raffle[0]->tickets_number],
+                'name' => ['required'],
+                'raffle_id' => ['required'],
+                'user_id' => ['required'],
+            ],
+            [
+                'tickets_exists' => 'Hay números de boletas que ya fueron asignadas: (' . implode(',', $existingIds).')',
+                'length_ticket' => 'Los siguientes valores son mayores al total de boletas: (' . implode(',', $invalidValues).')'
+            ]
+        );
+
+        
         $data['create_user'] = $user->id;
         $data['edit_user'] = $user->id;
-        $raffle = Raffle::where('id',$data['raffle_id'])->select('id','tickets_number','price','ticket_commission')->get();
-        $this->setAssignment($data['user_id'], $raffle[0], $data);
-        return redirect()->route('asignaciones.index');
-    }
-
-    function parts($total, $n) {
-        $parts = [];
-        $divint = floor($total / $n);
-        $rest = $total % $n;
-    
-        for ($i = 0; $i < $n; $i++) {
-            $part = $divint;
-    
-            if ($i < $rest) {
-                $part++;
-            }
-    
-            $parts[] = $part;
-        }
-    
-        return $parts;
-    }
-
-    private function setAssignment(Array $users, Raffle $raffle, $dataCreate){
-        $current_user = Auth::user();
-        $tickets_numbers = $raffle->tickets_number;
-        $available = range(1,$tickets_numbers);
-        $parts = $this->parts($tickets_numbers, count($users));
         
-        $resultAvailable = $available;
+        $this->setAssignment($data['user_id'], $raffle[0], $tickets);
+        return redirect()->route('asignaciones.index');
 
-        foreach ($users  as $key =>  $user) {
-            $data = [];
-            $randArray = array_values(array_intersect_key($resultAvailable, array_flip(array_rand($resultAvailable, $parts[$key]))));
+        
+    }
+
+    private function setAssignment($user, Raffle $raffle, $tickets){
+        $current_user = Auth::user();
+
+        $dataCreate['tickets_numbers'] = implode(" ",$tickets);
+        $dataCreate['user_id'] = (int)$user;
+        $dataCreate['raffle_id'] = $raffle->id;
+        $dataCreate['tickets_total'] = count($tickets);
+        $dataCreate['create_user'] = $current_user->id;
+        $dataCreate['edit_user'] = $current_user->id;
+        $assign = Assignment::create($dataCreate);
+        
+        if($assign){
             
-            foreach ($randArray as $ticketNumber) {
+            foreach ($tickets as $ticketNumber) {
 
                 $data[] = [
                     'user_id' => $user,
                     'raffle_id' => $raffle->id,
-                    'ticket_number' => ($ticketNumber - 1),
+                    'ticket_number' => $ticketNumber,
                     'price' => $raffle->price,
                     'create_user' => $current_user->id,
                     'edit_user' => $current_user->id,
+                    'assignment_id' => $assign->id
                 ];
             }
-            
-            $resultAvailable = array_diff($resultAvailable, $randArray);
-
-            
             if(Ticket::insert($data)){
-                $dataCreate['tickets_numbers'] = implode(",",$randArray);
-                $dataCreate['user_id'] = $user;
-                $dataCreate['tickets_total'] = count($randArray);
-                Assignment::create($dataCreate);
-                $raffle->update([
-                    'raffle_status' => 1
-                ]);
+                $ticketsTotal = Ticket::where('raffle_id',$raffle->id)->count();
+
+                if ($ticketsTotal == $raffle->tickets_number) {
+                    Raffle::where('id', $raffle->id)->update(['raffle_status' => 1]);
+                }
             }
         }
-
     }
 
     /**
@@ -111,7 +113,7 @@ class AssignmentController extends Controller
     public function show(string $id)
     {
         $assignment = Assignment::with('user')->with('raffle')->find($id);
-        $table = explode(",", $assignment->tickets_numbers);
+        $table = explode(" ", $assignment->tickets_numbers);
         return view('assignment.show', compact('assignment','table'));
     }
 

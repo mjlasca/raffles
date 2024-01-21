@@ -27,4 +27,9 @@ class Assignment extends Model
     {
         return $this->belongsTo(Raffle::class);
     }
+
+    public function assignments()
+    {
+        return $this->hasMany(Ticket::class);
+    }
 }

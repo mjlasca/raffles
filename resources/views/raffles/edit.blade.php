@@ -13,27 +13,27 @@
 
                 <div class="mb-4 md:w-1/2">
                     <label for="name" class="block text-gray-700 text-sm font-bold mb-2">Nombre:</label>
-                    <input type="text" name="name" id="name" class="w-full border rounded-md py-2 px-3" value="{{ $raffle->name }}" required>
+                    <input type="text" name="name" id="name" class="w-full border rounded-md py-2 px-3" maxlength="150" value="{{ $raffle->name }}" required>
                 </div>
 
                 <div class="mb-4">
                     <label for="description" class="block text-gray-700 text-sm font-bold mb-2">Descripción:</label>
-                    <textarea name="description" id="description" class="w-full border rounded-md py-2 px-3" required>{{ $raffle->description }}</textarea>
+                    <textarea name="description" id="description" class="w-full border rounded-md py-2 px-3" maxlength="500" required>{{ $raffle->description }}</textarea>
                 </div>
 
                 <div class="mb-4 w-52">
                     <label for="price" class="block text-gray-700 text-sm font-bold mb-2">Precio:</label>
-                    <input type="number" name="price" id="price" class="w-full border rounded-md py-2 px-3"  value="{{ $raffle->price }}" required>
+                    <input type="number" name="price" pattern="[0-9]{3,10}" title="El precio debe tener sólo números, hasta 10 caracteres" id="price" class="w-full border rounded-md py-2 px-3"  value="{{ $raffle->price }}" required>
                 </div>
 
                 <div class="mb-4 w-52">
                     <label for="raffle_date" class="block text-gray-700 text-sm font-bold mb-2">Fecha sorteo: </label>
-                    <input type="date" name="raffle_date" id="raffle_date" class="w-full border rounded-md py-2 px-3" value="{{ \Carbon\Carbon::parse($raffle->raffle_date)->format('Y-m-d') }}" required>
+                    <input type="date" min="{{ now()->format('Y-m-d') }}" name="raffle_date" id="raffle_date" class="w-full border rounded-md py-2 px-3" value="{{ \Carbon\Carbon::parse($raffle->raffle_date)->format('Y-m-d') }}" required>
                 </div>
 
                 <div class="mb-4 w-52">
                     <label for="tickets_number" class="block text-gray-700 text-sm font-bold mb-2">Número de boletas:</label>
-                    <input type="number" name="tickets_number" id="tickets_number" class="w-full border rounded-md py-2 px-3" value="{{ $raffle->tickets_number }}"  required>
+                    <input type="text" pattern="[0-9]{2,7}" title="La cantidad de tickets debe tener sólo números, hasta 6 caracteres" name="tickets_number" id="tickets_number" class="w-full border rounded-md py-2 px-3" value="{{ $raffle->tickets_number }}"  required>
                 </div>
 
                 <div class="mb-4 w-52">

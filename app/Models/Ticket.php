@@ -17,7 +17,10 @@ class Ticket extends Model
         'payment',
         'raffle_id',
         'create_user',
-        'edit_user'
+        'edit_user',
+        'customer_name',
+        'customer_phone',
+        'assignment_id'
     ];
 
     public function raffle()
@@ -33,5 +36,10 @@ class Ticket extends Model
     public function seller()
     {
         return $this->belongsTo(Seller::class);
+    }
+
+    public function assignment()
+    {
+        return $this->belongsTo(Assignment::class);
     }
 }

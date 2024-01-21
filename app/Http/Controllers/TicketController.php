@@ -30,16 +30,21 @@ class TicketController extends Controller
                                     ->where('assignments.user_id', $current_user->id)
                                     ->get();
         }
-            
-        if(!empty($filter)){
+        
+        if( isset($filter["raffle_id"]) || isset($filter["user_id"]) || isset($filter["ticket_number"]) ){
             $tickets = Ticket::query();
             foreach ($filter as $key => $value) {
-                if($key!= 'page' && !empty($value)){
+                
+                if($key!= 'page' && $value != null){
                     $tickets->where($key,$value);
                 }   
+                
+                    
             }
-            $tickets = $tickets->orderBy('raffle_id')->orderBy('ticket_number')->paginate(100);
-            $tickets->appends($request->query());
+
+            $tickets = $tickets->orderBy('raffle_id')->orderBy('ticket_number')->paginate(5);
+            $tickets->appends($request->all());
+
             return view('tickets.index', compact('tickets','raffles','sellers_users'));
         }
         
@@ -67,7 +72,8 @@ class TicketController extends Controller
      */
     public function show(string $id)
     {
-        //
+        $ticket = Ticket::find($id);
+        return view('tickets.show', compact('ticket'));
     }
 
     /**
@@ -75,7 +81,9 @@ class TicketController extends Controller
      */
     public function edit(string $id)
     {
-        //
+        $ticket = Ticket::find($id);
+        $sellers_users = User::select('id','name')->where('role','Vendedor')->get();
+        return view('tickets.edit', compact('ticket','sellers_users'));
     }
 
     /**
@@ -142,7 +150,14 @@ class TicketController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        $ticket = Ticket::find($id);
+        $req = $request->all();
+        if( isset( $req['payment'] ))
+            $req['payment'] = $ticket->payment + $req['payment'];
+        
+        $ticket->update($req);
+        return redirect()->route('boletas.show', $id);
+
     }
 
     /**

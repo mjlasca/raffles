@@ -12,6 +12,7 @@
                 <p class="mb-4"><strong>Email:</strong> {{ $user->email }}</p>
                 <p class="mb-4"><strong>Teléfono:</strong> {{ $user->phone }}</p>
                 <p class="mb-4"><strong>Dirección:</strong> {{ $user->address }}</p>
+                <p class="mb-4"><strong>Rol:</strong> {{ $user->role }}</p>
                 
             </div>
         </div>

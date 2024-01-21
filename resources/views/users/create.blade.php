@@ -12,12 +12,12 @@
 
                 <div class="mb-4 md:w-1/2">
                     <label for="name" class="block text-gray-700 text-sm font-bold mb-2">Nombres:</label>
-                    <input type="text" name="name" id="name" maxlength="50" class="w-full border rounded-md py-2 px-3" required>
+                    <input type="text" name="name" id="name" title="Sólo letras, máximo 50 caracteres" pattern="[A-Za-z\s]{3,50}" maxlength="50" class="w-full border rounded-md py-2 px-3" required>
                 </div>
 
                 <div class="mb-4 md:w-1/2">
                     <label for="lastname" class="block text-gray-700 text-sm font-bold mb-2">Apellidos:</label>
-                    <input type="text" name="lastname" id="lastname" maxlength="50" class="w-full border rounded-md py-2 px-3" required>
+                    <input type="text" name="lastname" id="lastname" title="Sólo letras, máximo 50 caracteres" pattern="[A-Za-z\s]{3,50}" maxlength="50" class="w-full border rounded-md py-2 px-3" required>
                 </div>
 
                 <div class="mb-4 md:w-1/2">
@@ -47,7 +47,7 @@
 
                 <div class="mb-4 md:w-1/2">
                     <label for="phone" class="block text-gray-700 text-sm font-bold mb-2">Teléfono:</label>
-                    <input type="text" name="phone" maxlength="10" id="phone" class="w-full border rounded-md py-2 px-3" required>
+                    <input type="text" name="phone" maxlength="10" pattern="[0-9]{10,10}" title="El teléfono debe tener sólo números y 10 caracteres" id="phone" class="w-full border rounded-md py-2 px-3" required>
                 </div>
 
                 <div class="mb-4 md:w-1/2">

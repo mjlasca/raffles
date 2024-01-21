@@ -37,12 +37,18 @@
                                     <a href="{{ route('entregas.show', $deliverie->id) }}" class="text-blue-500 hover:bg-green-500 p-1 bg-blue-500 rounded-md mr-1">
                                         <img class="h-5" src="{{ asset('img/icons/show-icon.svg') }}" alt="Ver registro" title="Ver registro">
                                     </a>
-                                    <a href="{{ route('entregas.edit', $deliverie->id) }}" class="text-yellow-500 hover:bg-green-500 p-1 bg-blue-500 rounded-md mr-1">
-                                        <img class="h-5" src="{{ asset('img/icons/edit-icon.svg') }}" alt="Editar" title="Editar">
+                                    <a href="{{ route('entregas.show', $deliverie->id) }}" class="text-blue-500 hover:bg-green-500 p-1 bg-blue-500 rounded-md mr-1">
+                                        <img class="h-5" src="{{ asset('img/icons/pdf-icon.svg') }}" alt="Descargar Recibo" title="Descargar Recibo">
                                     </a>
-                                    <a href="{{ route('entregas.destroy', $deliverie->id) }}" class="text-yellow-500 hover:bg-green-500 p-1 bg-red-500 rounded-md mr-1">
-                                        <img class="h-5" src="{{ asset('img/icons/delete-icon.svg') }}" alt="Eliminar" title="Eliminar">
-                                    </a>
+                                    @if ($deliverie->used < 1)
+                                        <a href="{{ route('entregas.edit', $deliverie->id) }}" class="text-yellow-500 hover:bg-green-500 p-1 bg-blue-500 rounded-md mr-1">
+                                            <img class="h-5" src="{{ asset('img/icons/edit-icon.svg') }}" alt="Editar" title="Editar">
+                                        </a>
+                                        <a href="{{ route('entregas.destroy', $deliverie->id) }}" class="text-yellow-500 hover:bg-green-500 p-1 bg-red-500 rounded-md mr-1">
+                                            <img class="h-5" src="{{ asset('img/icons/delete-icon.svg') }}" alt="Eliminar" title="Eliminar">
+                                        </a>    
+                                    @endif
+                                    
                                 </td>
                             </tr>
                         @endforeach

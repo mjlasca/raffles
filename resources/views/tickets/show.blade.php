@@ -1,26 +1,29 @@
 @extends('layouts.app')
-@section('pageTitle', $raffle->name )
+@section('pageTitle', 'Boleta #'.$ticket->ticket_number )
 @section('content')
     <div class="container mx-auto mt-8">
         <div class="bg-white shadow-md overflow-hidden rounded-md">
             <div class="py-4 px-6 bg-blue-500 flex text-white fill-white">
-                <h2 class="text-2xl font-semibold">{{ $raffle->name }}</h2>
+                <h2 class="text-2xl font-semibold flex">
+                
+                 Rifa : {{ $ticket->raffle->name }} Boleta #{{ $ticket->ticket_number }}  </h2>
+                 <a href="{{ route('boletas.edit', $ticket->id) }}" class="bg-green-500 p-1">
+                    <img class="h-5" src="{{ asset('img/icons/edit-icon.svg') }}" alt="Editar" title="Editar">
+                </a>
             </div>
 
             <div class="p-6">
-                <p class="mb-4"><strong>Descripción:</strong> {{ $raffle->description }}</p>
-                <p class="mb-4"><strong>Precio:</strong> ${{ $raffle->price }}</p>
-                <p class="mb-4"><strong>Boleta ganadora:</strong> {{ $raffle->winning_ticket_id }}</p>
-                <p class="mb-4"><strong>Fecha sorteo:</strong> {{ $raffle->raffle_date }}</p>
-                <p class="mb-4"><strong>Número de boletas:</strong> {{ $raffle->tickets_number }}</p>
-                <p class="mb-4"><strong>Comisión por boleta:</strong> {{ $raffle->ticket_commission }}</p>
-                @if ($raffle->raffle_status == 0)
-                <p class="mb-4"><strong>Rifa asignada:</strong> NO</p>
-                @else
-                <p class="mb-4"><strong>Rifa asignada:</strong> SI</p>
-                @endif
+                <p class="mb-4"><strong>Vendedor(a):</strong> {{ $ticket->user->name }} {{ $ticket->user->lastname }}</p>
+                <p class="mb-4"><strong>Nombre cliente:</strong> {{ $ticket->customer_name }}</p>
+                <p class="mb-4"><strong>Teléfono cliente:</strong> {{ $ticket->customer_phone }}</p>
+                <p class="mb-4"><strong>Precio:</strong> ${{ $ticket->price }}</p>
+                <p class="mb-4"><strong>Abonado:</strong> ${{ $ticket->payment }}</p>
                 
             </div>
+            <div class="flex">
+                
+            </div>
+
         </div>
     </div>
 @endsection

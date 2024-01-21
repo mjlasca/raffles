@@ -13,17 +13,17 @@
 
                 <div class="mb-4 md:w-1/2">
                     <label for="name" class="block text-gray-700 text-sm font-bold mb-2">Nombres:</label>
-                    <input type="text" name="name" id="name" class="w-full border rounded-md py-2 px-3" value="{{ $user->name }}" required>
+                    <input type="text" name="name" id="name" title="Sólo letras, máximo 50 caracteres" pattern="[A-Za-z\s]{3,50}" class="w-full border rounded-md py-2 px-3" value="{{ $user->name }}" required>
                 </div>
 
                 <div class="mb-4 md:w-1/2">
                     <label for="name" class="block text-gray-700 text-sm font-bold mb-2">Apellidos:</label>
-                    <input type="text" name="lastname" id="lastname" class="w-full border rounded-md py-2 px-3" value="{{ $user->lastname }}" required>
+                    <input type="text" name="lastname" title="Sólo letras, máximo 50 caracteres" pattern="[A-Za-z\s]{3,50}" id="lastname" class="w-full border rounded-md py-2 px-3" value="{{ $user->lastname }}" required>
                 </div>
 
                 <div class="mb-4 md:w-1/2">
                     <label for="phone" class="block text-gray-700 text-sm font-bold mb-2">Teléfono:</label>
-                    <input type="number" name="phone" id="phone" class="w-full border rounded-md py-2 px-3"  value="{{ $user->phone }}" required>
+                    <input type="text" name="phone" id="phone" pattern="[0-9]{10,10}" title="El teléfono debe tener sólo números y 10 caracteres" class="w-full border rounded-md py-2 px-3"  value="{{ $user->phone }}" required>
                 </div>
 
                 <div class="mb-4">
@@ -35,9 +35,9 @@
                     <label for="role" class="block text-gray-700 text-sm font-bold mb-2">Rifa</label>
                     <select name="role" id="role" class="w-full border rounded-md py-2 px-3" required>
                         <option value="">Seleccione el rol</option>
-                        <option value="Administrador">Administrador</option>
-                        <option value="Secretaria">Secretaria</option>
-                        <option value="Vendedor">Vendedor</option>
+                        <option value="Administrador" @if($user->role == 'Administrador') selected @endif >Administrador</option>
+                        <option value="Secretaria" @if($user->role == 'Secretaria') selected @endif >Secretaria</option>
+                        <option value="Vendedor" @if($user->role == 'Vendedor') selected @endif >Vendedor</option>
                     </select>
                 </div>
 

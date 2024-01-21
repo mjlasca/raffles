@@ -16,6 +16,8 @@ return new class extends Migration
             $table->integer('ticket_number'); 
             $table->unsignedBigInteger('raffle_id'); 
             $table->foreign('raffle_id')->references('id')->on('raffles')->onDelete('cascade');
+            $table->string('customer_name')->nullable();
+            $table->string('customer_phone')->nullable();
             $table->unsignedBigInteger('user_id'); 
             $table->foreign('user_id')->references('id')->on('users');
             $table->double('price')->nullable();
@@ -24,6 +26,8 @@ return new class extends Migration
             $table->foreign('create_user')->references('id')->on('users')->onDelete('cascade');
             $table->unsignedBigInteger('edit_user'); 
             $table->foreign('edit_user')->references('id')->on('users')->onDelete('cascade');
+            $table->unsignedBigInteger('assignment_id'); 
+            $table->foreign('assignment_id')->references('id')->on('assignments')->onDelete('cascade');
             $table->timestamps();
         });
     }

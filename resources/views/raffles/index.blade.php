@@ -33,9 +33,7 @@
                                     <a href="{{ route('rifas.edit', $raffle->id) }}" class="text-yellow-500 hover:bg-green-500 p-1 bg-blue-500 rounded-md mr-1">
                                         <img class="h-5" src="{{ asset('img/icons/edit-icon.svg') }}" alt="Editar" title="Editar">
                                     </a>
-                                    <a href="{{ route('rifas.destroy', $raffle->id) }}" class="text-yellow-500 hover:bg-green-500 p-1 bg-red-500 rounded-md mr-1">
-                                        <img class="h-5" src="{{ asset('img/icons/delete-icon.svg') }}" alt="Eliminar" title="Eliminar">
-                                    </a>
+                                    
                                 </td>
                             </tr>
                         @endforeach

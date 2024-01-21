@@ -9,9 +9,12 @@
 
             <div class="p-6">
                 <p class="mb-4"><strong>Total boletas:</strong> {{ $assignment->tickets_total }} </p>
-                <div class="grid grid-cols-10 gap-4">
+                <div class="grid grid-cols-10 gap-2">
                 @foreach ($table as $item)
-                    <p class="bg-gray-100" >{{ $item }}</p>
+                
+                    <a target="_blank" href="{{route('boletas.index',['raffle_id' => $assignment->raffle->id, 'user_id' => $assignment->user->id, 'ticket_number' => $item])}}">
+                        <p class="p-2 bg-gray-100" >{{ $item }}</p>
+                    </a>
                 @endforeach
                 </div>
             </div>
