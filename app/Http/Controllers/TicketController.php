@@ -42,7 +42,7 @@ class TicketController extends Controller
                     
             }
 
-            $tickets = $tickets->orderBy('raffle_id')->orderBy('ticket_number')->paginate(5);
+            $tickets = $tickets->orderBy('raffle_id')->orderBy('ticket_number')->paginate(100);
             $tickets->appends($request->all());
 
             return view('tickets.index', compact('tickets','raffles','sellers_users'));
@@ -96,12 +96,7 @@ class TicketController extends Controller
         
         if($current_user->role === 'Vendedor'){
             $sellers_users = User::select('id','name','lastname')->where('role','Vendedor')->where('id',$current_user->id)->get();
-            $deliveries = Delivery::select('raffles.id as raffle_id', 'raffles.name')
-                                    ->join('raffles', 'assignments.raffle_id', '=', 'raffles.id')
-                                    ->where('assignments.user_id', $current_user->id)
-                                    ->where('raffles.raffle_status', 1)
-                                    ->where('raffles.status', 1)
-                                    ->get();
+            $deliveries = Delivery::where('user_id', $current_user->id)->whereColumn('used','<','total')->get();
         }
         $sellers_users = User::select('id','name')->where('role','Vendedor')->get();
         return view('tickets.pay', compact('deliveries','sellers_users','current_user'));
@@ -115,12 +110,15 @@ class TicketController extends Controller
         $raffle_id = $req->input('raffle_id');
         $tickets = $req->input('ticket_number');
         $payments = $req->input('ticket_payment');
+        $names = $req->input('customer_name');
+        $phones = $req->input('customer_phone');
 
         if(!empty($tickets)){
             $concat = [];
             $total = 0;
             for ($i=0; $i < count($tickets) ; $i++) { 
-               Ticket::where('ticket_number', $tickets[$i])->where('raffle_id',$raffle_id)->increment('payment', $payments[$i]);
+                Ticket::where('ticket_number', $tickets[$i])->where('raffle_id',$raffle_id)->increment('payment', $payments[$i]);
+                Ticket::where('ticket_number', $tickets[$i])->where('raffle_id',$raffle_id)->update(['customer_name' => $names[$i], 'customer_phone' => $phones[$i]]);
                 $concat[] = $tickets[$i].",".$payments[$i];
                 $total += $payments[$i];
             }
@@ -152,9 +150,6 @@ class TicketController extends Controller
     {
         $ticket = Ticket::find($id);
         $req = $request->all();
-        if( isset( $req['payment'] ))
-            $req['payment'] = $ticket->payment + $req['payment'];
-        
         $ticket->update($req);
         return redirect()->route('boletas.show', $id);
 

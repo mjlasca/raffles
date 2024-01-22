@@ -100,6 +100,7 @@ return [
     'regex' => 'The :attribute format is invalid.',
     'required' => 'The :attribute field is required.',
     'tickets_exists' => 'Hay valores repetidos :value',
+    'delivery_total' => 'El valor de entrega supera el monto total de la rifa',
     'required_if' => 'The :attribute field is required when :other is :value.',
     'required_unless' => 'The :attribute field is required unless :other is in :values.',
     'required_with' => 'The :attribute field is required when :values is present.',

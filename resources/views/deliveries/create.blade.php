@@ -12,7 +12,7 @@
 
                 <div class="mb-4">
                     <label for="description" class="block text-gray-700 text-sm font-bold mb-2">Descripción:</label>
-                    <textarea name="description" id="description" class="w-full border rounded-md py-2 px-3" required></textarea>
+                    <textarea name="description" id="description" class="w-full border rounded-md py-2 px-3" required>{{old('description')}}</textarea>
                 </div>
 
                 
@@ -21,7 +21,11 @@
                     <select name="raffle_id" id="raffle_id" class="w-full border rounded-md py-2 px-3" required>
                         <option value="">Seleccione una rifa</option>
                         @foreach($raffles as $raffle)
-                            <option value="{{ $raffle->id }}">{{ $raffle->name }}</option>
+                            @if ($raffle->id == old('raffle_id'))
+                                <option value="{{ $raffle->id }}" selected>{{ $raffle->name }}</option>
+                            @else    
+                                <option value="{{ $raffle->id }}">{{ $raffle->name }}</option>
+                            @endif
                         @endforeach
                     </select>
                 </div>
@@ -31,19 +35,32 @@
                     <select name="user_id" id="user_id" class="w-full border rounded-md py-2 px-3" required>
                         <option value="">Seleccione un vendedor</option>
                         @foreach($sellers_users as $seller)
-                            <option value="{{ $seller->id }}">{{ $seller->name }}</option>
+                            @if ($seller->id == old('user_id'))
+                                <option value="{{ $seller->id }}" selected>{{ $seller->name }}</option>
+                            @else    
+                                <option value="{{ $seller->id }}">{{ $seller->name }}</option>
+                            @endif
                         @endforeach
                     </select>
                 </div>
 
                 <div class="mb-4 w-52">
                     <label for="total" class="block text-gray-700 text-sm font-bold mb-2">Valor entrega:</label>
-                    <input type="number" name="total" id="total" class="w-full border rounded-md py-2 px-3" step="0.01" required>
+                    <input type="number" name="total" id="total" class="w-full border rounded-md py-2 px-3" step="0.01" value="{{old('total')}}" required>
                 </div>
 
 
                 <button type="submit" class="bg-blue-500 text-white py-2 px-4 rounded-md">Guardar</button>
             </form>
+            @if ($errors->any())
+                <div class="alert alert-danger">
+                    <ul>
+                        @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+            @endif
         </div>
     </div>
 @endsection

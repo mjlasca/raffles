@@ -22,7 +22,17 @@ class Delivery extends Model
 
     public function user()
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(User::class, 'user_id');
+    }
+
+    public function rcreate()
+    {
+        return $this->belongsTo(User::class, 'create_user');
+    }
+
+    public function redited()
+    {
+        return $this->belongsTo(User::class, 'edit_user');
     }
 
     public function raffle()

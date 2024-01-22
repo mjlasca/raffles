@@ -11,7 +11,6 @@
                 <p class="mb-4"><strong>Descripción:</strong> {{ $delivery->description }}</p>
                 <p class="mb-4"><strong>Rifa:</strong> {{ $delivery->raffle->name }}</p>
                 <p class="mb-4"><strong>Vendedor:</strong> {{ $delivery->user->name }} {{ $delivery->user->lastname }}</p>
-                
             </div>
         </div>
     </div>

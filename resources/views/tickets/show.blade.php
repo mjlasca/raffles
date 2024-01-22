@@ -7,9 +7,11 @@
                 <h2 class="text-2xl font-semibold flex">
                 
                  Rifa : {{ $ticket->raffle->name }} Boleta #{{ $ticket->ticket_number }}  </h2>
+                 @if (auth()->user()->role !== 'Vendedor')
                  <a href="{{ route('boletas.edit', $ticket->id) }}" class="bg-green-500 p-1">
                     <img class="h-5" src="{{ asset('img/icons/edit-icon.svg') }}" alt="Editar" title="Editar">
                 </a>
+                @endif
             </div>
 
             <div class="p-6">

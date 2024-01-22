@@ -1,7 +1,11 @@
 const tickets_pay = document.querySelector('.tickets-pay');
+const content_tickets = document.querySelector('.content-tickets');
+
 const ticket_row = `
                     <input type="number" name="ticket_number[]" class="ticket-number w-full border rounded-md py-2 px-3" placeholder="#Boleta" autocomplete="off" required>
                     <input type="number" name="ticket_payment[]" class="ticket-payment w-full border rounded-md py-2 px-3" placeholder="#Abono" autocomplete="off" required>    
+                    <input type="text" name="customer_name[]" class="ticket w-full border rounded-md py-2 px-3" placeholder="Nombre" autocomplete="off" >    
+                        <input type="number" name="customer_phone[]" class="ticket w-full border rounded-md py-2 px-3" placeholder="Teléfono" autocomplete="off" >    
                     <button type="button" class="bg-red-500 text-white  less px-3 rounded-md">-</button>
                 `;
 const button_more = document.querySelectorAll('.more');
@@ -22,19 +26,38 @@ button_more.forEach(button => {
 tickets_pay.addEventListener('click', function(event) {
     const target = event.target;
     if (target.classList.contains('less')) {
-        console.log("less");
         target.parentElement.remove();
     }
 });
 
+function validateUnique(target) {
+    const inp = document.querySelectorAll('.row-ticket input[name="ticket_number[]"]');
+    let cont = 0;
+    inp.forEach(element => {
+        if(element.value == target.value)
+            cont++;
+    });
 
-tickets_pay.addEventListener('input', function(event) {
+    if(cont > 1){
+        alert('El número '+target.value+' se está ingresando algunas filas antes');
+        target.value = "";
+        target.focus();
+        return false;
+    }
+        
+
+    return true;
+}
+
+tickets_pay.addEventListener('change', function(event) {
     const target = event.target;
 
     if (target.classList.contains('ticket-number')) {
-        if (target.value !== "") {
+        if (target.value !== "" && validateUnique(target)) {
             // Obtener el siguiente elemento hermano (en este caso, el siguiente input)
             const siguienteInput = target.nextElementSibling;
+            const nameInput = siguienteInput.nextElementSibling;
+            const phoneInput = nameInput.nextElementSibling;
 
             // Verificar si el siguiente elemento es un input
             if (siguienteInput && siguienteInput.classList.contains('ticket-payment')) {
@@ -50,10 +73,13 @@ tickets_pay.addEventListener('input', function(event) {
                     console.log(data);
                     if(data != ''){
                         siguienteInput.placeholder = (data[0].price - data[0].payment);
+                        nameInput.value = data[0].customer_name;
+                        phoneInput.value = data[0].customer_phone;
                     }else{
                         alert("El número de boleta no pertenece a ésta usuario y rifa");
                         siguienteInput.placeholder = "#Abono";
                         target.value = "";
+                        target.focus();
                     }
                 })
                 .catch(error => {
@@ -110,7 +136,7 @@ tickets_pay.addEventListener('input', function(event) {
 delivery_id.addEventListener('change', () => {
 
     const delivery_data = document.querySelector('.delivery-data');
-
+    clearInputs();
     if(delivery_id.value !== ''){
         fetch(currentDomain+"/entregas/"+delivery_id.value+"?format=json")
         .then(response => {
@@ -121,7 +147,7 @@ delivery_id.addEventListener('change', () => {
           return response.json();
         })
         .then(data => {
-        console.log(data);
+            
           delivery_data.innerHTML = `
                 <p>${data.description}</p>
                 <div class="flex">
@@ -134,17 +160,25 @@ delivery_id.addEventListener('change', () => {
                 user_id.value = data.user_id;
             }
             raffle_id.value = data.raffle_id;
+            content_tickets.classList.remove('hidden');
         })
         .catch(error => {
           console.error('Error en la solicitud:', error.message);
         });
     }else{
         delivery_data.innerHTML = "";
+        content_tickets.classList.add('hidden');
+        
     }
 
 });
 
-
+function clearInputs(){
+    const cleari = document.querySelectorAll('.less');
+    cleari.forEach(element => {
+        element.parentElement.remove();
+    });
+}
     
 
 function calculateTotal() {

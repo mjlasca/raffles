@@ -37,7 +37,7 @@
                                     <a href="{{ route('entregas.show', $deliverie->id) }}" class="text-blue-500 hover:bg-green-500 p-1 bg-blue-500 rounded-md mr-1">
                                         <img class="h-5" src="{{ asset('img/icons/show-icon.svg') }}" alt="Ver registro" title="Ver registro">
                                     </a>
-                                    <a href="{{ route('entregas.show', $deliverie->id) }}" class="text-blue-500 hover:bg-green-500 p-1 bg-blue-500 rounded-md mr-1">
+                                    <a href="{{ route('entregas.pdf', $deliverie->id) }}" target="_blank" class="text-blue-500 hover:bg-green-500 p-1 bg-blue-500 rounded-md mr-1">
                                         <img class="h-5" src="{{ asset('img/icons/pdf-icon.svg') }}" alt="Descargar Recibo" title="Descargar Recibo">
                                     </a>
                                     @if ($deliverie->used < 1)

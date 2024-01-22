@@ -16,7 +16,7 @@
                         <select name="delivery_id" id="delivery_id" class="w-full border rounded-md py-2 px-3" required>
                             <option value="">Seleccione una entrega</option>
                             @foreach($deliveries as $delivery)
-                                <option value="{{ $delivery->id }}">{{ $delivery->raffle->name }} - {{ $delivery->user->name }} {{ $delivery->user->lastname }} $ {{ $delivery->total }} </option>
+                                <option value="{{ $delivery->id }}">{{ $delivery->raffle->name }} - {{ $delivery->user->name }} {{ $delivery->user->lastname }} ${{ number_format($delivery->total,0) }} - ${{ number_format($delivery->used,0) }} </option>
                             @endforeach
                         </select>
                     </div>
@@ -33,16 +33,22 @@
                 <div class="delivery-data bg-gray-100 mb-4">
                 </div>
 
-                <div class="mb-4 tickets-pay">
-                    <div class="row-ticket flex mb-2">
-                        <input type="number" name="ticket_number[]" class="ticket-number w-full border rounded-md py-2 px-3" placeholder="#Boleta" autocomplete="off" required>
-                        <input type="number" name="ticket_payment[]" class="ticket-payment w-full border rounded-md py-2 px-3" placeholder="$Abono" autocomplete="off" required>    
-                        <input type="text" name="ticket_[]" class="ticket w-full border rounded-md py-2 px-3" placeholder="Nombre" autocomplete="off" >    
-                        <button type="button" class="bg-gray-100 text-white  px-3 rounded-md">-</button>
+                <div class="content-tickets hidden">
+                    <div class="mb-4 tickets-pay">
+                        <div class="row-ticket flex mb-2">
+                            <input type="number" name="ticket_number[]" class="ticket-number w-full border rounded-md py-2 px-3" placeholder="#Boleta" autocomplete="off" required>
+                            <input type="number" name="ticket_payment[]" class="ticket-payment w-full border rounded-md py-2 px-3" placeholder="$Abono" autocomplete="off" required>    
+                            <input type="text" name="customer_name[]" class="ticket w-full border rounded-md py-2 px-3" placeholder="Nombre" autocomplete="off" >    
+                            <input type="number" name="customer_phone[]" class="ticket w-full border rounded-md py-2 px-3" placeholder="Teléfono" autocomplete="off" >    
+                            <button type="button" class="bg-gray-100 text-white  px-3 rounded-md">-</button>
+                        </div>
+                        
                     </div>
+                    <button type="button" class="bg-blue-500 text-white more py-2 px-4 rounded-md">+</button>
+                    <button type="submit" class="bg-blue-500 text-white py-2 px-4 rounded-md">Realizar pago</button>
                 </div>
-                <button type="button" class="bg-blue-500 text-white more py-2 px-4 rounded-md">+</button>
-                <button type="submit" class="bg-blue-500 text-white py-2 px-4 rounded-md">Realizar pago</button>
+                
+                
             </form>
         </div>
     </div>

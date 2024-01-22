@@ -30,17 +30,23 @@ Route::resource('premios', AssignmentController::class)->middleware(['auth'])->p
     'premios' => 'prize',
 ]);
 
-Route::resource('boletas', TicketController::class)->middleware(['auth'])->parameters([
-    'boletas' => 'ticket',
-]);
+Route::middleware(['auth'])->group(function () {
+    Route::resource('boletas', TicketController::class)->parameters([
+        'boletas' => 'ticket',
+    ]);
+
+    
+});
 
 Route::get('/tickets/pago', [TicketController::class, 'pay'])->middleware(['auth'])->name('boletas.pay');
 Route::get('/tickets/checkticket', [TicketController::class, 'checkticket'])->middleware(['auth'])->name('checkticket');
 Route::post('/tickets/setpay', [TicketController::class, 'setpay'])->middleware(['auth'])->name('tickets.setpay');
 
+
 Route::resource('entregas', DeliveryController::class)->middleware(['auth'])->parameters([
     'entregas' => 'deliveries',
 ]);
+Route::get('/entregas/pdf/{id}', [DeliveryController::class, 'pdf'])->middleware(['auth'])->name('entregas.pdf');
 
 Route::view('/', 'dashboard')->middleware(['auth']);
 

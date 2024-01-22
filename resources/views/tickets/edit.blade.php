@@ -43,9 +43,9 @@
                 </div>
 
                 <div class="mb-4 md:w-1/2">
-                    <label for="payment" class="block text-gray-700 text-sm font-bold mb-2">Abonado {{$ticket->payment}}, Saldo:</label>
-                    <input type="number" name="payment" id="payment" pattern="[0-9]{1,15}" min="0" max="{{($ticket->price - $ticket->payment)}}" title="El teléfono debe tener sólo números y 10 caracteres" class="w-full border rounded-md py-2 px-3"  placeholder="{{ ($ticket->price - $ticket->payment) }}"  required>
-                    <small>Si este campo no se va a editar, poner cero (0)</small>
+                    <label for="payment" class="block text-gray-700 text-sm font-bold mb-2">Abonado:</label>
+                    <input type="number" name="payment" id="payment" pattern="[0-9]{1,15}" min="0" max="{{($ticket->price)}}" value="{{($ticket->payment)}}" title="El teléfono debe tener sólo números y 10 caracteres" class="w-full border rounded-md py-2 px-3" required>
+                    <small>Puede poner éste campo en cero (0)</small>
                 </div>
 
                 <div class="mb-4 mr-1 w-1/2">

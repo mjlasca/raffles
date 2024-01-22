@@ -7,6 +7,7 @@ use App\Models\Raffle;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class DeliveryController extends Controller
 {
@@ -28,7 +29,7 @@ class DeliveryController extends Controller
      */
     public function create()
     {
-        $raffles = Raffle::where('raffle_status',1)->select('id','name')->get();
+        $raffles = Raffle::where('raffle_status',1)->where('status',1)->select('id','name')->get();
         $sellers_users = User::select('id','name')->where('role','Vendedor')->get();
         return view('deliveries.create', compact('raffles','sellers_users'));
     }
@@ -41,11 +42,32 @@ class DeliveryController extends Controller
      */
     public function store(Request $request)
     {
+        /**
+         * falta hacer validación de entregas por usuario, ya que no importa cuantas entregas haga un usuario (así supera sus asignaciones)
+         * se valida sólo por el monto de la rifa
+         */
         $user = Auth::user();
         $data = $request->all();
+        if(isset($data['raffle_id'])){
+            $raffle = Raffle::find($data['raffle_id']);
+            $sum = Delivery::where('raffle_id',$data['raffle_id'])->sum('total') ;
+        }
+        $request->validate(
+            [
+                'total' => ['required', 'delivery_total:'.$data['raffle_id']]
+            ],
+            [
+                'total.delivery_total' => 'El valor de entrega supera el monto total de la rifa, #Boletas('.$raffle->tickets_number.') Total $('.number_format($raffle->price * $raffle->tickets_number,0).') Suma total entregas $('.number_format($sum,0).')',
+            ]
+        );
+        
         $data['create_user'] = $user->id;
         $data['edit_user'] = $user->id;
-        $result = Delivery::create($data);
+
+        if(Delivery::create($data)){
+            if( ($raffle->price * $raffle->tickets_number) == ($sum + (+ (!empty($data['total']) ? $data['total'] : 0))))
+                $raffle->update(['status'=>0]);
+        }
         return redirect()->route('entregas.index');
     }
 
@@ -93,6 +115,14 @@ class DeliveryController extends Controller
         $delivery->update($data);
 
         return redirect()->route('entregas.index');
+    }
+
+    public function pdf($id){
+        $data = [];
+        $delivery = Delivery::find($id);
+        $data["delivery"] = $delivery;
+        $pdf = Pdf::loadView('deliveries.pdf', $data);
+        return $pdf->stream('Recibo_entrega_'.$delivery->raffle_id.'_'.$delivery->user->name.'_'.$delivery->user->lastname.'_No.'.$delivery->id.'.pdf');
     }
 
     /**
