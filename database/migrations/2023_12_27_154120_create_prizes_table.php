@@ -15,6 +15,17 @@ class CreatePrizesTable extends Migration
     {
         Schema::create('prizes', function (Blueprint $table) {
             $table->id();
+            $table->unsignedBigInteger('raffle_id'); 
+            $table->foreign('raffle_id')->references('id')->on('raffles')->onDelete('cascade');
+            $table->unsignedBigInteger('create_user'); 
+            $table->foreign('create_user')->references('id')->on('users')->onDelete('cascade');
+            $table->unsignedBigInteger('edit_user'); 
+            $table->foreign('edit_user')->references('id')->on('users')->onDelete('cascade');
+            $table->string('winning_ticket')->nullable();
+            $table->text('detail')->nullable();
+            $table->date('award_date')->nullable();
+            $table->decimal('percentage_condition')->default(100);
+            $table->integer('status')->default(0);
             $table->timestamps();
         });
     }

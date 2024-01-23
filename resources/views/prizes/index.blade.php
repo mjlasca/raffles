@@ -14,18 +14,22 @@
                 <table class="min-w-full">
                     <thead>
                         <tr class="text-md font-semibold tracking-wide text-left text-white bg-green-500 uppercase border-b border-gray-600">
-                            <th class="py-2 px-4 border-b">Nombre</th>
-                            <th class="py-2 px-4 border-b">Descripción</th>
-                            <th class="py-2 px-4 border-b">Precio</th>
+                            <th class="py-2 px-4 border-b">Detalle</th>
+                            <th class="py-2 px-4 border-b">Rifa</th>
+                            <th class="py-2 px-4 border-b">Participa con</th>
+                            <th class="py-2 px-4 border-b">Fecha sorteo</th>
+                            <th class="py-2 px-4 border-b">Boleto ganador</th>
                             <th class="py-2 px-4 border-b">Acciones</th>
                         </tr>
                     </thead>
                     <tbody>
                         @foreach($prizes as $prize)
                             <tr class="hover:bg-gray-100 border-b">
-                                <td class="py-2 px-4">{{ $prize->name }}</td>
-                                <td class="py-2 px-4">{{ $prize->description }}</td>
-                                <td class="py-2 px-4">${{ $prize->price }}</td>
+                                <td class="py-2 px-4">{{ $prize->detail }}</td>
+                                <td class="py-2 px-4">{{ $prize->raffle->name }}</td>
+                                <td class="py-2 px-4">{{ number_format($prize->percentage_condition,0) }}%</td>
+                                <td class="py-2 px-4">{{ $prize->award_date }}</td>
+                                <td class="py-2 px-4">{{ $prize->winning_ticket }}</td>
                                 <td class="py-2 px-4 flex">
                                     <a href="{{ route('premios.show', $prize->id) }}" class="text-blue-500 hover:bg-green-500 p-1 bg-blue-500 rounded-md mr-1">
                                         <img class="h-5" src="{{ asset('img/icons/show-icon.svg') }}" alt="Ver registro" title="Ver registro">

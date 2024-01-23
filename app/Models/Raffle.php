@@ -37,4 +37,9 @@ class Raffle extends Model
     {
         return $this->belongsTo(Ticket::class, 'winning_ticket_id');
     }
+
+    public function prizes()
+    {
+        return $this->hasMany(Prize::class);
+    }
 }

@@ -2,7 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Prize;
+use App\Models\Raffle;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class PrizeController extends Controller
 {
@@ -13,7 +16,8 @@ class PrizeController extends Controller
      */
     public function index()
     {
-        //
+        $prizes = Prize::paginate(10);
+        return view('prizes.index', compact('prizes'));
     }
 
     /**
@@ -23,7 +27,9 @@ class PrizeController extends Controller
      */
     public function create()
     {
-        //
+        //raffle status 2 is prize winning 
+        $raffles = Raffle::where('status','<',2)->select('id','name')->get();
+        return view('prizes.create', compact('raffles'));
     }
 
     /**
@@ -34,7 +40,12 @@ class PrizeController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $user = Auth::user();
+        $data = $request->all();
+        $data['create_user'] = $user->id;
+        $data['edit_user'] = $user->id;
+        $result = Prize::create($data);
+        return redirect()->route('premios.index');
     }
 
     /**
@@ -45,7 +56,8 @@ class PrizeController extends Controller
      */
     public function show($id)
     {
-        //
+        $prize = Prize::find($id);
+        return view('prizes.show', compact('prize'));
     }
 
     /**
@@ -56,7 +68,9 @@ class PrizeController extends Controller
      */
     public function edit($id)
     {
-        //
+        $prize = Prize::find($id);
+        $raffles = Raffle::where('status','<',2)->select('id','name')->get();
+        return view('prizes.edit', compact('prize','raffles'));
     }
 
     /**
@@ -68,7 +82,9 @@ class PrizeController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $prize = Prize::find($id);
+        $prize->update($request->all());
+        return redirect()->route('premios.index');
     }
 
     /**

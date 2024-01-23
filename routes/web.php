@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AssignmentController;
 use App\Http\Controllers\DeliveryController;
+use App\Http\Controllers\PrizeController;
 use App\Http\Controllers\RaffleController;
 use App\Http\Controllers\TicketController;
 use App\Http\Controllers\UserController;
@@ -26,7 +27,7 @@ Route::resource('asignaciones', AssignmentController::class)->middleware(['auth'
     'asignaciones' => 'assignment',
 ]);
 
-Route::resource('premios', AssignmentController::class)->middleware(['auth'])->parameters([
+Route::resource('premios', PrizeController::class)->middleware(['auth'])->parameters([
     'premios' => 'prize',
 ]);
 
