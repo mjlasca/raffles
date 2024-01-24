@@ -1,6 +1,8 @@
 <?php
 
 use App\Http\Controllers\AssignmentController;
+use App\Http\Controllers\CashController;
+use App\Http\Controllers\CommissionController;
 use App\Http\Controllers\DeliveryController;
 use App\Http\Controllers\PrizeController;
 use App\Http\Controllers\RaffleController;
@@ -29,6 +31,14 @@ Route::resource('asignaciones', AssignmentController::class)->middleware(['auth'
 
 Route::resource('premios', PrizeController::class)->middleware(['auth'])->parameters([
     'premios' => 'prize',
+]);
+
+Route::resource('comisiones', CommissionController::class)->middleware(['auth'])->parameters([
+    'comisiones' => 'commission',
+]);
+
+Route::resource('arqueos', CashController::class)->middleware(['auth'])->parameters([
+    'arqueos' => 'cash',
 ]);
 
 Route::middleware(['auth'])->group(function () {

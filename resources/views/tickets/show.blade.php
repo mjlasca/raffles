@@ -5,10 +5,9 @@
         <div class="bg-white shadow-md overflow-hidden rounded-md">
             <div class="py-4 px-6 bg-blue-500 flex text-white fill-white">
                 <h2 class="text-2xl font-semibold flex">
-                
                  Rifa : {{ $ticket->raffle->name }} Boleta #{{ $ticket->ticket_number }}  </h2>
                  @if (auth()->user()->role !== 'Vendedor')
-                 <a href="{{ route('boletas.edit', $ticket->id) }}" class="bg-green-500 p-1">
+                 <a class="ml-2 p-1 mt-1 bg-green-500 rounded-lg hover:bg-green-500" href="{{ route('boletas.edit', $ticket->id) }}">
                     <img class="h-5" src="{{ asset('img/icons/edit-icon.svg') }}" alt="Editar" title="Editar">
                 </a>
                 @endif

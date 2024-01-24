@@ -6,7 +6,7 @@
             <div class="py-4 px-6 bg-blue-500 flex text-white fill-white">
                 <h2 class="text-2xl font-semibold">Boletas</h2>
                 
-                <a class="ml-2 p-1 mt-1 bg-white rounded-lg hover:bg-green-500" href="{{route('boletas.pay')}}">
+                <a class="ml-2 p-1 mt-1 bg-green-500 rounded-lg hover:bg-green-500" href="{{route('boletas.pay')}}">
                     <img class="h-5" src="{{ asset('img/icons/dollar-icon.svg') }}" alt="Pagar boletas" title="Pagar boletas">
                 </a>
             </div>
