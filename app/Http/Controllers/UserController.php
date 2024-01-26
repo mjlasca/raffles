@@ -33,6 +33,21 @@ class UserController extends Controller
     public function store(Request $request)
     {
         $user = Auth::user();
+        
+        $request->validate(
+            [
+                'email' => ['required', 'unique_user'],
+                'password' => ['required','confirmed'],
+                'password_confirmation' => ['required']
+            ],
+            [
+                'email.unique_user' => 'El correo electrónico está en uso',
+                'password.required' => 'La contraseña es requerida',
+                'password_confirmation.required' => 'La confirmación de la contraseña es requerida',
+                'password.confirmed' => 'Las contraseñas no coinciden'
+            ]
+        );
+
         $data = $request->all();
         $data['password'] = Hash::make($request->input('password'));
         $data['create_user'] = $user->id;
@@ -65,13 +80,24 @@ class UserController extends Controller
     public function update(Request $request, string $id)
     {
         $current_user =  Auth::user();
+        $request->validate(
+            [
+                'password' => ['confirmed'],
+                'password_confirmation' => ['required_with:password']
+            ],
+            [
+                'password_confirmation.required_with' => 'La confirmación de la contraseña es obligatoria cuando se proporciona una contraseña.',
+                'password.confirmed' => 'Las contraseñas no coinciden'
+            ]
+        );
         $user = User::find($id);
-        if ($request->has('password')) {
-            $data = $request->all();
+        if ( $request->input('password') && $request->has('password')) {
+            $data = $request->except('password1');
             $data['password'] = Hash::make($request->input('password'));
         } else {
-            $data = $request->except('password');
+            $data = $request->except(['password','password1']);
         }
+        
         $data['edit_user'] = $current_user->id;
         $user->update($data);
 

@@ -12,7 +12,7 @@
                 @csrf
 
                 <div class="mb-4 md:w-1/2">
-                    <label for="name" class="block text-gray-700 text-sm font-bold mb-2">Nombre:</label>
+                    <label for="name" class="block text-gray-700 text-sm font-bold mb-2">Detalle:</label>
                     <input type="text" name="name" id="name" maxlength="50" value="{{old('name')}}" class="w-full border rounded-md py-2 px-3" required>
                 </div>
 
@@ -36,16 +36,16 @@
                             <option value="">Seleccione un(a) vendedor(a)</option>
                         @foreach($sellers_users as $seller)
                             @if ($seller->id == old('user_id'))
-                                <option value="{{ $seller->id }}" selected>{{ $seller->name }}</option>
+                                <option value="{{ $seller->id }}" selected>{{ $seller->name }} {{ $seller->lastname }}</option>
                             @else    
-                                <option value="{{ $seller->id }}">{{ $seller->name }}</option>
+                                <option value="{{ $seller->id }}">{{ $seller->name }} {{ $seller->lastname }}</option>
                             @endif
                             
                         @endforeach
                     </select>
                 </div>
                 <div class="mb-3">
-                    <div id="error-tickets" class="w-full bg-gray-100 text-red-500"></div>
+                    
                     <div class="flex">
                         <div id="tickets-help" class="mt-2 mr-1 text-gray-300">
                         </div>
@@ -59,6 +59,9 @@
                 <button type="submit" class="bg-blue-500 text-white py-2 px-4 rounded-md">Guardar</button>
             </form>
             
+
+            <div id="error-tickets" class="fixed bottom-0 text-center text-lg  left-0 right-0 sm:w-full bg-red-500 text-white"></div>
+            
             
 
             @error('tickets')
@@ -66,7 +69,7 @@
                     <ul id="numbers">
                        {{$message}}
                     </ul>
-                    <button type="submit" class="bg-green-500 text-white py-2 px-4 rounded-md" onclick="clearList()">Elimina éstos números</button>
+                    <button type="submit" class="bg-green-500 text-white text-center  py-2 px-4 rounded-md" onclick="clearList()">Elimina éstos números</button>
                 </div>
                 
             @enderror

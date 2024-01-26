@@ -5,6 +5,7 @@ namespace App\Providers;
 use App\Models\Delivery;
 use App\Models\Raffle;
 use App\Models\Ticket;
+use App\Models\User;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Validator;
 
@@ -27,6 +28,11 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
+        Validator::extend('unique_user', function ($attribute, $value, $parameters, $validator) {
+            $exists = User::where('email', $value)->exists();
+            return !$exists;
+        });
+
         Validator::extend('tickets_exists', function ($attribute, $value, $parameters, $validator) {
             $exists = Ticket::whereIn('ticket_number', explode("\n", $value))->exists();
             return !$exists;
