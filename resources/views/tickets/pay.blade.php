@@ -6,8 +6,9 @@
             <div class="py-4 px-6 bg-blue-500 flex text-white fill-white">
                 <h2 class="text-2xl font-semibold">Realizar pago boleta(s)</h2>
             </div>
-
-            <form method="POST" action="{{ route('tickets.setpay') }}" class="p-6">
+            <div class="delivery-data sm:pl-3">
+            </div>
+            <form method="POST" id="formPay" action="{{ route('tickets.setpay') }}" class="p-6">
                 @csrf
 
                 <div class="md:flex">
@@ -30,14 +31,13 @@
                     
                     
                 </div>
-                <div class="delivery-data bg-gray-100 mb-4">
-                </div>
+                
 
                 <div class="content-tickets hidden">
                     <div class="mb-4 tickets-pay">
                         <div class="row-ticket flex mb-2">
                             <input type="number" name="ticket_number[]" class="ticket-number w-full border rounded-md py-2 px-3" placeholder="#Boleta" autocomplete="off" required>
-                            <input type="number" name="ticket_payment[]" class="ticket-payment w-full border rounded-md py-2 px-3" placeholder="$Abono" autocomplete="off" required>    
+                            <input type="number" min="1" name="ticket_payment[]" class="ticket-payment w-full border rounded-md py-2 px-3" placeholder="$Abono" autocomplete="off" required>    
                             <input type="text" name="customer_name[]" class="ticket w-full border rounded-md py-2 px-3" placeholder="Nombre" autocomplete="off" >    
                             <input type="number" name="customer_phone[]" class="ticket w-full border rounded-md py-2 px-3" placeholder="Teléfono" autocomplete="off" >    
                             <button type="button" class="bg-gray-100 text-white  px-3 rounded-md">-</button>
@@ -45,7 +45,7 @@
                         
                     </div>
                     <button type="button" class="bg-blue-500 text-white more py-2 px-4 rounded-md">+</button>
-                    <button type="submit" class="bg-blue-500 text-white py-2 px-4 rounded-md">Realizar pago</button>
+                    <button id="send" type="submit" class="bg-blue-500 text-white py-2 px-4 rounded-md">Realizar pago</button>
                 </div>
                 
                 

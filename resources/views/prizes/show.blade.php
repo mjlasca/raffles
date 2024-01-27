@@ -8,6 +8,7 @@
             </div>
 
             <div class="p-6">
+                <p class="mb-4"><strong>Tipo de premio:</strong> {{ $prize->type }}</p>
                 <p class="mb-4"><strong>Descripción:</strong> {{ $prize->detail }}</p>
                 <p class="mb-4"><strong>Rifa:</strong> {{ $prize->raffle->name }}</p>
                 <p class="mb-4"><strong>Participa con:</strong> {{ number_format($prize->percentage_condition,0) }}%</p>

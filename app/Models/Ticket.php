@@ -19,6 +19,7 @@ class Ticket extends Model
         'create_user',
         'edit_user',
         'customer_name',
+        'movements',
         'customer_phone',
         'assignment_id'
     ];

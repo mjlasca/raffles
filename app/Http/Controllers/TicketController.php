@@ -82,7 +82,7 @@ class TicketController extends Controller
     public function edit(string $id)
     {
         $ticket = Ticket::find($id);
-        $sellers_users = User::select('id','name')->where('role','Vendedor')->get();
+        $sellers_users = User::select('id','name','lastname')->where('role','Vendedor')->get();
         return view('tickets.edit', compact('ticket','sellers_users'));
     }
 
@@ -92,7 +92,7 @@ class TicketController extends Controller
     public function pay(Request $req)
     {
         $current_user = Auth::user();
-        $deliveries = Delivery::where('status',0)->whereColumn('total','>','used')->select('id','raffle_id','user_id','total')->get();
+        $deliveries = Delivery::whereColumn('total','>','used')->select('id','raffle_id','user_id','total','used')->get();
         
         if($current_user->role === 'Vendedor'){
             $sellers_users = User::select('id','name','lastname')->where('role','Vendedor')->where('id',$current_user->id)->get();
@@ -136,6 +136,32 @@ class TicketController extends Controller
         return redirect()->route('boletas.index', ['raffle_id' => $raffle_id, 'user_id' => $user_id]);
     }
 
+    public function payall(Request $req){
+
+        /*$current_user = Auth::user();
+        $delivery_id = $req->input('delivery_id');
+        if(!empty($delivery_id)){
+            $concat = [];
+            $total = 0;
+            for ($i=0; $i < count($tickets) ; $i++) { 
+                Ticket::where('ticket_number', $tickets[$i])->where('raffle_id',$raffle_id)->update(['customer_name' => $names[$i], 'customer_phone' => $phones[$i]]);
+                $concat[] = $tickets[$i].",".$payments[$i];
+                $total += $payments[$i];
+            }
+
+            Delivery::where('id',$delivery_id)->increment('used', $total);
+
+            $data['delivery_id'] = $delivery_id;
+            $data['payment_value'] = $total;
+            $data['detail'] = implode(";", $concat);
+            $data['create_user'] = $current_user->id;
+            $data['edit_user'] = $current_user->id;
+            PaymentTicket::create($data);
+        }
+        
+        return redirect()->route('boletas.index', ['raffle_id' => $raffle_id, 'user_id' => $user_id]);*/
+    }
+
     public function checkTicket(Request $req){
         $ticket = Ticket::where('ticket_number',$req->input('number'))->where('raffle_id',$req->input('raffle_id'))->where('user_id',$req->input('user_id'))->get();
 
@@ -148,9 +174,25 @@ class TicketController extends Controller
      */
     public function update(Request $request, string $id)
     {
+        $current_user = Auth::user();
         $ticket = Ticket::find($id);
         $req = $request->all();
+        $concat = "";
+        if( $req['user_id'] != $ticket->user_id ){
+            $userChange = User::find($req['user_id']);
+            $concat .=  "| ".$current_user->name." " .$current_user->lastname. " modificó el usuario de ésta boleta de ".$ticket->user->name." ".$ticket->user->lastname. " a ".$userChange->name." ".$userChange->lastname." el ".date("d-m-Y");
+        }
+
+        if( $req['payment'] != $ticket->payment ){
+            $concat .=  "| ".$current_user->name." " .$current_user->lastname. " modificó el abono de ésta boleta de ".$ticket->payment. " a ".$req['payment']." el ".date("d-m-Y");
+        }
+
+        $req['movements'] = $concat . $ticket->movements;
+            
+        $req['edit_user'] = $current_user->id;
+        
         $ticket->update($req);
+        
         return redirect()->route('boletas.show', $id);
 
     }

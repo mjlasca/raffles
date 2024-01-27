@@ -14,7 +14,24 @@
 
     <!-- Styles -->
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
+    <style>
+        @media (prefers-color-scheme: dark) {
+            body,form,input,select,textarea,label    {
+                background-color: #2c3e50 !important;
+                color: #ecf0f1 !important;
+            }
+            .bg-gray-100, .bg-white{
+                background-color: #2c3e50 !important;
+            }
 
+            table tr{
+                background-color: #2c3e50 !important;
+            }
+
+            
+
+        }
+    </style>
 </head>
 <body>
     
@@ -24,8 +41,7 @@
             
             <div class="w-64 bg-gray-100">
                 <div class="bg-blue-500 py-4 h-40 flex flex-col items-center">
-                    <img src="{{ asset('img/logo.png') }}" alt="Logo" class="w-20">
-                    <span class="text-white text-lg font-semibold mt-2">Company Name </span>
+                    <img src="{{ asset('img/logo.png') }}" alt="Logo" class="w-2/4">
                 </div>
                 <nav class="mt-8 tx-blue-700">
                     <ul class="flex flex-col items-center text-white">
@@ -83,7 +99,7 @@
                         @endif
 
                         <li class="mb-2">
-                            <a href="/boletas" class="inline-flex items-center @if( str_contains( request()->path(),'boletas') ) bg-green-500 @else bg-blue-500 @endif px-3 py-3 border  text-sm font-lg rounded-md  hover:bg-green-500 hover:text-white focus:outline-none transition ease-in-out duration-150 w-40">
+                            <a href="/boletas" class="inline-flex items-center @if( str_contains( request()->path(),'boletas') || str_contains( request()->path(),'tickets') ) bg-green-500 @else bg-blue-500 @endif px-3 py-3 border  text-sm font-lg rounded-md  hover:bg-green-500 hover:text-white focus:outline-none transition ease-in-out duration-150 w-40">
                                 <span class="mr-2 p-1 rounded-md bg-blue-500">
                                     <img class="h-5 fill-white" src="{{ asset('img/icons/ticket-icon.svg') }}" alt="">
                                 </span>
@@ -180,7 +196,7 @@
                                     {{auth()->user()->name}}
                                 </p>
                                 <div>
-                                    <a class="hidden md:block px-2 py-1 border  text-sm rounded-md text-blue-100 bg-white-100 hover:bg-green-500" href="{{ route('logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                                    <a class="hidden md:block px-2 py-1 border  text-sm rounded-md text-blue-100 bg-green-500 hover:bg-white hover:text-blue-500" href="{{ route('logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
                                         Cerrar sesión
                                     </a>
                                     

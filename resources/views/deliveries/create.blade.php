@@ -36,9 +36,9 @@
                         <option value="">Seleccione un vendedor</option>
                         @foreach($sellers_users as $seller)
                             @if ($seller->id == old('user_id'))
-                                <option value="{{ $seller->id }}" selected>{{ $seller->name }}</option>
+                                <option value="{{ $seller->id }}" selected>{{ $seller->name }} {{ $seller->lastname }}</option>
                             @else    
-                                <option value="{{ $seller->id }}">{{ $seller->name }}</option>
+                                <option value="{{ $seller->id }}">{{ $seller->name }} {{ $seller->lastname }}</option>
                             @endif
                         @endforeach
                     </select>
@@ -46,7 +46,7 @@
 
                 <div class="mb-4 w-52">
                     <label for="total" class="block text-gray-700 text-sm font-bold mb-2">Valor entrega:</label>
-                    <input type="number" name="total" id="total" class="w-full border rounded-md py-2 px-3" step="0.01" value="{{old('total')}}" required>
+                    <input type="number" min="0" name="total" id="total" class="w-full border rounded-md py-2 px-3" step="0.01" value="{{old('total')}}" required>
                 </div>
 
 

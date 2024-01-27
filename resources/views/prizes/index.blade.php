@@ -5,7 +5,7 @@
         <div class="bg-white shadow-md overflow-hidden rounded-md">
             <div class="py-4 px-6 bg-blue-500 flex text-white fill-white">
                 <h2 class="text-2xl font-semibold">Premios</h2>
-                <a class="ml-2 p-1 mt-1 bg-white rounded-lg hover:bg-green-500" href="{{route('premios.create')}}">
+                <a class="ml-2 p-1 mt-1 bg-green-500 rounded-lg hover:bg-green-500" href="{{route('premios.create')}}">
                     <img class="h-5" src="{{ asset('img/icons/add-icon.svg') }}" alt="">
                 </a>
             </div>
@@ -14,9 +14,10 @@
                 <table class="min-w-full">
                     <thead>
                         <tr class="text-md font-semibold tracking-wide text-left text-white bg-green-500 uppercase border-b border-gray-600">
-                            <th class="py-2 px-4 border-b">Detalle</th>
+                            <th class="py-2 px-4 border-b">Tipo de premio</th>
                             <th class="py-2 px-4 border-b">Rifa</th>
                             <th class="py-2 px-4 border-b">Participa con</th>
+                            <th class="py-2 px-4 border-b">Detalle</th>
                             <th class="py-2 px-4 border-b">Fecha sorteo</th>
                             <th class="py-2 px-4 border-b">Boleto ganador</th>
                             <th class="py-2 px-4 border-b">Acciones</th>
@@ -25,9 +26,10 @@
                     <tbody>
                         @foreach($prizes as $prize)
                             <tr class="hover:bg-gray-100 border-b">
-                                <td class="py-2 px-4">{{ $prize->detail }}</td>
+                                <td class="py-2 px-4">{{ $prize->type }}</td>
                                 <td class="py-2 px-4">{{ $prize->raffle->name }}</td>
                                 <td class="py-2 px-4">{{ number_format($prize->percentage_condition,0) }}%</td>
+                                <td class="py-2 px-4">{{ $prize->detail }}</td>
                                 <td class="py-2 px-4">{{ $prize->award_date }}</td>
                                 <td class="py-2 px-4">{{ $prize->winning_ticket }}</td>
                                 <td class="py-2 px-4 flex">

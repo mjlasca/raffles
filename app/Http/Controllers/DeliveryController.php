@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Delivery;
 use App\Models\Raffle;
+use App\Models\Ticket;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -30,7 +31,7 @@ class DeliveryController extends Controller
     public function create()
     {
         $raffles = Raffle::where('raffle_status',1)->where('status',1)->select('id','name')->get();
-        $sellers_users = User::select('id','name')->where('role','Vendedor')->get();
+        $sellers_users = User::select('id','name','lastname')->where('role','Vendedor')->get();
         return view('deliveries.create', compact('raffles','sellers_users'));
     }
 
@@ -48,16 +49,25 @@ class DeliveryController extends Controller
          */
         $user = Auth::user();
         $data = $request->all();
+        
         if(isset($data['raffle_id'])){
+            $raffle_id = $data['raffle_id'];
+            $user_ = $data['user_id'];
+            
+            $sum = Delivery::where('raffle_id',$raffle_id)->where('user_id',$user_)->sum('total') + $data['total'];
+            $sumTicket = Ticket::where('raffle_id',$raffle_id)->where('user_id',$user_)->sum('price');
+            $sumPayment = Ticket::where('raffle_id',$raffle_id)->where('user_id',$user_)->sum('payment');
+            $sumTotal = ($sumTicket - $sumPayment );
             $raffle = Raffle::find($data['raffle_id']);
-            $sum = Delivery::where('raffle_id',$data['raffle_id'])->sum('total') ;
+            
         }
+
         $request->validate(
             [
-                'total' => ['required', 'delivery_total:'.$data['raffle_id']]
+                'total' => ['required', 'delivery_total:'.$data['raffle_id'].':'.$data['user_id']]
             ],
             [
-                'total.delivery_total' => 'El valor de entrega supera el monto total de la rifa, #Boletas('.$raffle->tickets_number.') Total $('.number_format($raffle->price * $raffle->tickets_number,0).') Suma total entregas $('.number_format($sum,0).')',
+                'total.delivery_total' => 'El valor de entrega supera el monto total de la rifa, Total sin engrega $('.number_format($sumTotal,0).') Suma total entregas $('.number_format($sum,0).')',
             ]
         );
         

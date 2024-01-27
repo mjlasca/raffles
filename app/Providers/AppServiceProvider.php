@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use App\Models\Delivery;
+use App\Models\Prize;
 use App\Models\Raffle;
 use App\Models\Ticket;
 use App\Models\User;
@@ -38,12 +39,22 @@ class AppServiceProvider extends ServiceProvider
             return !$exists;
         });
 
+        Validator::extend('jackpot', function ($attribute, $value, $parameters, $validator) {
+            $exists = Prize::where('raffle_id', $parameters[0])->where('type',$value)->exists();
+            return !$exists;
+        });
+
         Validator::extend('delivery_total', function ($attribute, $value, $parameters, $validator) {
-            $raffle_id = $parameters[0] ?? null;
+            $data = explode(":",$parameters[0]) ?? null;
             
-            $sum = Delivery::where('raffle_id',$raffle_id)->sum('total') + $value;
-            $raffle = Raffle::find($raffle_id);
-            $sumTotal = ($raffle->price  * $raffle->tickets_number);
+            $raffle_id = $data[0];
+            $user = $data[1];
+            
+            $sum = Delivery::where('raffle_id',$raffle_id)->where('user_id',$user)->sum('total') + $value;
+            $sumTicket = Ticket::where('raffle_id',$raffle_id)->where('user_id',$user)->sum('price');
+            $sumPayment = Ticket::where('raffle_id',$raffle_id)->where('user_id',$user)->sum('payment');
+
+            $sumTotal = ($sumTicket - $sumPayment );
             
             return $sumTotal >= $sum;
         });

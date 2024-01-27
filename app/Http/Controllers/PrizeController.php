@@ -16,7 +16,7 @@ class PrizeController extends Controller
      */
     public function index()
     {
-        $prizes = Prize::paginate(10);
+        $prizes = Prize::where('status',1)->paginate(10);
         return view('prizes.index', compact('prizes'));
     }
 
@@ -42,6 +42,16 @@ class PrizeController extends Controller
     {
         $user = Auth::user();
         $data = $request->all();
+        $request->validate(
+            [
+                'type' => ['required', 'jackpot:'.$data['raffle_id']]
+            ],
+            [
+                'type.jackpot' => 'El premio mayor ya fue asignado a ésta rifa, sólo puede haber un premio mayor',
+            ]
+        );
+
+        $data['status'] = 1;
         $data['create_user'] = $user->id;
         $data['edit_user'] = $user->id;
         $result = Prize::create($data);

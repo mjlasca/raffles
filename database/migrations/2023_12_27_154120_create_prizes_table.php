@@ -22,7 +22,8 @@ class CreatePrizesTable extends Migration
             $table->unsignedBigInteger('edit_user'); 
             $table->foreign('edit_user')->references('id')->on('users')->onDelete('cascade');
             $table->string('winning_ticket')->nullable();
-            $table->text('detail')->nullable();
+            $table->string('detail',300)->nullable();
+            $table->string('type',10)->nullable();
             $table->date('award_date')->nullable();
             $table->decimal('percentage_condition')->default(100);
             $table->integer('status')->default(0);

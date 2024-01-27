@@ -33,9 +33,9 @@
                             <option value="">Seleccione un(a) vendedor(a)</option>
                         @foreach($sellers_users as $seller)
                             @if ($seller->id == $ticket->user->id)
-                                <option value="{{ $seller->id }}" selected>{{ $seller->name }}</option>
+                                <option value="{{ $seller->id }}" selected>{{ $seller->name }} {{ $seller->lastname }}</option>
                             @else    
-                                <option value="{{ $seller->id }}">{{ $seller->name }}</option>
+                                <option value="{{ $seller->id }}">{{ $seller->name }} {{ $seller->lastname }}</option>
                             @endif
                             
                         @endforeach
@@ -61,6 +61,9 @@
 
                 <button type="submit" class="bg-blue-500 text-white py-2 px-4 rounded-md">Actualizar boleta</button>
             </form>
+
+            
+            
         </div>
     </div>
 @endsection

@@ -16,6 +16,7 @@ class Prize extends Model
         'status',
         'create_user',
         'detail',
+        'type',
         'percentage_condition',
         'edit_user',
     ];

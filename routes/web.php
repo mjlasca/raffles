@@ -48,11 +48,13 @@ Route::middleware(['auth'])->group(function () {
 
     
 });
-
+Route::get('/tickets', function () {
+    return redirect('/boletas');
+});
 Route::get('/tickets/pago', [TicketController::class, 'pay'])->middleware(['auth'])->name('boletas.pay');
 Route::get('/tickets/checkticket', [TicketController::class, 'checkticket'])->middleware(['auth'])->name('checkticket');
 Route::post('/tickets/setpay', [TicketController::class, 'setpay'])->middleware(['auth'])->name('tickets.setpay');
-
+Route::post('/tickets/payall', [TicketController::class, 'payall'])->middleware(['auth'])->name('tickets.payall');
 
 Route::resource('entregas', DeliveryController::class)->middleware(['auth'])->parameters([
     'entregas' => 'deliveries',
