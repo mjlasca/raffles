@@ -138,7 +138,31 @@ class TicketController extends Controller
 
     public function payall(Request $req){
 
-        /*$current_user = Auth::user();
+        /*
+        
+        tengo que asignar a las boletas que tenga disponibles
+
+for hasta que disponible sea cero
+
+la boleta disponible es aquella que valor - abono > 0
+
+n boletas
+
+cantdispo = disponible / n
+
+ACtualizó t boletas update boletas con cantdisponible donde (cantdisponible + abono) <= valor
+
+con t <= n
+
+acá vuelvo y reviso el disponible de esa entrega
+
+la boleta disponible es aquella que valor - abono > 0
+
+n boletas
+
+cantdispo = disponible / n
+
+        $current_user = Auth::user();
         $delivery_id = $req->input('delivery_id');
         if(!empty($delivery_id)){
             $concat = [];

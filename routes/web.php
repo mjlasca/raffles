@@ -3,6 +3,7 @@
 use App\Http\Controllers\AssignmentController;
 use App\Http\Controllers\CashController;
 use App\Http\Controllers\CommissionController;
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DeliveryController;
 use App\Http\Controllers\PrizeController;
 use App\Http\Controllers\RaffleController;
@@ -61,14 +62,9 @@ Route::resource('entregas', DeliveryController::class)->middleware(['auth'])->pa
 ]);
 Route::get('/entregas/pdf/{id}', [DeliveryController::class, 'pdf'])->middleware(['auth'])->name('entregas.pdf');
 
-Route::view('/', 'dashboard')->middleware(['auth']);
-
-
-
-Route::view('dashboard', 'dashboard')
-    ->middleware(['auth', 'verified'], ['middleware' => ['auth', 'role:admin']])
-    ->name('dashboard');
-
+//Route::view('/', 'dashboard')->middleware(['auth']);
+Route::get('/', [DashboardController::class, 'index'])->middleware(['auth'])->name('dashboard');
+Route::get('/dashboard', [DashboardController::class, 'index'])->middleware(['auth'])->name('dashboard');
 Route::view('profile', 'profile')
     ->middleware(['auth'])
     ->name('profile');

@@ -62,7 +62,7 @@
                         @endif
                         
                         <li class="mb-2">
-                            <a href="/dashboard" class="inline-flex  @if(request()->is('dashboard')) bg-green-500 @else bg-blue-500 @endif items-center px-3 py-3 border  text-sm font-lg rounded-md  hover:bg-green-500 hover:text-white focus:outline-none transition ease-in-out duration-150 w-40">
+                            <a href="/dashboard" class="inline-flex  @if(request()->is('dashboard') || request()->path() == '/') bg-green-500 @else bg-blue-500 @endif items-center px-3 py-3 border  text-sm font-lg rounded-md  hover:bg-green-500 hover:text-white focus:outline-none transition ease-in-out duration-150 w-40">
                                 <span class="mr-2 p-1 rounded-md bg-blue-500">
                                     <img class="h-5 fill-white" src="{{ asset('img/icons/tile-icon.svg') }}" alt="">
                                 </span>
@@ -193,7 +193,7 @@
                             <div class="flex items-center">
                             
                                 <p class="mr-2">
-                                    {{auth()->user()->name}}
+                                    {{auth()->user()->name}} {{auth()->user()->lastname}}
                                 </p>
                                 <div>
                                     <a class="hidden md:block px-2 py-1 border  text-sm rounded-md text-blue-100 bg-green-500 hover:bg-white hover:text-blue-500" href="{{ route('logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
