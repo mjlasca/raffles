@@ -49,7 +49,7 @@ function validateUnique(target) {
     return true;
 }
 
-tickets_pay.addEventListener('change', function(event) {
+tickets_pay.addEventListener('change', async function(event) {
     const target = event.target;
 
     if (target.classList.contains('ticket-number')) {
@@ -61,7 +61,7 @@ tickets_pay.addEventListener('change', function(event) {
 
             // Verificar si el siguiente elemento es un input
             if (siguienteInput && siguienteInput.classList.contains('ticket-payment')) {
-                fetch(currentDomain+"/tickets/checkticket?number="+target.value+"&raffle_id="+raffle_id.value+"&user_id="+user_id.value)
+            await fetch(currentDomain+"/tickets/checkticket?number="+target.value+"&raffle_id="+raffle_id.value+"&user_id="+user_id.value)
                 .then(response => {
                 if (!response.ok) {
                     throw new Error(`Error de red - Código: ${response.status}`);
@@ -135,12 +135,15 @@ tickets_pay.addEventListener('change', function(event) {
 });
 
 
-delivery_id.addEventListener('change', () => {
+delivery_id.addEventListener('change', async () => {
 
     const delivery_data = document.querySelector('.delivery-data');
     clearInputs();
-    if(delivery_id.value !== ''){
-        fetch(currentDomain+"/entregas/"+delivery_id.value+"?format=json")
+    delivery_data.innerHTML = "";
+    if(!content_tickets.classList.contains('hidden'))
+        content_tickets.classList.add('hidden');
+    
+    await  fetch(currentDomain+"/entregas/"+delivery_id.value+"?format=json")
         .then(response => {
           if (!response.ok) {
             throw new Error(`Error de red - Código: ${response.status}`);
@@ -168,20 +171,15 @@ delivery_id.addEventListener('change', () => {
                     </div>
                 </div>
             `;
-            if(user_id.value == ""){
-                user_id.value = data.user_id;
-            }
+            
+            user_id.value = data.user_id;
             raffle_id.value = data.raffle_id;
             content_tickets.classList.remove('hidden');
         })
         .catch(error => {
           console.error('Error en la solicitud:', error.message);
         });
-    }else{
-        delivery_data.innerHTML = "";
-        content_tickets.classList.add('hidden');
-        
-    }
+    
 
 });
 

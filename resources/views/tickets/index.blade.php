@@ -46,6 +46,13 @@
                             <input type="text" class="w-full border rounded-md py-2 px-3" value="{{Request('ticket_number')}}" name="ticket_number" id="ticket_number">
                         </div>
 
+                        <div class="mb-4 mr-2 ml-2 mt-5 md:w-1/3">
+                            <input type="checkbox" name="removable" id="removable" value="1"  @if (Request('removable') == 1)
+                            checked
+                            @endif >
+                            <label for="">Desprendible</label>
+                        </div>
+ 
                     </div>
                     <button type="submit" class="bg-blue-500 text-white py-2 px-4 rounded-md">Filtrar consulta</button>
                 </form>
@@ -55,24 +62,49 @@
                     <table class="min-w-full">
                         <thead>
                             <tr class="text-md font-semibold tracking-wide text-left text-white bg-green-500 uppercase border-b border-gray-600">
+                                @if (auth()->user()->role === 'Administrador' || auth()->user()->role === 'Secretaria')
+                                <th class="py-2 px-4 border-b">
+                                    <input type="checkbox" class="check-removable_all">
+                                    Desp.
+                                </th>    
+                                @endif
                                 <th class="py-2 px-4 border-b">Rifa</th>
                                 <th class="py-2 px-4 border-b">No. Boleta</th>
                                 <th class="py-2 px-4 border-b">Vendedor(a)</th>
                                 <th class="py-2 px-4 border-b">Valor</th>
                                 <th class="py-2 px-4 border-b">Abonado</th>
                                 <th class="py-2 px-4 border-b">Nombre cliente</th>
+                                <th class="py-2 px-4 border-b">Comisión</th>
                                 <th class="py-2 px-4 border-b">Acciones</th>
                             </tr>
                         </thead>
                         <tbody>
                             @foreach($tickets as $ticket)
-                                <tr class="hover:bg-gray-100 border-b">
+                                <tr class="hover:bg-gray-100 border-b @if ($ticket->removable == 1)
+                                    bg-green-100
+                                @endif " >
+                                    @if (auth()->user()->role === 'Administrador' || auth()->user()->role === 'Secretaria')
+                                    @if ($ticket->price == $ticket->payment)
+                                    <td class="py-2 px-4">
+                                        @if ($ticket->removable == 1)
+                                            <input type="checkbox" checked disabled>
+                                        @else
+                                            <input type="checkbox" class="check-removable" value="{{$ticket->id}}">
+                                        @endif
+                                    </td>
+                                    @else
+                                    <td class="py-2 px-4">
+                                        <input type="checkbox"  disabled>
+                                    </td>
+                                    @endif
+                                    @endif
                                     <td class="py-2 px-4">{{ $ticket->raffle->name }}</td>
                                     <td class="py-2 px-4">{{ $ticket->ticket_number }}</td>
                                     <td class="py-2 px-4">{{ $ticket->user->name }} {{ $ticket->user->lastname }}</td>
                                     <td class="py-2 px-4 text-right">${{ $ticket->price }}</td>
                                     <td class="py-2 px-4 text-right">${{ $ticket->payment }}</td>
                                     <td class="py-2 px-4 text-right">{{ $ticket->customer_name }}</td>
+                                    <td class="py-2 px-4 text-right"> @if ($ticket->price == $ticket->payment) ${{ $ticket->assignment->commission }} @else $0 @endif </td>
                                     <td class="py-2 px-4 flex">
                                         <a href="{{ route('boletas.show', $ticket->id) }}" class="text-blue-500 hover:bg-green-500 p-1 bg-blue-500 rounded-md mr-1">
                                             <img class="h-5" src="{{ asset('img/icons/show-icon.svg') }}" alt="Ver registro" title="Ver registro">
@@ -89,14 +121,25 @@
                         </tbody>
                     </table>
                     
+                    
                 </div>
+                
             @endisset
             
         </div>
+        @if (auth()->user()->role === 'Administrador' || auth()->user()->role === 'Secretaria')
+            @isset($tickets)
+                @csrf
+                <button class="bg-blue-500 text-white py-2 px-4 rounded-md action-checks">Guardar selección desprendibles</button> 
+            @endisset
+        @endif
         <div class="pag mt-5">
             @isset($tickets)
             {{$tickets->links()}}
             @endisset
         </div>
     </div>
+    <script src="{{ asset('js/tickets-index.js') }}"></script>    
 @endsection
+
+

@@ -7,7 +7,11 @@
                 <h2 class="text-2xl font-semibold">Editar boleta</h2>
             </div>
 
-            <form method="POST" action="{{ route('boletas.update', $ticket->id) }}" class="p-6">
+            <form method="POST" action="{{ route('boletas.update', $ticket->id) }}" class="p-6"
+                @if ($ticket->removable == 1)
+                    onsubmit="return false;"
+                @endif
+                >
                 @csrf
                 @method('PUT')
 

@@ -41,12 +41,12 @@
             
             <div class="w-64 bg-gray-100">
                 <div class="bg-blue-500 py-4 h-40 flex flex-col items-center">
-                    <img src="{{ asset('img/logo.png') }}" alt="Logo" class="w-2/4">
+                    <img src="{{ asset('img/logo.webp') }}" alt="Logo" class="w-2/4">
                 </div>
                 <nav class="mt-8 tx-blue-700">
                     <ul class="flex flex-col items-center text-white">
 
-                        @if (auth()->user()->role === 'Administrador')
+                        @if (auth()->user()->role === 'Administrador' || auth()->user()->role === 'Secretaria')
 
                         <li class="mb-2">
                             <a href="/usuarios" class="inline-flex @if( str_contains( request()->path(),'usuarios') ) bg-green-500 @else bg-blue-500 @endif items-center px-3 py-3 border  text-sm font-lg rounded-md  hover:bg-green-500 hover:text-white focus:outline-none transition ease-in-out duration-150 w-40">
@@ -72,29 +72,29 @@
                             </a>
                         </li>
 
-                        @if (auth()->user()->role === 'Administrador' || auth()->user()->role === 'Secretaria')
-                        <li class="mb-2">
-                            <a href="/rifas" class="inline-flex items-center @if( str_contains( request()->path(),'rifas') ) bg-green-500 @else bg-blue-500 @endif  px-3 py-3 border  text-sm font-lg rounded-md  hover:bg-green-500 hover:text-white focus:outline-none transition ease-in-out duration-150 w-40">
-                                <span class="mr-2 p-1 rounded-md bg-blue-500">
-                                    <img class="h-5 fill-white" src="{{ asset('img/icons/switch-icon.svg') }}" alt="">
-                                </span>
-                                <p class="mt-1">
-                                    Rifas
-                                </p>
-                            </a>
-                        </li>
-                        
+                        @if (auth()->user()->role === 'Administrador')
+                            <li class="mb-2">
+                                <a href="/rifas" class="inline-flex items-center @if( str_contains( request()->path(),'rifas') ) bg-green-500 @else bg-blue-500 @endif  px-3 py-3 border  text-sm font-lg rounded-md  hover:bg-green-500 hover:text-white focus:outline-none transition ease-in-out duration-150 w-40">
+                                    <span class="mr-2 p-1 rounded-md bg-blue-500">
+                                        <img class="h-5 fill-white" src="{{ asset('img/icons/switch-icon.svg') }}" alt="">
+                                    </span>
+                                    <p class="mt-1">
+                                        Rifas
+                                    </p>
+                                </a>
+                            </li>
+                            
 
-                        <li class="mb-2">
-                            <a href="/asignaciones" class="inline-flex items-center  @if( str_contains( request()->path(),'asignaciones') ) bg-green-500 @else bg-blue-500 @endif px-3 py-3 border  text-sm font-lg rounded-md  hover:bg-green-500 hover:text-white focus:outline-none transition ease-in-out duration-150 w-40">
-                                <span class="mr-2 p-1 rounded-md bg-blue-500">
-                                    <img class="h-5 fill-white" src="{{ asset('img/icons/walk-icon.svg') }}" alt="">
-                                </span>
-                                <p class="mt-1">
-                                    Asignaciones
-                                </p>
-                            </a>
-                        </li>
+                            <li class="mb-2">
+                                <a href="/asignaciones" class="inline-flex items-center  @if( str_contains( request()->path(),'asignaciones') ) bg-green-500 @else bg-blue-500 @endif px-3 py-3 border  text-sm font-lg rounded-md  hover:bg-green-500 hover:text-white focus:outline-none transition ease-in-out duration-150 w-40">
+                                    <span class="mr-2 p-1 rounded-md bg-blue-500">
+                                        <img class="h-5 fill-white" src="{{ asset('img/icons/walk-icon.svg') }}" alt="">
+                                    </span>
+                                    <p class="mt-1">
+                                        Asignaciones
+                                    </p>
+                                </a>
+                            </li>
 
                         @endif
 
@@ -109,46 +109,56 @@
                             </a>
                         </li>
                         @if (auth()->user()->role === 'Administrador' || auth()->user()->role === 'Secretaria')
-                        <li class="mb-2">
-                            <a href="/premios" class="inline-flex items-center @if( str_contains( request()->path(),'premios') ) bg-green-500 @else bg-blue-500 @endif px-3 py-3 border  text-sm font-lg rounded-md  hover:bg-green-500 hover:text-white focus:outline-none transition ease-in-out duration-150 w-40">
-                                <span class="mr-2 p-1 rounded-md bg-blue-500">
-                                    <img class="h-5 fill-white" src="{{ asset('img/icons/lightning-icon.svg') }}" alt="">
-                                </span>
-                                <p class="mt-1">
-                                    Premios
-                                </p>
-                            </a>
-                        </li>
-                        <li class="mb-2">
-                            <a href="/comisiones" class="inline-flex items-center @if( str_contains( request()->path(),'comisiones') ) bg-green-500 @else bg-blue-500 @endif px-3 py-3 border  text-sm font-lg rounded-md  hover:bg-green-500 hover:text-white focus:outline-none transition ease-in-out duration-150 w-40">
-                                <span class="mr-2 p-1 rounded-md bg-blue-500">
-                                    <img class="h-5 fill-white" src="{{ asset('img/icons/dollar-icon.svg') }}" alt="">
-                                </span>
-                                <p class="mt-1">
-                                    Comisiones
-                                </p>
-                            </a>
-                        </li>
-                        <li class="mb-2">
-                            <a href="/arqueos" class="inline-flex items-center @if( str_contains( request()->path(),'arqueos') ) bg-green-500 @else bg-blue-500 @endif px-3 py-3 border  text-sm font-lg rounded-md  hover:bg-green-500 hover:text-white focus:outline-none transition ease-in-out duration-150 w-40">
-                                <span class="mr-2 p-1 rounded-md bg-blue-500">
-                                    <img class="h-5 fill-white" src="{{ asset('img/icons/histogram-icon.svg') }}" alt="">
-                                </span>
-                                <p class="mt-1">
-                                    Arqueos
-                                </p>
-                            </a>
-                        </li>
-                        <li class="mb-2">
-                            <a href="/entregas" class="inline-flex items-center @if( str_contains( request()->path(),'entregas') ) bg-green-500 @else bg-blue-500 @endif px-3 py-3 border  text-sm font-lg rounded-md  hover:bg-green-500 hover:text-white focus:outline-none transition ease-in-out duration-150 w-40">
-                                <span class="mr-2 p-1 rounded-md bg-blue-500">
-                                    <img class="h-5 fill-white" src="{{ asset('img/icons/stack-icon.svg') }}" alt="">
-                                </span>
-                                <p class="mt-1">
-                                    Entregas
-                                </p>
-                            </a>
-                        </li>
+                            <li class="mb-2">
+                                <a href="/premios" class="inline-flex items-center @if( str_contains( request()->path(),'premios') ) bg-green-500 @else bg-blue-500 @endif px-3 py-3 border  text-sm font-lg rounded-md  hover:bg-green-500 hover:text-white focus:outline-none transition ease-in-out duration-150 w-40">
+                                    <span class="mr-2 p-1 rounded-md bg-blue-500">
+                                        <img class="h-5 fill-white" src="{{ asset('img/icons/lightning-icon.svg') }}" alt="">
+                                    </span>
+                                    <p class="mt-1">
+                                        Premios
+                                    </p>
+                                </a>
+                            </li>
+                            <li class="mb-2">
+                                <a href="/comisiones" class="inline-flex items-center @if( str_contains( request()->path(),'comisiones') ) bg-green-500 @else bg-blue-500 @endif px-3 py-3 border  text-sm font-lg rounded-md  hover:bg-green-500 hover:text-white focus:outline-none transition ease-in-out duration-150 w-40">
+                                    <span class="mr-2 p-1 rounded-md bg-blue-500">
+                                        <img class="h-5 fill-white" src="{{ asset('img/icons/dollar-icon.svg') }}" alt="">
+                                    </span>
+                                    <p class="mt-1">
+                                        Comisiones
+                                    </p>
+                                </a>
+                            </li>
+                            <li class="mb-2">
+                                <a href="/salidas" class="inline-flex items-center @if( str_contains( request()->path(),'salidas') ) bg-green-500 @else bg-blue-500 @endif px-3 py-3 border  text-sm font-lg rounded-md  hover:bg-green-500 hover:text-white focus:outline-none transition ease-in-out duration-150 w-40">
+                                    <span class="mr-2 p-1 rounded-md bg-blue-500">
+                                        <img class="h-5 fill-white" src="{{ asset('img/icons/exit-icon.svg') }}" alt="">
+                                    </span>
+                                    <p class="mt-1">
+                                        Salidas
+                                    </p>
+                                </a>
+                            </li>
+                            <li class="mb-2">
+                                <a href="/arqueos" class="inline-flex items-center @if( str_contains( request()->path(),'arqueos') ) bg-green-500 @else bg-blue-500 @endif px-3 py-3 border  text-sm font-lg rounded-md  hover:bg-green-500 hover:text-white focus:outline-none transition ease-in-out duration-150 w-40">
+                                    <span class="mr-2 p-1 rounded-md bg-blue-500">
+                                        <img class="h-5 fill-white" src="{{ asset('img/icons/histogram-icon.svg') }}" alt="">
+                                    </span>
+                                    <p class="mt-1">
+                                        Arqueos
+                                    </p>
+                                </a>
+                            </li>
+                            <li class="mb-2">
+                                <a href="/entregas" class="inline-flex items-center @if( str_contains( request()->path(),'entregas') ) bg-green-500 @else bg-blue-500 @endif px-3 py-3 border  text-sm font-lg rounded-md  hover:bg-green-500 hover:text-white focus:outline-none transition ease-in-out duration-150 w-40">
+                                    <span class="mr-2 p-1 rounded-md bg-blue-500">
+                                        <img class="h-5 fill-white" src="{{ asset('img/icons/stack-icon.svg') }}" alt="">
+                                    </span>
+                                    <p class="mt-1">
+                                        Entregas
+                                    </p>
+                                </a>
+                            </li>
                         @endif
                     </ul>
                 </nav>

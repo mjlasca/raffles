@@ -5,17 +5,13 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Cash extends Model
+class Outflow extends Model
 {
     use HasFactory;
 
     protected $fillable = [
-        'day_date', 
-        'real_money_box',
-        'real_money_box',
-        'difference',
-        'deliveries',
-        'day_outings',
+        'detail',
+        'total',
         'create_user',
         'edit_user',
     ];

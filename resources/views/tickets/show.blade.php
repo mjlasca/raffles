@@ -18,7 +18,8 @@
                 <p class="mb-4"><strong>Nombre cliente:</strong> {{ $ticket->customer_name }}</p>
                 <p class="mb-4"><strong>Teléfono cliente:</strong> {{ $ticket->customer_phone }}</p>
                 <p class="mb-4"><strong>Precio:</strong> ${{ $ticket->price }}</p>
-                <p class=""><strong>Abonado:</strong> ${{ $ticket->payment }}</p>
+                <p class="mb-4"><strong>Abonado:</strong> ${{ $ticket->payment }}</p>
+                <p class=""><strong>Comisión:</strong> @if ($ticket->price == $ticket->payment) ${{ $ticket->assignment->commission }} @else $0 @endif</p>
                 
             </div>
             

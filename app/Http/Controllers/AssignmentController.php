@@ -18,7 +18,7 @@ class AssignmentController extends Controller
      */
     public function index()
     {
-        $assignments = Assignment::paginate(10);
+        $assignments = Assignment::paginate(50);
         return view('assignment.index', compact('assignments'));
     }
 
@@ -41,7 +41,7 @@ class AssignmentController extends Controller
         $data = $request->all();
         $tickets =  explode("\r\n",$data['tickets'] );
         $raffle = Raffle::where('id',$data['raffle_id'])->select('id','tickets_number','price','ticket_commission')->get();
-        $existingIds = Ticket::whereIn('ticket_number', $tickets)->pluck('ticket_number')->toArray();
+        $existingIds = Ticket::where('raffle_id',$data['raffle_id'])->whereIn('ticket_number', $tickets)->pluck('ticket_number')->toArray();
         $invalidValues = [];
         foreach ($tickets as $val) {
             if ($val >= $raffle[0]->tickets_number) {
@@ -51,14 +51,16 @@ class AssignmentController extends Controller
 
         $request->validate(
             [
-                'tickets' => ['required', 'tickets_exists','length_ticket:'.$raffle[0]->tickets_number],
+                'tickets' => ['required', 'tickets_exists:'.$data['raffle_id'],'length_ticket:'.$raffle[0]->tickets_number],
                 'name' => ['required'],
                 'raffle_id' => ['required'],
                 'user_id' => ['required'],
+                'commission' => ['required','max_value:'.$raffle[0]->price],
             ],
             [
-                'tickets_exists' => 'Hay números de boletas que ya fueron asignadas: (' . implode(',', $existingIds).')',
-                'length_ticket' => 'Los siguientes valores son mayores al total de boletas: (' . implode(',', $invalidValues).')'
+                'tickets_exists' => 'Los siguientes números de boletas ya fueron asignados: (' . implode(',', $existingIds).')',
+                'length_ticket' => 'Los siguientes valores son mayores al total de boletas: (' . implode(',', $invalidValues).')',
+                'commission.max_value' => 'El valor de comisión no puede ser mayor al de la rifa ($'.number_format($raffle[0]->price,0).')'
             ]
         );
 
@@ -66,13 +68,13 @@ class AssignmentController extends Controller
         $data['create_user'] = $user->id;
         $data['edit_user'] = $user->id;
         
-        $this->setAssignment($data['user_id'], $raffle[0], $tickets);
+        $this->setAssignment($data['user_id'], $raffle[0], $tickets,$data['commission']);
         return redirect()->route('asignaciones.index');
 
         
     }
 
-    private function setAssignment($user, Raffle $raffle, $tickets){
+    private function setAssignment($user, Raffle $raffle, $tickets, $commission){
         $current_user = Auth::user();
 
         $dataCreate['tickets_numbers'] = implode(" ",$tickets);
@@ -81,6 +83,7 @@ class AssignmentController extends Controller
         $dataCreate['tickets_total'] = count($tickets);
         $dataCreate['create_user'] = $current_user->id;
         $dataCreate['edit_user'] = $current_user->id;
+        $dataCreate['commission'] = $commission;
         $assign = Assignment::create($dataCreate);
         
         if($assign){

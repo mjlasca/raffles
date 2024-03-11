@@ -11,6 +11,7 @@ use App\Models\Ticket;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class TicketController extends Controller
 {
@@ -43,7 +44,9 @@ class TicketController extends Controller
             }
 
             $tickets = $tickets->orderBy('raffle_id')->orderBy('ticket_number')->paginate(100);
-            $tickets->appends($request->all());
+            $tickets->appends($filter);
+            
+            
 
             return view('tickets.index', compact('tickets','raffles','sellers_users'));
         }
@@ -117,8 +120,15 @@ class TicketController extends Controller
             $concat = [];
             $total = 0;
             for ($i=0; $i < count($tickets) ; $i++) { 
+                
                 Ticket::where('ticket_number', $tickets[$i])->where('raffle_id',$raffle_id)->increment('payment', $payments[$i]);
-                Ticket::where('ticket_number', $tickets[$i])->where('raffle_id',$raffle_id)->update(['customer_name' => $names[$i], 'customer_phone' => $phones[$i]]);
+                $history = "'| ".$current_user->name." ".$current_user->lastname." ha hecho un abono de $".number_format($payments[$i],0)." el ".date("d-m-Y h:i:s")." '";
+                Ticket::where('ticket_number', $tickets[$i])->where('raffle_id',$raffle_id)->update([
+                    'customer_name' => $names[$i],
+                    'customer_phone' => $phones[$i],
+                    'movements' =>  DB::raw("IFNULL(CONCAT($history,movements), $history)")
+                ]);
+
                 $concat[] = $tickets[$i].",".$payments[$i];
                 $total += $payments[$i];
             }
@@ -188,6 +198,20 @@ cantdispo = disponible / n
 
     public function checkTicket(Request $req){
         $ticket = Ticket::where('ticket_number',$req->input('number'))->where('raffle_id',$req->input('raffle_id'))->where('user_id',$req->input('user_id'))->get();
+        
+        return response()->json($ticket);
+        
+    }
+
+
+    public function removable(Request $req){
+        
+        if(!empty($req->input('checks'))){
+            $arrChecks = explode(',',$req->input('checks'));
+            $ticket = Ticket::whereIn('id',$arrChecks)->update([
+                'removable' => 1
+            ]);
+        }
 
         return response()->json($ticket);
         
@@ -201,22 +225,23 @@ cantdispo = disponible / n
         $current_user = Auth::user();
         $ticket = Ticket::find($id);
         $req = $request->all();
-        $concat = "";
-        if( $req['user_id'] != $ticket->user_id ){
-            $userChange = User::find($req['user_id']);
-            $concat .=  "| ".$current_user->name." " .$current_user->lastname. " modificó el usuario de ésta boleta de ".$ticket->user->name." ".$ticket->user->lastname. " a ".$userChange->name." ".$userChange->lastname." el ".date("d-m-Y");
-        }
-
-        if( $req['payment'] != $ticket->payment ){
-            $concat .=  "| ".$current_user->name." " .$current_user->lastname. " modificó el abono de ésta boleta de ".$ticket->payment. " a ".$req['payment']." el ".date("d-m-Y");
-        }
-
-        $req['movements'] = $concat . $ticket->movements;
+        if($ticket->removable != 1){
+            $concat = "";
+            if( $req['user_id'] != $ticket->user_id ){
+                $userChange = User::find($req['user_id']);
+                $concat .=  "| ".$current_user->name." " .$current_user->lastname. " modificó el usuario de ésta boleta de ".$ticket->user->name." ".$ticket->user->lastname. " a ".$userChange->name." ".$userChange->lastname." el ".date("d-m-Y h:i:s");
+            }
+    
+            if( $req['payment'] != $ticket->payment ){
+                $concat .=  "| ".$current_user->name." " .$current_user->lastname. " modificó el abono de ésta boleta de ".$ticket->payment. " a ".$req['payment']." el ".date("d-m-Y h:i:s");
+            }
+    
+            $req['movements'] = $concat . $ticket->movements;
+                
+            $req['edit_user'] = $current_user->id;
             
-        $req['edit_user'] = $current_user->id;
-        
-        $ticket->update($req);
-        
+            $ticket->update($req);
+        }
         return redirect()->route('boletas.show', $id);
 
     }

@@ -35,7 +35,8 @@ class AppServiceProvider extends ServiceProvider
         });
 
         Validator::extend('tickets_exists', function ($attribute, $value, $parameters, $validator) {
-            $exists = Ticket::whereIn('ticket_number', explode("\n", $value))->exists();
+            
+            $exists = Ticket::where('raffle_id',$parameters[0])->whereIn('ticket_number', explode("\n", $value))->exists();
             return !$exists;
         });
 
@@ -68,6 +69,13 @@ class AppServiceProvider extends ServiceProvider
                 }
             }
             return empty($invalidValues);
+        });
+
+        Validator::extend('max_value', function ($attribute, $value, $parameters, $validator) {
+            $val_max = $parameters[0] ?? 0;
+            
+            
+            return $val_max >= $value;
         });
     }
 }

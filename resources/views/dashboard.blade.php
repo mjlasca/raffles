@@ -31,7 +31,7 @@
                               </div>
                             </td>
                             <td class="p-2">
-                              <p class=""><span class="font-semibold">{{ $item->type}}</span> @if ($item->type == 'Seco')
+                              <p class=""><span class="font-semibold">{{ $item->type}}</span> @if ($item->type == 'Anticipado')
                                   con el {{ intval($item->percentage_condition) }}%
                               @endif</p>
                             </td>
@@ -201,7 +201,7 @@
                               </div>
                             </td>
                             <td class="p-2">
-                              <p class=""><span class="font-semibold">{{ $item->type}}</span> @if ($item->type == 'Seco')
+                              <p class=""><span class="font-semibold">{{ $item->type}}</span> @if ($item->type == 'Anticipado')
                                   con el {{ intval($item->percentage_condition) }}%
                               @endif</p>
                             </td>
@@ -333,7 +333,7 @@
                             </td>
                             <td class="p-2">
                               <div class="border-2 w-full" style="height:40px;">
-                                <div class="bg-green-500 text-center" style="height:37px;width:{{ ( $item->total /  ($item->raffle->price * $item->raffle->tickets_number) ) * 100 }}%;"> <h4 class="h4 text-center p-2"> {{  ( $item->total /  ($item->raffle->price * $item->raffle->tickets_number) ) * 100 }}% </h4></div>
+                                <div class="bg-green-500 text-center" style="height:37px;width:{{ ( $item->total /  ($item->raffle->price * $item->raffle->tickets_number) ) * 100 }}%;"> <h4 class="h4 text-center p-2"> {{  number_format(( $item->total /  ($item->raffle->price * $item->raffle->tickets_number) ) * 100),0 }}% </h4></div>
                               </div>
                             </td>
                             
@@ -411,7 +411,7 @@
                               </div>
                             </td>
                             <td class="p-2">
-                              <p class=""><span class="font-semibold">{{ $item->type}}</span> @if ($item->type == 'Seco')
+                              <p class=""><span class="font-semibold">{{ $item->type}}</span> @if ($item->type == 'Anticipado')
                                   con el {{ intval($item->percentage_condition) }}%
                               @endif</p>
                             </td>

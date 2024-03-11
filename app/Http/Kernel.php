@@ -2,6 +2,7 @@
 
 namespace App\Http;
 
+use App\Http\Middleware\RoleAccess;
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
 
 class Kernel extends HttpKernel
@@ -64,6 +65,7 @@ class Kernel extends HttpKernel
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
         'verify.session' => \App\Http\Middleware\VerifySessionVariable::class,
         'sellerRestricted' => \App\Http\Middleware\SellerRestricted::class,
+        'roleAccess' => \App\Http\Middleware\RoleAccess::class,
     ];
     
 }

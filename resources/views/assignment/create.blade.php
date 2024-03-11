@@ -44,12 +44,18 @@
                         @endforeach
                     </select>
                 </div>
+
+                <div class="mb-4 md:w-1/2">
+                    <label for="name" class="block text-gray-700 text-sm font-bold mb-2">Comisión por boleta:</label>
+                    <input type="number" name="commission" id="commission" value="{{old('commission')}}" class="w-full border rounded-md py-2 px-3" required>
+                </div>
+
                 <div class="mb-3">
                     
                     <div class="flex">
                         <div id="tickets-help" class="mt-2 mr-1 text-gray-300">
                         </div>
-                        <textarea class="w-full border rounded-md py-2 px-3" name="tickets" id="tickets" cols="30" rows="5">{{ old('tickets') }}</textarea>
+                        <textarea class="w-full border rounded-md py-2 px-3" name="tickets" id="tickets" cols="30" rows="5" required>{{ old('tickets') }}</textarea>
                     </div>
                    
                 </div>
@@ -64,15 +70,23 @@
             
             
 
-            @error('tickets')
+            @if ($errors->any())
                 <div class="alert alert-danger">
-                    <ul id="numbers">
-                       {{$message}}
+                    <ul>
+                        @foreach ($errors->all() as $error)
+                            
+                            @if (strpos($error, 'Los siguientes') !== false)
+                                <li id="numbers">
+                                    {{ $error }}
+                                    <button type="submit" class="bg-green-500 text-white text-center  py-2 px-4 rounded-md" onclick="clearList()">Elimina éstos números</button>
+                                </li>
+                            @else
+                                <li>{{ $error }}</li>
+                            @endif
+                        @endforeach
                     </ul>
-                    <button type="submit" class="bg-green-500 text-white text-center  py-2 px-4 rounded-md" onclick="clearList()">Elimina éstos números</button>
                 </div>
-                
-            @enderror
+            @endif
         </div>
     </div>
 @endsection

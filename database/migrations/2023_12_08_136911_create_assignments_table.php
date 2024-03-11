@@ -20,6 +20,7 @@ return new class extends Migration
             $table->unsignedBigInteger('create_user'); 
             $table->text('tickets_numbers');
             $table->integer('tickets_total');
+            $table->decimal('commission');
             $table->foreign('create_user')->references('id')->on('users')->onDelete('cascade');
             $table->unsignedBigInteger('edit_user'); 
             $table->foreign('edit_user')->references('id')->on('users')->onDelete('cascade');

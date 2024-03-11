@@ -21,7 +21,8 @@ class Ticket extends Model
         'customer_name',
         'movements',
         'customer_phone',
-        'assignment_id'
+        'assignment_id',
+        'removable'
     ];
 
     public function raffle()
@@ -42,5 +43,10 @@ class Ticket extends Model
     public function assignment()
     {
         return $this->belongsTo(Assignment::class);
+    }
+
+    public function commission()
+    {
+        return $this->belongsTo(Commissions::class);
     }
 }

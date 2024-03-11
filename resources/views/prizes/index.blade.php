@@ -28,7 +28,7 @@
                             <tr class="hover:bg-gray-100 border-b">
                                 <td class="py-2 px-4">{{ $prize->type }}</td>
                                 <td class="py-2 px-4">{{ $prize->raffle->name }}</td>
-                                <td class="py-2 px-4">{{ number_format($prize->percentage_condition,0) }}%</td>
+                                <td class="py-2 px-4">${{ number_format($prize->percentage_condition,0) }}</td>
                                 <td class="py-2 px-4">{{ $prize->detail }}</td>
                                 <td class="py-2 px-4">{{ $prize->award_date }}</td>
                                 <td class="py-2 px-4">{{ $prize->winning_ticket }}</td>

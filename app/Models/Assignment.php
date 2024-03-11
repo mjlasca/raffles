@@ -16,6 +16,7 @@ class Assignment extends Model
         'tickets_total',
         'create_user',
         'edit_user',
+        'commission'
     ];
 
     public function user()

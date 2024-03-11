@@ -31,8 +31,8 @@
                 </div>
 
                 <div class="mb-4 md:w-1/5">
-                    <label for="percentage_condition" class="block text-gray-700 text-sm font-bold mb-2">Cantidad mínima que debe tener paga:</label>
-                    <input type="number" name="percentage_condition" id="percentage_condition" class="w-full border rounded-md py-2 px-3" value="{{$prize->percentage_condition}}" required>
+                    <label for="percentage_condition" class="block text-gray-700 text-sm font-bold mb-2">Condición de porcentaje:</label>
+                    <input type="number" name="percentage_condition" min="0" max="100" id="percentage_condition" class="w-full border rounded-md py-2 px-3" value="{{$prize->percentage_condition}}" required>
                 </div>
 
                 <div class="mb-4 md:w-1/5">

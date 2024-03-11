@@ -16,6 +16,7 @@
                         <tr class="text-md font-semibold tracking-wide text-left text-white bg-green-500 uppercase border-b border-gray-600">
                             <th class="py-2 px-4 border-b">Nombre rifa</th>
                             <th class="py-2 px-4 border-b">Vendedor</th>
+                            <th class="py-2 px-4 border-b">Comisión</th>
                             <th class="py-2 px-4 border-b"># Boletas asignadas</th>
                             <th class="py-2 px-4 border-b">Acciones</th>
                         </tr>
@@ -31,6 +32,9 @@
                                 </td>
                                 <td class="py-2 px-4">
                                     {{ $assignment->user->name }} {{ $assignment->user->lastname }}
+                                </td>
+                                <td class="py-2 px-4">
+                                    ${{  number_format( $assignment->commission,0) }}
                                 </td>
                                 <td class="py-2 px-4 text-center">
                                     {{ $assignment->tickets_total }}

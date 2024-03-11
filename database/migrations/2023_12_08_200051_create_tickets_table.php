@@ -22,7 +22,8 @@ return new class extends Migration
             $table->foreign('user_id')->references('id')->on('users');
             $table->double('price')->nullable();
             $table->double('payment')->default(0);
-            $table->text('movements')->nullable();
+            $table->text('movements')->default("");
+            $table->boolean('removable')->default(0);
             $table->unsignedBigInteger('create_user'); 
             $table->foreign('create_user')->references('id')->on('users')->onDelete('cascade');
             $table->unsignedBigInteger('edit_user'); 
