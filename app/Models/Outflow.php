@@ -12,6 +12,7 @@ class Outflow extends Model
     protected $fillable = [
         'detail',
         'total',
+        'raffle_id',
         'create_user',
         'edit_user',
     ];
@@ -24,5 +25,10 @@ class Outflow extends Model
     public function redited()
     {
         return $this->belongsTo(User::class, 'edit_user');
+    }
+
+    public function raffle()
+    {
+        return $this->belongsTo(Raffle::class, 'raffle_id');
     }
 }

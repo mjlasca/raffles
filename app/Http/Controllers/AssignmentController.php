@@ -9,6 +9,7 @@ use App\Models\Ticket;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 
 class AssignmentController extends Controller
@@ -16,9 +17,33 @@ class AssignmentController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $req)
     {
-        $assignments = Assignment::paginate(50);
+        $assignments = Assignment::orderBy('updated_at','DESC');
+
+        if($req->input('date1')){
+            $date1 = $req->input('date1');
+            $date2 = $date1;
+            if($req->input('date2'))
+                $date2 = $req->input('date2');
+            
+            $assignments = $assignments->whereBetween(DB::raw('DATE(updated_at)'),[$date1,$date2]);
+        }
+
+        if($req->input('keyword')){
+            $assignments = $assignments->whereHas('raffle', function ($query) use ($req) {
+                $query->where('name', 'like', '%'.$req->input('keyword').'%');
+            });
+
+            $assignments = $assignments->orWhereHas('user', function ($query) use ($req) {
+                $query->where('name', 'like', '%'.$req->input('keyword').'%');
+                $query->orWhere('lastname', 'like', '%'.$req->input('keyword').'%');
+            });
+        }
+
+        
+
+        $assignments = $assignments->paginate(50);
         return view('assignment.index', compact('assignments'));
     }
 

@@ -14,9 +14,33 @@ class PrizeController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $req)
     {
-        $prizes = Prize::where('status',1)->paginate(10);
+        
+        $prizes = Prize::orderBy('updated_at','DESC');
+        if(!empty($req->input('date1'))){
+            $date1 = $req->input('date1');
+            $date2 = $date1;
+            if($req->input('date2'))
+                $date2 = $req->input('date2');
+            $deliveries = $prizes->whereBetween('updated_at',[$date1.' 00:00:00',$date2.' 23:59:59']);
+        }
+
+        if($req->input('keyword')){
+            $keyword = $req->input('keyword');
+
+            $prizes = $prizes->where(function ($query) use ($keyword) {
+                $query->whereHas('raffle', function ($q) use ($keyword) {
+                    $q->where('name', 'like', '%' . $keyword . '%');
+                })
+                ->orWhereHas('redited', function ($q) use ($keyword) {
+                    $q->where('name', 'like', '%' . $keyword . '%')
+                      ->orWhere('lastname', 'like', '%' . $keyword . '%');
+                });
+            });
+        }
+
+        $prizes = $prizes->paginate('50');
         return view('prizes.index', compact('prizes'));
     }
 

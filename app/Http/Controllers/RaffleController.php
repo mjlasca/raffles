@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Raffle;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class RaffleController extends Controller
 {
@@ -14,9 +15,26 @@ class RaffleController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $req)
     {
-        $raffles = Raffle::paginate(10);
+        $raffles = Raffle::orderBy('raffle_date','DESC');
+
+        if($req->input('date1')){
+            $date1 = $req->input('date1');
+            $date2 = $date1;
+            if($req->input('date2'))
+                $date2 = $req->input('date2');
+            
+            $raffles = $raffles->whereBetween(DB::raw('DATE(raffle_date)'),[$date1,$date2]);
+        }
+
+        if($req->input('keyword')){
+            $raffles = $raffles->where('name','like','%'.$req->input('keyword').'%');
+        }
+
+        
+        
+        $raffles = $raffles->paginate(50);
         return view('raffles.index', compact('raffles'));
     }
 
@@ -86,6 +104,10 @@ class RaffleController extends Controller
         $raffle->update($request->all());
 
         return redirect()->route('rifas.index');
+    }
+
+    public function results(){
+        return view('raffles.results');
     }
 
     /**

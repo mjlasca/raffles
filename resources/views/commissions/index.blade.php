@@ -9,12 +9,33 @@
                     <img class="h-5" src="{{ asset('img/icons/add-icon.svg') }}" alt="">
                 </a>
             </div>
+            <div>
+                <form method="GET"  class="p-6">
+                    
+                    <div class="flex">
+                        <div>
+                            <label for="keyword" class="block text-gray-700 text-sm font-bold mb-2">Buscar coincidencia</label>
+                            <input type="text" class="w-full border rounded-md py-2 px-3" name="keyword" id="" value="{{ Request('keyword') }}" placeholder="Buscar usuario">
+                        </div>
+                        <div>
+                            <label for="date1" class="block text-gray-700 text-sm font-bold mb-2">Fecha inicial</label>
+                            <input type="date" class="w-full border rounded-md py-2 px-3" name="date1" id="" value="{{ Request('date1') }}">
+                        </div>
+                        <div>
+                            <label for="date2" class="block text-gray-700 text-sm font-bold mb-2">Fecha final</label>
+                            <input type="date" class="w-full border rounded-md py-2 px-3" name="date2" id="" value="{{Request('date2')}}">
+                        </div>
+                    </div>
+                    <button type="submit" class="mt-2 bg-blue-500 text-white py-2 px-4 rounded-md">Filtrar consulta</button>
+                </form>
+            </div>
             
             <div class="overflow-x-auto">
                 <table class="min-w-full">
                     <thead>
                         <tr class="text-md font-semibold tracking-wide text-left text-white bg-green-500 uppercase border-b border-gray-600">
                             <th class="py-2 px-4 border-b">id</th>
+                            <th class="py-2 px-4 border-b">Fecha</th>
                             <th class="py-2 px-4 border-b">Vendedor(a)</th>
                             <th class="py-2 px-4 border-b">Total liquidado</th>
                             <th class="py-2 px-4 border-b">Ver</th>
@@ -25,6 +46,7 @@
                        @foreach ($commissions as $commission)
                         <tr class="hover:bg-gray-100 border-b">
                             <td class="py-2 px-4">{{ $commission->id }}</td>
+                            <td class="py-2 px-4">{{ $commission->updated_at }}</td>
                             <td class="py-2 px-4">{{ $commission->user->name }} {{ $commission->user->lastname }}</td>
                             <td class="py-2 px-4">${{  number_format($commission->total,2) }}</td>
                             

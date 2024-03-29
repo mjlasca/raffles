@@ -65,6 +65,8 @@ Route::post('/tickets/setpay', [TicketController::class, 'setpay'])->middleware(
 Route::post('/tickets/payall', [TicketController::class, 'payall'])->middleware(['auth'])->name('tickets.payall');
 Route::post('/tickets/removable', [TicketController::class, 'removable'])->middleware(['auth'])->name('tickets.removable');
 
+Route::get('/resultados', [RaffleController::class, 'results'])->name('raffles.rasults');
+
 Route::resource('entregas', DeliveryController::class)->middleware(['auth','roleAccess:Secretaria-Administrador'])->parameters([
     'entregas' => 'deliveries',
 ]);

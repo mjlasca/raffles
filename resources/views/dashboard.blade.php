@@ -4,7 +4,7 @@
     <div class="container mx-auto grid grid-cols-1 md:grid-cols-3 gap-4">
 
       @if ( auth()->user()->role === 'Vendedor' )
-      <div class=" rounded-lg shadow">
+    <div class=" rounded-lg shadow">
         <div class="h-40">
             <img class="w-full h-40 rounded-t-lg" src="https://grupogeard.com/co/wp-content/uploads/sites/3/2020/08/Blog-7.jpg" alt="" srcset="">
         </div>
@@ -301,7 +301,7 @@
         </div>
       </div>
     @endif
-
+    
     @if ( auth()->user()->role === 'Administrador' )
       <div class="rounded-lg shadow">
         <div class="h-40 ">
@@ -311,36 +311,25 @@
             <b class="p-3 text-2xl">Rifas vigentes</b>
             <div class="p-2 justify-between mt-2">
                 <div>
-                    <table class="w-full mb-5">
-                        <thead>
-                          <tr class="text-md font-semibold tracking-wide text-left bg-green-500 text-white uppercase border-b border-gray-600">
-                            <th class="px-4">Rifa</th>
-                            <th class="px-4">Recaudado</th>
-                          </tr>
-                        </thead>
-                        <tbody >
-                          @foreach ($data['current_raffles'] as $item)
-                          <tr class="border-b">
-                            <td class="p-2">
-                              <div class="flex items-center text-sm">
-                                <div>
-                                  <h5 class="h5 ">{{$item->raffle->name}}</h5>
-                                  <p class=""><span class="font-semibold" >Total rifa</span> : ${{number_format($item->raffle->price * $item->raffle->tickets_number)}}
-                                    <span class="font-semibold" >Entregas</span>   : ${{number_format($item->total)}}</p>
-                                  <p><span class="font-semibold" >Saldo</span>      : ${{ number_format( ($item->raffle->price * $item->raffle->tickets_number) - $item->total )}}</p>
-                                </div>
-                              </div>
-                            </td>
-                            <td class="p-2">
-                              <div class="border-2 w-full" style="height:40px;">
-                                <div class="bg-green-500 text-center" style="height:37px;width:{{ ( $item->total /  ($item->raffle->price * $item->raffle->tickets_number) ) * 100 }}%;"> <h4 class="h4 text-center p-2"> {{  number_format(( $item->total /  ($item->raffle->price * $item->raffle->tickets_number) ) * 100),0 }}% </h4></div>
-                              </div>
-                            </td>
-                            
-                          </tr>    
-                          @endforeach
-                        </tbody>
-                      </table>
+                  @foreach ($data['current_raffles'] as $item)
+                    <div class="flex chart-raffle">
+                      <div class="w-1/2">
+                        <p>
+                          <b>{{$item->name}}</b><br>
+                          <b>Juega el </b>{{$item->prizes[0]->award_date}}<br>
+                          <b data-total-total-raffle="{{$item->price * $item->tickets_number}}">Total rifa </b>${{ number_format($item->price * $item->tickets_number,0,null,".")}}<br>
+                          @if( !empty($item->deliveries[0]) )
+                            <b data-total-delivery="{{$item->deliveries[0]->delivery_total}}">Total entregas </b>${{ number_format($item->deliveries[0]->delivery_total,0,null,".")}}<br>
+                          @else
+                          <b data-total-delivery="0">Total entregas </b>${{ number_format(0,0,null,".")}}<br>
+                          @endif
+                        </p>
+                      </div>
+                      <div class="w-1/2">
+                        <canvas  id="chart-{{$item->id}}"></canvas>
+                      </div>
+                    </div>
+                  @endforeach
                 </div>
             </div>
         </div>
@@ -367,7 +356,7 @@
                             <td class="p-2">
                               <div class="flex items-center text-sm">
                                 <div>
-                                  <p class="">{{$item->raffle->name}}</p>
+                                  <p class="">{{$item->name}}</p>
                                 </div>
                               </div>
                             </td>
@@ -428,5 +417,6 @@
         </div>
       </div>
     @endif
-  
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="{{ asset('js/dashboard.js') }}"></script>    
 @endsection

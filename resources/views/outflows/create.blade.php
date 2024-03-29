@@ -9,6 +9,21 @@
 
             <form method="POST" action="{{ route('salidas.store') }}" class="py-6 px-8">
                 @csrf
+                <div class="mb-4 md:w-1/2">
+                    <label for="raffle_id" class="block text-gray-700 text-sm font-bold mb-2">Rifa</label>
+                    <select name="raffle_id" id="raffle_id" class="w-full border rounded-md py-2 px-3" required>
+                        <option value="">Seleccione una rifa</option>
+                        @foreach($raffles as $raffle)
+                            @if ($raffle->id == old('raffle_id'))
+                                <option value="{{ $raffle->id }}" selected>{{ $raffle->name }}</option>    
+                            @else
+                                <option value="{{ $raffle->id }}">{{ $raffle->name }}</option>
+                            @endif
+                            
+                        @endforeach
+                    </select>
+                </div>
+                
                 <div class="mb-4">
                     <label for="detail" class="block text-gray-700 text-sm font-bold mb-2">Detalle:</label>
                     <textarea name="detail" id="detail" class="w-full border rounded-md py-2 px-3" required maxlength="500"></textarea>

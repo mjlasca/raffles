@@ -8,6 +8,30 @@
                 <a class="ml-2 p-1 mt-1 bg-green-500 rounded-lg hover:bg-green-500" href="{{route('premios.create')}}">
                     <img class="h-5" src="{{ asset('img/icons/add-icon.svg') }}" alt="">
                 </a>
+                <a class="ml-2 p-1 mt-1 bg-green-500 rounded-lg hover:bg-green-500" href="/resultados">
+                    Ver página de resultados
+                </a>
+            </div>
+
+            <div>
+                <form method="GET"  class="p-6">
+                    
+                    <div class="flex">
+                        <div>
+                            <label for="keyword" class="block text-gray-700 text-sm font-bold mb-2">Buscar coincidencia</label>
+                            <input type="text" class="w-full border rounded-md py-2 px-3" name="keyword" id="" value="{{ Request('keyword') }}" placeholder="Buscar...">
+                        </div>
+                        <div>
+                            <label for="date1" class="block text-gray-700 text-sm font-bold mb-2">Fecha inicial</label>
+                            <input type="date" class="w-full border rounded-md py-2 px-3" name="date1" id="" value="{{ Request('date1') }}">
+                        </div>
+                        <div>
+                            <label for="date2" class="block text-gray-700 text-sm font-bold mb-2">Fecha final</label>
+                            <input type="date" class="w-full border rounded-md py-2 px-3" name="date2" id="" value="{{Request('date2')}}">
+                        </div>
+                    </div>
+                    <button type="submit" class="mt-2 bg-blue-500 text-white py-2 px-4 rounded-md">Filtrar consulta</button>
+                </form>
             </div>
             
             <div class="overflow-x-auto">

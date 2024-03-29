@@ -9,7 +9,29 @@
                     <img class="h-5" src="{{ asset('img/icons/add-icon.svg') }}" alt="">
                 </a>
             </div>
-            
+
+            <div>
+                <form method="GET"  class="p-6">
+                    
+                    <div class="flex">
+                        <div>
+                            <label for="keyword" class="block text-gray-700 text-sm font-bold mb-2">Buscar coincidencia</label>
+                            <input type="text" class="w-full border rounded-md py-2 px-3" name="keyword" id="" value="{{ Request('keyword') }}" placeholder="Buscar en nombre,apellido,email">
+                        </div>
+                        <div>
+                            <label for="role" class="block text-gray-700 text-sm font-bold mb-2">Rifa</label>
+                            <select name="role" id="role" class="w-full border rounded-md py-2 px-3" >
+                                <option value="">Seleccione el rol</option>
+                                <option value="Administrador" @if(Request('role') == 'Administrador') selected @endif >Administrador</option>
+                                <option value="Secretaria" @if(Request('role') == 'Secretaria') selected @endif >Secretaria</option>
+                                <option value="Vendedor" @if(Request('role') == 'Vendedor') selected @endif >Vendedor</option>
+                            </select>
+                        </div>
+                    </div>
+                    <button type="submit" class="mt-2 bg-blue-500 text-white py-2 px-4 rounded-md">Filtrar consulta</button>
+                </form>
+            </div>
+
             <div class="overflow-x-auto">
                 <table class="min-w-full">
                     <thead>

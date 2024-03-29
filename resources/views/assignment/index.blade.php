@@ -9,11 +9,31 @@
                     <img class="h-5" src="{{ asset('img/icons/add-icon.svg') }}" alt="">
                 </a>
             </div>
-            
+            <div>
+                <form method="GET"  class="p-6">
+                    
+                    <div class="flex">
+                        <div>
+                            <label for="keyword" class="block text-gray-700 text-sm font-bold mb-2">Buscar coincidencia</label>
+                            <input type="text" class="w-full border rounded-md py-2 px-3" name="keyword" id="" value="{{ Request('keyword') }}" placeholder="Buscar rifa o usuario">
+                        </div>
+                        <div>
+                            <label for="date1" class="block text-gray-700 text-sm font-bold mb-2">Fecha inicial</label>
+                            <input type="date" class="w-full border rounded-md py-2 px-3" name="date1" id="" value="{{ Request('date1') }}">
+                        </div>
+                        <div>
+                            <label for="date2" class="block text-gray-700 text-sm font-bold mb-2">Fecha final</label>
+                            <input type="date" class="w-full border rounded-md py-2 px-3" name="date2" id="" value="{{Request('date2')}}">
+                        </div>
+                    </div>
+                    <button type="submit" class="mt-2 bg-blue-500 text-white py-2 px-4 rounded-md">Filtrar consulta</button>
+                </form>
+            </div>
             <div class="overflow-x-auto">
                 <table class="min-w-full">
                     <thead>
                         <tr class="text-md font-semibold tracking-wide text-left text-white bg-green-500 uppercase border-b border-gray-600">
+                            <th class="py-2 px-4 border-b">Fecha asignación</th>
                             <th class="py-2 px-4 border-b">Nombre rifa</th>
                             <th class="py-2 px-4 border-b">Vendedor</th>
                             <th class="py-2 px-4 border-b">Comisión</th>
@@ -26,6 +46,9 @@
                         @foreach($assignments as $assignment)
 
                             <tr class="hover:bg-gray-100 border-b">
+                                <td class="py-2 px-4">
+                                    {{  $assignment->updated_at }}
+                                </td>
                                 <td class="py-2 px-4">
                                     <a href="rifas/{{ $assignment->raffle->id }}"> {{ $assignment->raffle->name }} </a>
                                    <br> # boletas : {{ $assignment->raffle->tickets_number }}

@@ -15,6 +15,7 @@ class Commissions extends Model
         'val_commission',
         'total',
         'detail',
+        'raffle_id',
         'create_user',
         'edit_user',
     ];
@@ -27,5 +28,10 @@ class Commissions extends Model
     public function payment_commissions()
     {
         return $this->hasMany(Ticket::class);
+    }
+
+    public function raffle()
+    {
+        return $this->belongsTo(Raffle::class);
     }
 }

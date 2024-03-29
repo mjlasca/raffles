@@ -14,6 +14,21 @@
                     
                     <div class="flex">
                         <div>
+                            <label for="raffle_id" class="block text-gray-700 text-sm font-bold mb-2">Rifa</label>
+                            <select name="raffle_id" id="raffle_id" class="w-full border rounded-md py-2 px-3" >
+                                <option value="">Seleccione una rifa</option>
+                                @foreach($raffles as $raffle)
+                                    @if ($raffle->id == Request('raffle_id'))
+                                        <option value="{{ $raffle->id }}" selected>{{ $raffle->name }}</option>    
+                                    @else
+                                        <option value="{{ $raffle->id }}">{{ $raffle->name }}</option>
+                                    @endif
+                                    
+                                @endforeach
+                            </select>
+                        </div>
+
+                        <div>
                             <label for="date1" class="block text-gray-700 text-sm font-bold mb-2">Fecha inicial</label>
                             <input type="date" class="w-full border rounded-md py-2 px-3" name="date1" id="" value="{{ Request('date1') }}">
                         </div>
@@ -39,12 +54,15 @@
                         </tr>
                     </thead>
                     <tbody>
+                        @php
+                            $totals = ['deliveries' => 0,'outflows' => 0,'commission' => 0];
+                        @endphp
                         @foreach($dayTotal as $key => $day)
                             <tr class="hover:bg-gray-100 border-b">
                                 <td class="py-2 px-4">{{ $key }}</td>
-                                <td class="py-2 px-4">{{ $day['deliveries_total'] }}</td>
-                                <td class="py-2 px-4">{{ $day['outflows_total'] }}</td>
-                                <td class="py-2 px-4">{{ $day['commissions_total'] }}</td>
+                                <td class="py-2 px-4">{{ number_format($day['deliveries_total'],2) }}</td>
+                                <td class="py-2 px-4">{{ number_format($day['outflows_total'],2) }}</td>
+                                <td class="py-2 px-4">{{ number_format($day['commissions_total'],2) }}</td>
                                 @if ( !empty( $day['cash']->id ))
                                     <td class="py-2 px-4">
                                         <b>Fecha cierre:</b> {{$day['cash']->updated_at}}<br>
@@ -72,7 +90,21 @@
                                     
                                 </td>
                             </tr>
+                            @php
+                                $totals['deliveries'] = $totals['deliveries'] +  $day['deliveries_total'];
+                                $totals['outflows'] = $totals['outflows'] +  $day['outflows_total'];
+                                $totals['commission'] = $totals['commission'] +  $day['commissions_total'];
+                            @endphp
                         @endforeach
+                        @if ( !empty($totals) )
+                            <tr class="bg-blue-100 border-b">
+                                <td class="py-2 px-4"><b>TOTALES $</b></td>
+                                <td class="py-2 px-4">{{ number_format($totals['deliveries'],2) }}</td>
+                                <td class="py-2 px-4">{{ number_format($totals['outflows'],2) }}</td>
+                                <td class="py-2 px-4">{{ number_format($totals['commission'],2) }}</td>
+                                <td class="py-2 px-4" colspan="2"></td>
+                            </tr>
+                        @endif
                     </tbody>
                 </table>
                 

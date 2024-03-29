@@ -6,6 +6,7 @@ use App\Models\Commissions;
 use App\Models\Ticket;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class CommissionController extends Controller
 {
@@ -14,9 +15,24 @@ class CommissionController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $req)
     {
-        $commissions = Commissions::orderBy('updated_at', 'DESC')->paginate(50);
+        $commissions = Commissions::orderBy('updated_at', 'DESC');
+        if(!empty($req->input('date1'))){
+            $date1 = $req->input('date1');
+            $date2 = $req->input('date2');
+            $commissions->whereBetween(DB::raw('DATE(updated_at)'),[$date1,$date2]);
+        }
+
+        if($req->input('keyword')){
+
+            $commissions = $commissions->whereHas('user', function ($query) use ($req) {
+                $query->where('name', 'like', '%'.$req->input('keyword').'%');
+                $query->orWhere('lastname', 'like', '%'.$req->input('keyword').'%');
+            });
+        }
+        
+        $commissions = $commissions->paginate(50);
         return view('commissions.index', compact('commissions'));
     }
 
@@ -82,23 +98,35 @@ class CommissionController extends Controller
                 'edit_user' => $user->id,
             ];
 
-            if($commission = Commissions::create($data)){
                 $sum = 0;
                 $concat = "";
+                $arrRaffle = [];
+                $commission = false;
                 foreach ($tickets as $key => $ticket) {
+                    
+                    if(!in_array($ticket->raffle_id,$arrRaffle)){
+                        
+                        $data['raffle_id'] = $ticket->raffle_id;
+                        $commission = Commissions::create($data);
+                        $arrRaffle[] = $ticket->raffle_id;
+                        $sum = 0;
+                        $concat = "";
+                    }
+
+
                     $sum += $ticket->assignment->commission;
                     $concat .= $ticket->raffle->name . " Boleta #" . $ticket->ticket_number. " Comisión: ".$ticket->assignment->commission.";";
                     Ticket::where('ticket_number', $ticket->ticket_number)->where('raffle_id',$ticket->raffle_id)->update([
                         'payment_commission' =>$commission->id
                     ]);
-                }
 
-                $commission->update([
-                    'total' => $sum,
-                    'detail'=> $concat
-                ]);
-            }
-            
+                    if($commission){
+                        $commission->update([
+                            'total' => $sum,
+                            'detail'=> $concat
+                        ]);
+                    }
+                }
 
         }
         return redirect()->route('comisiones.index');

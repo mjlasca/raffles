@@ -9,29 +9,67 @@
                     <img class="h-5" src="{{ asset('img/icons/add-icon.svg') }}" alt="">
                 </a>
             </div>
+
+            <div>
+                <form method="GET"  class="p-6">
+                    
+                    <div class="flex">
+                        <div>
+                            <label for="keyword" class="block text-gray-700 text-sm font-bold mb-2">Buscar coincidencia</label>
+                            <input type="text" class="w-full border rounded-md py-2 px-3" name="keyword" id="" value="{{ Request('keyword') }}" placeholder="Buscar...">
+                        </div>
+                        <div>
+                            <label for="user_id" class="block text-gray-700 text-sm font-bold mb-2">Vendedor</label>
+                            <select name="user_id" id="user_id" class="w-full border rounded-md py-2 px-3" >
+                                <option value="">Seleccione un vendedor</option>
+                                @foreach($sellers_users as $seller)
+                                    @if ($seller->id == Request('user_id'))
+                                        <option value="{{ $seller->id }}" selected>{{ $seller->name }} {{ $seller->lastname }}</option>
+                                    @else    
+                                        <option value="{{ $seller->id }}">{{ $seller->name }} {{ $seller->lastname }}</option>
+                                    @endif
+                                @endforeach
+                            </select>
+                        </div>
+                        <div>
+                            <label for="date1" class="block text-gray-700 text-sm font-bold mb-2">Fecha inicial</label>
+                            <input type="date" class="w-full border rounded-md py-2 px-3" name="date1" id="" value="{{ Request('date1') }}">
+                        </div>
+                        <div>
+                            <label for="date2" class="block text-gray-700 text-sm font-bold mb-2">Fecha final</label>
+                            <input type="date" class="w-full border rounded-md py-2 px-3" name="date2" id="" value="{{Request('date2')}}">
+                        </div>
+                    </div>
+                    <button type="submit" class="mt-2 bg-blue-500 text-white py-2 px-4 rounded-md">Filtrar consulta</button>
+                </form>
+            </div>
             
             <div class="overflow-x-auto">
                 <table class="min-w-full">
                     <thead>
                         <tr class="text-md font-semibold tracking-wide text-left text-white bg-green-500 uppercase border-b border-gray-600">
+                            <th class="py-2 px-4 border-b">Fecha</th>
                             <th class="py-2 px-4 border-b">Reg</th>
                             <th class="py-2 px-4 border-b">Descripción</th>
                             <th class="py-2 px-4 border-b">Rifa</th>
                             <th class="py-2 px-4 border-b">Vendedor</th>
                             <th class="py-2 px-4 border-b">Valor entrega</th>
                             <th class="py-2 px-4 border-b">Canjeado</th>
+                            <th class="py-2 px-4 border-b">Recibido por</th>
                             <th class="py-2 px-4 border-b">Acciones</th>
                         </tr>
                     </thead>
                     <tbody>
                         @foreach($deliveries as $deliverie)
                             <tr class="hover:bg-gray-100 border-b">
+                                <td class="py-2 px-4">{{ $deliverie->updated_at }}</td>
                                 <td class="py-2 px-4">{{ $deliverie->id }}</td>
                                 <td class="py-2 px-4">{{ $deliverie->description }}</td>
                                 <td class="py-2 px-4">{{ $deliverie->raffle->name }}</td>
                                 <td class="py-2 px-4">{{ $deliverie->user->name }} {{ $deliverie->user->lastname }}</td>
                                 <td class="py-2 px-4">{{ $deliverie->total }}</td>
                                 <td class="py-2 px-4">{{ $deliverie->used }}</td>
+                                <td class="py-2 px-4">{{ $deliverie->redited->name }} {{ $deliverie->redited->lastname }}</td>
                                 
                                 <td class="py-2 px-4 flex">
                                     <a href="{{ route('entregas.show', $deliverie->id) }}" class="text-blue-500 hover:bg-green-500 p-1 bg-blue-500 rounded-md mr-1">

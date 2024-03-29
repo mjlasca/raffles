@@ -9,6 +9,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Support\Facades\DB;
 
 class DeliveryController extends Controller
 {
@@ -17,10 +18,38 @@ class DeliveryController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $req)
     {
-        $deliveries = Delivery::paginate(10);
-        return view('deliveries.index', compact('deliveries'));
+        $deliveries = Delivery::orderBy('updated_at', 'DESC');
+        $sellers_users = User::select('id','name','lastname')->where('role','Vendedor')->get();
+        if(!empty($req->input('date1'))){
+            $date1 = $req->input('date1');
+            $date2 = $date1;
+            if($req->input('date2'))
+                $date2 = $req->input('date2');
+            $deliveries = $deliveries->whereBetween('updated_at',[$date1.' 00:00:00',$date2.' 23:59:59']);
+        }
+
+        if($req->input('user_id')){
+            $deliveries = $deliveries->where('user_id',$req->input('user_id'));
+        }
+
+        if($req->input('keyword')){
+            $keyword = $req->input('keyword');
+
+            $deliveries = $deliveries->where(function ($query) use ($keyword) {
+                $query->whereHas('raffle', function ($q) use ($keyword) {
+                    $q->where('name', 'like', '%' . $keyword . '%');
+                })
+                ->orWhereHas('redited', function ($q) use ($keyword) {
+                    $q->where('name', 'like', '%' . $keyword . '%')
+                      ->orWhere('lastname', 'like', '%' . $keyword . '%');
+                });
+            });
+        }
+
+        $deliveries = $deliveries->paginate('50');
+        return view('deliveries.index', compact('deliveries','sellers_users'));
     }
 
     /**

@@ -42,4 +42,19 @@ class Raffle extends Model
     {
         return $this->hasMany(Prize::class);
     }
+
+    public function deliveries()
+    {
+        return $this->hasMany(Delivery::class);
+    }
+
+    public function outflows()
+    {
+        return $this->hasMany(Outflow::class);
+    }
+
+    public function commissions()
+    {
+        return $this->hasMany(Commissions::class);
+    }
 }

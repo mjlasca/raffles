@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Cash;
+use App\Models\Raffle;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -16,6 +17,7 @@ class CashController extends Controller
      */
     public function index(Request $request)
     {
+        $raffles = Raffle::select('id','name')->get();
         $date1 = date('Y-m-d', strtotime('-30 days'));
         $date2 = date('Y-m-d');
 
@@ -24,24 +26,28 @@ class CashController extends Controller
         if(!empty($request->input('date2')))
             $date2 = $request->input('date2');
 
-        $dayTotal = $this->queryMovements($date1,$date2);
+        if(!empty($request->input('raffle_id')))
+            $dayTotal = $this->queryMovements($date1,$date2, $request->input('raffle_id'));
+        else
+            $dayTotal = $this->queryMovements($date1,$date2);
 
-        return view('cashes.index', compact('dayTotal'));
+        return view('cashes.index', compact('dayTotal','raffles'));
     }
 
-    private function queryMovements($date1, $date2){
+    private function queryMovements($date1, $date2, $raffle_id = null){
         $dayTotal = DB::table('deliveries')
             ->select(DB::raw('DATE(updated_at) as day_date'), DB::raw('SUM(total) as deliveries_total'))
-            ->whereBetween(DB::raw('DATE(updated_at)'),[$date1,$date2])
+            ->whereBetween('updated_at',[$date1.' 00:00:00',$date2.' 23:59:59'])
             ->groupBy(DB::raw('DATE(updated_at)'))
+            ->orderBy('updated_at','DESC')
             ->get();
-
 
         $dayTotal = $dayTotal->merge(
             DB::table('outflows')
                 ->select(DB::raw('DATE(updated_at) as day_date'), DB::raw('SUM(total) as outflows_total'))
-                ->whereBetween(DB::raw('DATE(updated_at)'),[$date1,$date2])
+                ->whereBetween('updated_at',[$date1.' 00:00:00',$date2.' 23:59:59'])
                 ->groupBy(DB::raw('DATE(updated_at)'))
+                ->orderBy('updated_at','DESC')
                 ->get()
         );
         
@@ -49,13 +55,47 @@ class CashController extends Controller
         $dayTotal = $dayTotal->merge(
             DB::table('commissions')
                 ->select(DB::raw('DATE(updated_at) as day_date'), DB::raw('SUM(total) as commissions_total'))
-                ->whereBetween(DB::raw('DATE(updated_at)'),[$date1,$date2])
+                ->whereBetween('updated_at',[$date1.' 00:00:00',$date2.' 23:59:59'])
                 ->groupBy(DB::raw('DATE(updated_at)'))
+                ->orderBy('updated_at','DESC')
                 ->get()
         );
 
-        $dayTotal = $dayTotal->merge( Cash::select('updated_at','manual_money_box','day_date','id','real_money_box','real_money_box','difference','deliveries','day_outings','create_user','edit_user',)
-                ->whereBetween(DB::raw('DATE(day_date)'),[$date1,$date2])->get() 
+        if(!empty($raffle_id)){
+            $dayTotal = DB::table('deliveries')
+            ->select(DB::raw('DATE(updated_at) as day_date'), DB::raw('SUM(total) as deliveries_total'))
+            ->where('raffle_id',$raffle_id)
+            ->whereBetween('updated_at',[$date1.' 00:00:00',$date2.' 23:59:59'])
+            ->groupBy(DB::raw('DATE(updated_at)'))
+            ->orderBy('updated_at','DESC')
+            ->get();
+
+            $dayTotal = $dayTotal->merge(
+                DB::table('outflows')
+                    ->select(DB::raw('DATE(updated_at) as day_date'), DB::raw('SUM(total) as outflows_total'))
+                    ->where('raffle_id',$raffle_id)
+                    ->whereBetween('updated_at',[$date1.' 00:00:00',$date2.' 23:59:59'])
+                    ->groupBy(DB::raw('DATE(updated_at)'))
+                    ->orderBy('updated_at','DESC')
+                    ->get()
+            );
+            
+
+            $dayTotal = $dayTotal->merge(
+                DB::table('commissions')
+                    ->select(DB::raw('DATE(updated_at) as day_date'), DB::raw('SUM(total) as commissions_total'))
+                    ->where('raffle_id',$raffle_id)
+                    ->whereBetween('updated_at',[$date1.' 00:00:00',$date2.' 23:59:59'])
+                    ->groupBy(DB::raw('DATE(updated_at)'))
+                    ->orderBy('updated_at','DESC')
+                    ->get()
+            );
+        }
+
+        $dayTotal = $dayTotal->merge( Cash::select('updated_at','manual_money_box','day_date','id','real_money_box','difference','deliveries','day_outings','create_user','edit_user',)
+                    ->whereBetween('day_date',[$date1.' 00:00:00',$date2.' 23:59:59'])
+                    ->orderBy('day_date','DESC')
+                    ->get() 
         );
 
         $dayTotal = $dayTotal->groupBy('day_date')->map(function ($item) {
