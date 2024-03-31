@@ -27,6 +27,8 @@ Route::resource('usuarios', UserController::class)->middleware(['auth','roleAcce
     'usuarios' => 'user',
 ]);
 
+Route::get('/users/export', [UserController::class, 'export'])->middleware(['auth'])->name('usuarios.export');
+
 Route::resource('asignaciones', AssignmentController::class)->middleware(['auth',"roleAccess:Administrador"])->parameters([
     'asignaciones' => 'assignment',
 ]);

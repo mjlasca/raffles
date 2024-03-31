@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\UsersExport;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Maatwebsite\Excel\Facades\Excel;
 
 class UserController extends Controller
 {
@@ -123,5 +125,9 @@ class UserController extends Controller
     public function destroy(string $id)
     {
         //
+    }
+
+    public function export(){
+        return Excel::download(new UsersExport,'usuarios.xlsx');
     }
 }

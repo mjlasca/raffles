@@ -12675,9 +12675,6 @@ video {
 .max-w-6xl {
   max-width: 72rem;
 }
-.max-w-lg {
-  max-width: 32rem;
-}
 .transform {
   transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
 }
@@ -12918,9 +12915,6 @@ video {
 }
 .font-bold {
   font-weight: 700;
-}
-.font-light {
-  font-weight: 300;
 }
 .font-semibold {
   font-weight: 600;
@@ -13229,18 +13223,8 @@ video {
   .md\:border-t-0 {
     border-top-width: 0px;
   }
-
-  .md\:py-32 {
-    padding-top: 8rem;
-    padding-bottom: 8rem;
-  }
 }
 @media (min-width: 1024px) {
-
-  .lg\:mx-auto {
-    margin-left: auto;
-    margin-right: auto;
-  }
 
   .lg\:px-8 {
     padding-left: 2rem;
