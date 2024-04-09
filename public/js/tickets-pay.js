@@ -138,6 +138,7 @@ tickets_pay.addEventListener('change', async function(event) {
 delivery_id.addEventListener('change', async () => {
 
     const delivery_data = document.querySelector('.delivery-data');
+    const token_ = document.querySelector('input[name="_token"]');
     clearInputs();
     delivery_data.innerHTML = "";
     if(!content_tickets.classList.contains('hidden'))
@@ -167,6 +168,7 @@ delivery_id.addEventListener('change', async () => {
                         <form method="POST" action="/tickets/payall" onsubmit="return confirm('¿Está seguro de distribuir lo disponible? si lo hace, el sistema asignará equitativamente a cada boleta que tenga para ésta rifa');">
                         <input type="hidden" value="${delivery_id.value}" name="delivery_id">
                         <input class="bg-red-500 text-white py-2 px-4 rounded-md" type="submit" value="Distribuir pago">
+                        <input type="hidden" name="_token" value="${token_.value}">
                         </form>
                     </div>
                 </div>

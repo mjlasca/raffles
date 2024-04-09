@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\TicketsExport;
 use App\Http\Controllers\Controller;
 use App\Models\Assignment;
 use App\Models\Delivery;
@@ -12,6 +13,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Maatwebsite\Excel\Facades\Excel;
 
 class TicketController extends Controller
 {
@@ -147,6 +149,79 @@ class TicketController extends Controller
     }
 
     public function payall(Request $req){
+        $current_user = Auth::user();
+        
+        if($req->input('delivery_id')){
+            $delivery = Delivery::find($req->input('delivery_id'));
+
+            $to_use = $delivery->total - $delivery->used;
+            $to_use_0 = $delivery->total - $delivery->used;
+            $tickets_0 = Ticket::where('raffle_id',$delivery->raffle_id)->where('user_id',$delivery->user_id)->whereColumn('price','>','payment')->get();
+
+            //tickets id base
+            $ticketIds = [];
+            foreach ($tickets_0 as $key => $ticket) {
+                $ticketIds[] = $ticket->id;
+            }
+
+            //base total tickets initial
+            $total_b = $tickets_0->sum('payment');
+            //dynamic total tickets
+            $total_x = 0;
+
+            //cant tickets
+            $count_ticket = count($tickets_0);
+
+            //concat history payment
+            $history = "'". $current_user->name." ".$current_user->lastname." ha hecho un pago distribuido " .date("d-m-Y h:i:s") ."'";
+            
+            //results update
+            $restUpdate = 0;
+            $cont = 0;
+            while( ($total_b == 0 && $cont == 0) || $total_b > $total_x){
+                $cont++;
+                //distribution money to ticket
+                $additionalPayment = floor($to_use / $count_ticket);
+
+                //update ticket
+                $rUpdate = Ticket::whereIn('id', $ticketIds)
+                        ->whereRaw('price >= payment + ?', [$additionalPayment]) // Asegura que price sea mayor o igual a payment + $additionalPayment
+                        ->update([
+                            'payment' => DB::raw('payment + ' . $additionalPayment),
+                            'movements' =>  DB::raw("IFNULL(CONCAT($history,movements), $history)")
+                        ]);
+                        
+                if(is_numeric($rUpdate)){
+                    $restUpdate += (int)$rUpdate;
+                }
+                
+                
+                
+                //after sum
+                $total_x = Ticket::whereIn('id', $ticketIds)->sum('payment');
+
+                //use after payment update
+                $to_use = $total_x -  $total_b;
+            }
+
+            if($restUpdate > 0){
+                //condition for money used update in delivery table
+                if($to_use_0 - $to_use > 0){
+                    $delivery->update([
+                        'used' => DB::raw('used + ' . ($to_use_0 - $to_use) ),
+                    ]);
+                }else{
+                    $delivery->update([
+                        'used' => DB::raw('used + ' . $to_use_0 ),
+                    ]);
+                }
+            }
+                        
+
+            
+            return redirect()->route('boletas.index', ['raffle_id' => $delivery->raffle_id, 'user_id' => $delivery->user_id]);
+        }
+        
 
         /*
         
@@ -252,5 +327,9 @@ cantdispo = disponible / n
     public function destroy(string $id)
     {
         //
+    }
+
+    public function export(){
+        return Excel::download(new TicketsExport,'Boletas.xlsx');
     }
 }

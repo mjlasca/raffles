@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\OutflowsExport;
 use App\Models\Outflow;
 use App\Models\Raffle;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Maatwebsite\Excel\Facades\Excel;
 
 class OutFlowController extends Controller
 {
@@ -120,5 +122,9 @@ class OutFlowController extends Controller
         if($outflow->redited->role === $current_user->role || $current_user->role === 'Administrador')
             $outflow->delete();
         return redirect()->route('salidas.index');
+    }
+
+    public function export(){
+        return Excel::download(new OutflowsExport,'Salidas.xlsx');
     }
 }

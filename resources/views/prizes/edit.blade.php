@@ -18,26 +18,25 @@
 
                 <div class="mb-4 md:w-1/2">
                     <label for="raffle_id" class="block text-gray-700 text-sm font-bold mb-2">Rifa</label>
-                    <select name="raffle_id" id="raffle_id" class="w-full border rounded-md py-2 px-3" required>
-                        <option value="">Seleccione una rifa</option>
-                        @foreach($raffles as $raffle)
-                            @if ($raffle->id == $prize->raffle_id)
-                                <option value="{{ $raffle->id }}" selected>{{ $raffle->name }}</option>
-                            @else
-                                <option value="{{ $raffle->id }}">{{ $raffle->name }}</option>    
-                            @endif
-                        @endforeach
+                    <select name="raffle_id" id="raffle_id" class="w-full border rounded-md py-2 px-3" required readonly>
+                        <option value="{{ $prize->raffle_id }}" selected>{{ $prize->raffle->name }}</option>
                     </select>
                 </div>
 
                 <div class="mb-4 md:w-1/5">
                     <label for="percentage_condition" class="block text-gray-700 text-sm font-bold mb-2">Cantidad mínima que debe tener paga:</label>
-                    <input type="number" name="percentage_condition" id="percentage_condition" class="w-full border rounded-md py-2 px-3" value="{{$prize->percentage_condition}}" required>
+                    <input type="number" name="percentage_condition" id="percentage_condition" class="w-full border rounded-md py-2 px-3" value="{{$prize->percentage_condition}}" required readonly>
                 </div>
 
+                
                 <div class="mb-4 md:w-1/5">
                     <label for="award_date" class="block text-gray-700 text-sm font-bold mb-2">Fecha sorteo:</label>
-                    <input type="date" name="award_date" id="award_date" class="w-full border rounded-md py-2 px-3" min="{{ now()->format('Y-m-d') }}" value="{{$prize->award_date}}" required>
+                    @if (now()->format('Y-m-d') < $prize->award_date )
+                        <input type="date" name="award_date" id="award_date" class="w-full border rounded-md py-2 px-3" min="{{ now()->format('Y-m-d') }}" value="{{$prize->award_date}}" required>
+                    @else
+                        <input type="date" name="award_date" id="award_date" class="w-full border rounded-md py-2 px-3" value="{{$prize->award_date}}" required readonly>
+                    @endif
+                    
                 </div>
 
                 <div class="mb-4 md:w-1/5">
@@ -48,5 +47,15 @@
                 <button type="submit" class="bg-blue-500 text-white py-2 px-4 rounded-md">Actualizar Rifa</button>
             </form>
         </div>
+        
+        @if ($errors->any())
+            <div class="alert alert-danger">
+                <ul>
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+        @endif
     </div>
 @endsection

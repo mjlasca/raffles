@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\CommissionsExport;
 use App\Models\Commissions;
 use App\Models\Ticket;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Maatwebsite\Excel\Facades\Excel;
 
 class CommissionController extends Controller
 {
@@ -177,5 +179,9 @@ class CommissionController extends Controller
     {
         $commission->delete();
         return redirect()->route('comisiones.index');
+    }
+
+    public function export(){
+        return Excel::download(new CommissionsExport,'Comisiones.xlsx');
     }
 }

@@ -9,13 +9,14 @@
                 <a class="ml-2 p-1 mt-1 bg-green-500 rounded-lg hover:bg-green-500" href="{{route('boletas.pay')}}">
                     <img class="h-5" src="{{ asset('img/icons/dollar-icon.svg') }}" alt="Pagar boletas" title="Pagar boletas">
                 </a>
-                <a class="ml-2 p-1 mt-1 bg-green-500 rounded-lg hover:bg-green-500" href="#">
-                    Descargar Archivo
+                <a class="ml-2 p-1 mt-1 bg-green-500 rounded-lg hover:bg-green-500" href="{{route('boletas.export')}}">
+                    <img class="h-5" src="{{ asset('img/icons/export-icon.svg') }}" alt="">
                 </a>
+                
             </div>
             <div>
                 <form method="GET"  class="p-6">
-                    <div class="flex">
+                    <div class="md:flex">
                         <div class="mb-4 mr-2 md:w-1/3">
                             <label for="raffle_id" class="block text-gray-700 text-sm font-bold mb-2">Rifa </label>
                             <select name="raffle_id" id="raffle_id" class="w-full border rounded-md py-2 px-3" >
@@ -57,7 +58,7 @@
                         </div>
  
                     </div>
-                    <button type="submit" class="bg-blue-500 text-white py-2 px-4 rounded-md">Filtrar consulta</button>
+                    <button type="submit" class="bg-blue-500 text-white py-2 px-4 rounded-md w-full md:w-64">Filtrar consulta</button>
                 </form>
             </div>
             @isset($tickets)
@@ -108,7 +109,7 @@
                                     <td class="py-2 px-4 text-right">${{ $ticket->payment }}</td>
                                     <td class="py-2 px-4 text-right">{{ $ticket->customer_name }}</td>
                                     <td class="py-2 px-4 text-right"> @if ($ticket->price == $ticket->payment) ${{ $ticket->assignment->commission }} @else $0 @endif </td>
-                                    <td class="py-2 px-4 flex">
+                                    <td class="py-2 px-4 grid grid-cols-2 gap-2">
                                         <a href="{{ route('boletas.show', $ticket->id) }}" class="text-blue-500 hover:bg-green-500 p-1 bg-blue-500 rounded-md mr-1">
                                             <img class="h-5" src="{{ asset('img/icons/show-icon.svg') }}" alt="Ver registro" title="Ver registro">
                                         </a>

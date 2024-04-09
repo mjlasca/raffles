@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\CashesExport;
 use App\Models\Cash;
 use App\Models\Raffle;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Maatwebsite\Excel\Facades\Excel;
 
 class CashController extends Controller
 {
@@ -206,5 +208,9 @@ class CashController extends Controller
     {
         $cash->delete();
         return redirect()->route('arqueos.index');
+    }
+
+    public function export(){
+        return Excel::download(new CashesExport,'Arqueos.xlsx');
     }
 }

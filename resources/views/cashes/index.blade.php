@@ -5,14 +5,16 @@
         <div class="bg-white shadow-md overflow-hidden rounded-md">
             <div class="py-4 px-6 bg-blue-500 flex text-white fill-white">
                 <h2 class="text-2xl font-semibold">Arqueos</h2>
-                
+                <a class="ml-2 p-1 mt-1 bg-green-500 rounded-lg hover:bg-green-500" href="{{route('arqueos.export')}}">
+                    <img class="h-5" src="{{ asset('img/icons/export-icon.svg') }}" alt="">
+                </a>
             </div>
             
 
             <div>
                 <form method="GET"  class="p-6">
                     
-                    <div class="flex">
+                    <div class="md:flex">
                         <div>
                             <label for="raffle_id" class="block text-gray-700 text-sm font-bold mb-2">Rifa</label>
                             <select name="raffle_id" id="raffle_id" class="w-full border rounded-md py-2 px-3" >
@@ -37,7 +39,7 @@
                             <input type="date" class="w-full border rounded-md py-2 px-3" name="date2" id="" value="{{Request('date2')}}">
                         </div>
                     </div>
-                    <button type="submit" class="mt-2 bg-blue-500 text-white py-2 px-4 rounded-md">Filtrar consulta</button>
+                    <button type="submit" class="mt-2 bg-blue-500 text-white py-2 px-4 rounded-md w-full md:w-64">Filtrar consulta</button>
                 </form>
             </div>
 
@@ -74,7 +76,7 @@
                                 @else
                                     <td class="py-2 px-4">No se ha cerrado el arqueo</td>
                                 @endif
-                                <td class="py-2 px-4 flex">
+                                <td class="py-2 px-4 grid grid-cols-2 gap-2">
                                     @if ( !empty( $day['cash']->id ))
                                         <form action="{{ route('arqueos.destroy', $day['cash']) }}" method="POST" onsubmit="return confirmCommission('Está segur@ de eliminar la liquidación')">
                                             @csrf

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\DeliveriesExport;
 use App\Models\Delivery;
 use App\Models\Raffle;
 use App\Models\Ticket;
@@ -10,6 +11,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Facades\DB;
+use Maatwebsite\Excel\Facades\Excel;
 
 class DeliveryController extends Controller
 {
@@ -173,5 +175,9 @@ class DeliveryController extends Controller
     public function destroy($id)
     {
         //
+    }
+
+    public function export(){
+        return Excel::download(new DeliveriesExport,'Entregas.xlsx');
     }
 }

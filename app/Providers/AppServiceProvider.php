@@ -77,5 +77,34 @@ class AppServiceProvider extends ServiceProvider
             
             return $val_max >= $value;
         });
+
+        Validator::extend('win_ticket', function ($attribute, $value, $parameters, $validator) {
+            $data = explode(":",$parameters[0]) ?? null;
+
+            $raffle_id = $data[0] ?? null;
+            $prize_id = $data[1] ?? null;
+
+            if(empty($value))
+                return true;
+
+            $raffle = Raffle::find($raffle_id);
+
+            if(!empty($raffle)){
+
+                $prize = Prize::find($prize_id);
+                if($prize){
+
+                    $ticket = Ticket::where('raffle_id',$raffle->id)->where('ticket_number',$value)->where('payment','>=',$prize->percentage_condition)->exists();
+                    
+                    if($ticket)
+                        return true;
+                }
+
+                
+            }
+            
+            
+            return false;
+        });
     }
 }

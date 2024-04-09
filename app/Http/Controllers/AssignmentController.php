@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\AssigmentsExport;
 use App\Http\Controllers\Controller;
 use App\Models\Assignment;
 use App\Models\Raffle;
@@ -11,6 +12,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
+use Maatwebsite\Excel\Facades\Excel;
 
 class AssignmentController extends Controller
 {
@@ -167,5 +169,9 @@ class AssignmentController extends Controller
     public function destroy(string $id)
     {
         //
+    }
+
+    public function export(){
+        return Excel::download(new AssigmentsExport,'Asignaciones.xlsx');
     }
 }

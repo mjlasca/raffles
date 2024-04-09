@@ -2,10 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\PrizesExport;
 use App\Models\Prize;
 use App\Models\Raffle;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Maatwebsite\Excel\Facades\Excel;
 
 class PrizeController extends Controller
 {
@@ -104,6 +107,7 @@ class PrizeController extends Controller
     {
         $prize = Prize::find($id);
         $raffles = Raffle::where('status','<',2)->select('id','name')->get();
+
         return view('prizes.edit', compact('prize','raffles'));
     }
 
@@ -117,6 +121,17 @@ class PrizeController extends Controller
     public function update(Request $request, $id)
     {
         $prize = Prize::find($id);
+
+        $request->validate(
+            [
+                'winning_ticket' => ['win_ticket:'.$request->input('raffle_id').':'.$id]
+            ],
+            [
+                'winning_ticket.win_ticket' => 'El boleto ganador no pertece a la rifa seleccionada o no tiene el pago mínimo',
+            ]
+        );
+
+        
         $prize->update($request->all());
         return redirect()->route('premios.index');
     }
@@ -130,5 +145,28 @@ class PrizeController extends Controller
     public function destroy($id)
     {
         //
+    }
+
+    public function export(){
+        return Excel::download(new PrizesExport,'Premios.xlsx');
+    }
+
+    
+    public function results(Request $req){
+
+        $today = date('Y-m-d');
+        $prizes = Prize::where('award_date','<',$today)->orderBy('award_date','DESC');
+        $current_prizes = Prize::where('award_date','>=',$today)->orderBy('award_date','DESC')->get();
+
+        if(!empty($req->input('date1'))){
+            $date1 = $req->input('date1');
+            $date2 = $date1;
+            if($req->input('date2'))
+                $date2 = $req->input('date2');
+            $prizes = $prizes->whereBetween('award_date',[$date1.' 00:00:00',$date2.' 23:59:59']);
+        }
+
+        $prizes = $prizes->paginate('50');
+        return view('prizes.results', compact('prizes','current_prizes'));
     }
 }

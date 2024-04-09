@@ -8,12 +8,15 @@
                 <a class="ml-2 p-1 mt-1 bg-green-500 rounded-lg hover:bg-green-500" href="{{route('entregas.create')}}">
                     <img class="h-5" src="{{ asset('img/icons/add-icon.svg') }}" alt="">
                 </a>
+                <a class="ml-2 p-1 mt-1 bg-green-500 rounded-lg hover:bg-green-500" href="{{route('entregas.export')}}">
+                    <img class="h-5" src="{{ asset('img/icons/export-icon.svg') }}" alt="">
+                </a>
             </div>
 
             <div>
                 <form method="GET"  class="p-6">
                     
-                    <div class="flex">
+                    <div class="md:flex">
                         <div>
                             <label for="keyword" class="block text-gray-700 text-sm font-bold mb-2">Buscar coincidencia</label>
                             <input type="text" class="w-full border rounded-md py-2 px-3" name="keyword" id="" value="{{ Request('keyword') }}" placeholder="Buscar...">
@@ -40,7 +43,7 @@
                             <input type="date" class="w-full border rounded-md py-2 px-3" name="date2" id="" value="{{Request('date2')}}">
                         </div>
                     </div>
-                    <button type="submit" class="mt-2 bg-blue-500 text-white py-2 px-4 rounded-md">Filtrar consulta</button>
+                    <button type="submit" class="mt-2 bg-blue-500 text-white py-2 px-4 rounded-md w-full md:w-64">Filtrar consulta</button>
                 </form>
             </div>
             
@@ -71,7 +74,7 @@
                                 <td class="py-2 px-4">{{ $deliverie->used }}</td>
                                 <td class="py-2 px-4">{{ $deliverie->redited->name }} {{ $deliverie->redited->lastname }}</td>
                                 
-                                <td class="py-2 px-4 flex">
+                                <td class="py-2 px-4 grid grid-cols-2 gap-2">
                                     <a href="{{ route('entregas.show', $deliverie->id) }}" class="text-blue-500 hover:bg-green-500 p-1 bg-blue-500 rounded-md mr-1">
                                         <img class="h-5" src="{{ asset('img/icons/show-icon.svg') }}" alt="Ver registro" title="Ver registro">
                                     </a>

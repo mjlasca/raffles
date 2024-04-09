@@ -11,6 +11,7 @@
 
     <!-- Scripts -->
     <script src="{{ asset('js/app.js') }}" defer></script>
+    <script src="{{ asset('js/base.js') }}" defer></script>
 
     <!-- Styles -->
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
@@ -31,15 +32,43 @@
             
 
         }
+
+        @media (max-width: 630px) {
+            .sidebar-raffle {
+                background-color: #ffffffde;
+                position: fixed;
+                width: 100%;
+            }
+
+            .sidebar-raffle img{
+                max-width: 150px;
+            }
+            .nav-raffle{
+                width: 90%;
+                height: 100%;
+                overflow-y: auto;
+            }
+
+            .nav-raffle nav{
+                overflow-y: auto;
+            }
+
+            .close-nav{
+                position: fixed;
+                left: 10px;
+                bottom: 10px;
+            }
+        }
+        
     </style>
 </head>
 <body>
     
     <div class="flex">
         <!--Sidebar-->
-        <div class="sm:flex h-screen bg-gray-800 hidden">
+        <div class="sidebar-raffle sm:flex h-screen bg-gray-800 hidden">
             
-            <div class="w-64 bg-gray-100">
+            <div class="nav-raffle w-64 bg-gray-100">
                 <div class="bg-blue-500 py-4 h-40 flex flex-col items-center">
                     <img src="{{ asset('img/logo.webp') }}" alt="Logo" class="w-2/4">
                 </div>
@@ -160,8 +189,25 @@
                                 </a>
                             </li>
                         @endif
+                        <li class="mb-5 sm:hidden">
+                            <a  class="inline-flex items-center bg-green-500 px-3 py-3 border  text-sm font-lg rounded-md  hover:bg-green-500 hover:text-white focus:outline-none transition ease-in-out duration-150 w-40 " href="{{ route('logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                                <span>
+                                    <img class="h-5 fill-white" src="{{ asset('img/icons/close-icon.svg') }}" alt="">
+                                </span>
+                                <p class="mt-1 text-center">
+                                    Cerrar sesión
+                                </p>
+                            </a>
+                        </li>
                     </ul>
                 </nav>
+                <div>
+                    <a href="#" class="close-nav flex justify-center items-center sm:hidden ">
+                        <span class="p-2 rounded-md bg-red-500">
+                            <img class="h-5 fill-white" src="{{ asset('img/icons/close-icon.svg') }}" alt="">
+                        </span>
+                    </a>
+                </div>
             </div>
         
         </div>
@@ -221,7 +267,7 @@
                             </div>
                             <!-- Hamburger -->
                             <div class="-mr-2 flex items-center sm:hidden">
-                                <button class="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 focus:text-gray-500 transition duration-150 ease-in-out">
+                                <button class="hamburguer inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 focus:text-gray-500 transition duration-150 ease-in-out">
                                     <svg class="h-6 w-6" stroke="currentColor" fill="none" viewBox="0 0 24 24">
                                         <path :class="{'hidden': open, 'inline-flex': ! open }" class="inline-flex" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
                                         <path :class="{'hidden': ! open, 'inline-flex': open }" class="hidden" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />

@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\RafflesExport;
 use App\Http\Controllers\Controller;
 use App\Models\Raffle;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Maatwebsite\Excel\Facades\Excel;
 
 class RaffleController extends Controller
 {
@@ -106,9 +108,6 @@ class RaffleController extends Controller
         return redirect()->route('rifas.index');
     }
 
-    public function results(){
-        return view('raffles.results');
-    }
 
     /**
      * Remove the specified resource from storage.
@@ -120,6 +119,10 @@ class RaffleController extends Controller
     {
         Raffle::destroy($id);
         return redirect()->route('raffles.index');
+    }
+
+    public function export(){
+        return Excel::download(new RafflesExport,'Rifas.xlsx');
     }
 
     
