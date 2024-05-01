@@ -76,7 +76,7 @@
                                 @else
                                     <td class="py-2 px-4">No se ha cerrado el arqueo</td>
                                 @endif
-                                <td class="py-2 px-4 grid grid-cols-2 gap-2">
+                                <td class="py-2 px-4 md:flex grid grid-cols-2 gap-2">
                                     @if ( !empty( $day['cash']->id ))
                                         <form action="{{ route('arqueos.destroy', $day['cash']) }}" method="POST" onsubmit="return confirmCommission('Está segur@ de eliminar la liquidación')">
                                             @csrf

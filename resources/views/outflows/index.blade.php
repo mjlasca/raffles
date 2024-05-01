@@ -57,7 +57,7 @@
                             <td class="py-2 px-4">{{ $outflow->redited->name }} {{ $outflow->redited->lastname }}</td>
                             <td class="py-2 px-4">{{ $outflow->detail }}</td>
                             <td class="py-2 px-4 text-right">${{ number_format($outflow->total,2) }}</td>
-                            <td class="py-2 px-4 grid gap-2">
+                            <td class="py-2 px-4 md:flex grid gap-2">
                                 <form action="{{ route('salidas.destroy', $outflow) }}" method="POST" onsubmit="return confirmCommission('Está segur@ de eliminar el registro')">
                                     @csrf
                                     @method('DELETE')
