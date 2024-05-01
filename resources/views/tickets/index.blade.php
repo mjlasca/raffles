@@ -109,7 +109,7 @@
                                     <td class="py-2 px-4 text-right">${{ $ticket->payment }}</td>
                                     <td class="py-2 px-4 text-right">{{ $ticket->customer_name }}</td>
                                     <td class="py-2 px-4 text-right"> @if ($ticket->price == $ticket->payment) ${{ $ticket->assignment->commission }} @else $0 @endif </td>
-                                    <td class="py-2 px-4 grid grid-cols-2 gap-2">
+                                    <td class="py-2 px-4 md:flex grid grid-cols-2 gap-2">
                                         <a href="{{ route('boletas.show', $ticket->id) }}" class="text-blue-500 hover:bg-green-500 p-1 bg-blue-500 rounded-md mr-1">
                                             <img class="h-5" src="{{ asset('img/icons/show-icon.svg') }}" alt="Ver registro" title="Ver registro">
                                         </a>
