@@ -329,7 +329,7 @@ cantdispo = disponible / n
         //
     }
 
-    public function export(){
-        return Excel::download(new TicketsExport,'Boletas.xlsx');
+    public function export(Request $req){
+        return Excel::download(new TicketsExport($req),'Boletas.xlsx');
     }
 }

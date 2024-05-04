@@ -9,7 +9,7 @@
                 <a class="ml-2 p-1 mt-1 bg-green-500 rounded-lg hover:bg-green-500" href="{{route('boletas.pay')}}">
                     <img class="h-5" src="{{ asset('img/icons/dollar-icon.svg') }}" alt="Pagar boletas" title="Pagar boletas">
                 </a>
-                <a class="ml-2 p-1 mt-1 bg-green-500 rounded-lg hover:bg-green-500" href="{{route('boletas.export')}}">
+                <a class="ml-2 p-1 mt-1 bg-green-500 rounded-lg hover:bg-green-500" href="{{route('boletas.export')}}?raffle_id={{Request('raffle_id')}}&user_id={{Request('user_id')}}">
                     <img class="h-5" src="{{ asset('img/icons/export-icon.svg') }}" alt="">
                 </a>
                 

@@ -171,7 +171,7 @@ class AssignmentController extends Controller
         //
     }
 
-    public function export(){
-        return Excel::download(new AssigmentsExport,'Asignaciones.xlsx');
+    public function export(Request $req){
+        return Excel::download(new AssigmentsExport($req),'Asignaciones.xlsx');
     }
 }
