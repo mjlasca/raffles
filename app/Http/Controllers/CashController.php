@@ -210,7 +210,7 @@ class CashController extends Controller
         return redirect()->route('arqueos.index');
     }
 
-    public function export(){
-        return Excel::download(new CashesExport,'Arqueos.xlsx');
+    public function export(Request $req){
+        return Excel::download(new CashesExport($req),'Arqueos.xlsx');
     }
 }

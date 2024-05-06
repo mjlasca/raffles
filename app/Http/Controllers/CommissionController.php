@@ -181,7 +181,7 @@ class CommissionController extends Controller
         return redirect()->route('comisiones.index');
     }
 
-    public function export(){
-        return Excel::download(new CommissionsExport,'Comisiones.xlsx');
+    public function export(Request $req){
+        return Excel::download(new CommissionsExport($req),'Comisiones.xlsx');
     }
 }

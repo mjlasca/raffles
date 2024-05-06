@@ -177,7 +177,7 @@ class DeliveryController extends Controller
         //
     }
 
-    public function export(){
-        return Excel::download(new DeliveriesExport,'Entregas.xlsx');
+    public function export(Request $req){
+        return Excel::download(new DeliveriesExport($req),'Entregas.xlsx');
     }
 }

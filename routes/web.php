@@ -38,7 +38,7 @@ Route::get('/assignments/export', [AssignmentController::class, 'export'])->midd
 Route::resource('premios', PrizeController::class)->middleware(['auth','roleAccess:Secretaria-Administrador'])->parameters([
     'premios' => 'prize',
 ]);
-Route::get('/prizes/export', [AssignmentController::class, 'export'])->middleware(['auth'])->name('premios.export');
+Route::get('/prizes/export', [PrizeController::class, 'export'])->middleware(['auth'])->name('premios.export');
 
 Route::resource('comisiones', CommissionController::class)->middleware(['auth','roleAccess:Secretaria-Administrador'])->parameters([
     'comisiones' => 'commission',

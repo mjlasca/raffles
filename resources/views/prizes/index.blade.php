@@ -8,7 +8,7 @@
                 <a class="ml-2 p-1 mt-1 bg-green-500 rounded-lg hover:bg-green-500" href="{{route('premios.create')}}">
                     <img class="h-5" src="{{ asset('img/icons/add-icon.svg') }}" alt="">
                 </a>
-                <a class="ml-2 p-1 mt-1 bg-green-500 rounded-lg hover:bg-green-500" href="{{route('premios.export')}}">
+                <a class="ml-2 p-1 mt-1 bg-green-500 rounded-lg hover:bg-green-500" href="{{route('premios.export')}}?date1={{Request('date1')}}&date2={{Request('date2')}}">
                     <img class="h-5" src="{{ asset('img/icons/export-icon.svg') }}" alt="">
                 </a>
                 <a class="ml-2 p-1 px-2 mt-1 bg-green-500 rounded-lg hover:bg-green-500" href="/resultados" target="_blank">

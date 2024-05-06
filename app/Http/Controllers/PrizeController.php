@@ -147,8 +147,8 @@ class PrizeController extends Controller
         //
     }
 
-    public function export(){
-        return Excel::download(new PrizesExport,'Premios.xlsx');
+    public function export(Request $req){
+        return Excel::download(new PrizesExport($req),'Premios.xlsx');
     }
 
     

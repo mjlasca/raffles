@@ -124,7 +124,7 @@ class OutFlowController extends Controller
         return redirect()->route('salidas.index');
     }
 
-    public function export(){
-        return Excel::download(new OutflowsExport,'Salidas.xlsx');
+    public function export(Request $req){
+        return Excel::download(new OutflowsExport($req),'Salidas.xlsx');
     }
 }
