@@ -30,7 +30,7 @@ Route::resource('usuarios', UserController::class)->middleware(['auth','roleAcce
 
 Route::get('/users/export', [UserController::class, 'export'])->middleware(['auth'])->name('usuarios.export');
 
-Route::resource('asignaciones', AssignmentController::class)->middleware(['auth',"roleAccess:Administrador"])->parameters([
+Route::resource('asignaciones', AssignmentController::class)->middleware(['auth',"roleAccess:Secretaria-Administrador"])->parameters([
     'asignaciones' => 'assignment',
 ]);
 Route::get('/assignments/export', [AssignmentController::class, 'export'])->middleware(['auth'])->name('asignaciones.export');
