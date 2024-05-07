@@ -25,13 +25,14 @@ class Commissions extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function payment_commissions()
+    public function tickets()
     {
-        return $this->hasMany(Ticket::class);
+        return $this->hasMany(Ticket::class, 'payment_commission');
     }
 
     public function raffle()
     {
         return $this->belongsTo(Raffle::class);
     }
+
 }

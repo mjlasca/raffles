@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Assignment;
+use App\Models\Commissions;
 use App\Models\Delivery;
 use App\Models\Prize;
 use App\Models\Raffle;
@@ -35,27 +36,69 @@ class DashboardController extends Controller
         
 
             $raffles = Raffle::select('id')->where('raffle_date','>',now())->get();
-            $sellers_deliveries = Ticket::select('raffle_id','user_id',
+            /*$sellers_deliveries = Ticket::select('raffle_id','user_id',
                                 DB::raw('SUM(price) as total_tickets'),
                                 DB::raw('(SELECT SUM(total) FROM deliveries WHERE deliveries.raffle_id = tickets.raffle_id AND deliveries.user_id = tickets.user_id) as total_delivery')
                                 )
                                 ->whereIn('raffle_id',$raffles)->groupBy('raffle_id','user_id')->get();
-            
+                        */
+
+            $sellers_deliveries = Ticket::select(
+                                    'tickets.raffle_id',
+                                    'tickets.user_id',
+                                    DB::raw('SUM(deliveries.used) as total_used'),
+                                    DB::raw('SUM(deliveries.total) as total')
+                                )
+                                ->leftJoin('deliveries', 'tickets.raffle_id', '=', 'deliveries.raffle_id')
+                                ->whereIn('tickets.raffle_id',$raffles)
+                                ->groupBy('tickets.raffle_id')
+                                ->get();
+
+            $commisions = Ticket::select(
+                                    'tickets.raffle_id',
+                                    'tickets.payment_commission',
+                                    'tickets.updated_at',
+                                    'tickets.ticket_number',
+                                    'tickets.user_id',
+                                    DB::raw('SUM(commissions.total) as total')
+                                )
+                                ->leftJoin('commissions', 'tickets.payment_commission', '=', 'commissions.id')
+                                ->whereIn('tickets.raffle_id',$raffles)
+                                ->groupBy('tickets.raffle_id')
+                                ->get();       
+
+            $data['commissions'] = $commisions;
             $data['sellers_deliveries'] = $sellers_deliveries;
 
         }
 
         if($current_user->role == 'Vendedor'){
 
-            $raffles = Raffle::select('id')->where('raffle_date','>',now())->get();
-            $sellers_deliveries = Ticket::select('raffle_id','user_id',
-                                DB::raw('SUM(price) as total_tickets'),
-                                DB::raw('(SELECT SUM(total) FROM deliveries WHERE deliveries.raffle_id = tickets.raffle_id AND deliveries.user_id = tickets.user_id) as total_delivery')
+            $raffles = Raffle::whereHas('prizes', function($query) {
+                                    $query->where('award_date', '>=', now());
+                                })->with(['prizes', 'deliveries' => function ($query) {
+                                    $query->select('raffle_id', DB::raw('SUM(total) as delivery_total'));
+                                }])->get();
+                                
+            $commisions = Ticket::select(
+                                    'tickets.raffle_id',
+                                    'tickets.payment_commission',
+                                    'tickets.updated_at',
+                                    'tickets.ticket_number',
+                                    'tickets.user_id',
+                                    DB::raw('IF(tickets.payment_commission != "", SUM(1), 0) as count_commission'),
+                                    DB::raw('SUM(commissions.total) as total')
                                 )
-                                ->where('user_id',$current_user->id)
-                                ->whereIn('raffle_id',$raffles)->groupBy('raffle_id','user_id')->get();
+                                ->leftJoin('commissions', 'tickets.payment_commission', '=', 'commissions.id')
+                                ->where('tickets.user_id', $current_user->id)
+                                ->whereIn('tickets.raffle_id',$raffles)
+                                ->groupBy('tickets.raffle_id')
+                                ->get();
+        
 
-            $data['sellers_deliveries'] = $sellers_deliveries;
+            $data['commisions'] = $commisions;
+            
+            
         }
 
         $prizes = Prize::select('raffle_id','detail','award_date','percentage_condition','type','id')

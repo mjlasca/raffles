@@ -22,7 +22,8 @@ class Ticket extends Model
         'movements',
         'customer_phone',
         'assignment_id',
-        'removable'
+        'removable',
+        'payment_commission'
     ];
 
     public function raffle()
@@ -47,6 +48,6 @@ class Ticket extends Model
 
     public function commission()
     {
-        return $this->belongsTo(Commissions::class);
+        return $this->belongsTo(Commissions::class, 'payment_commission');
     }
 }

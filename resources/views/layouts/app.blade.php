@@ -112,8 +112,9 @@
                                     </p>
                                 </a>
                             </li>
+                        @endif
                             
-
+                        @if (auth()->user()->role === 'Administrador' || auth()->user()->role === 'Secretaria')
                             <li class="mb-2">
                                 <a href="/asignaciones" class="inline-flex items-center  @if( str_contains( request()->path(),'asignaciones') ) bg-green-500 @else bg-blue-500 @endif px-3 py-3 border  text-sm font-lg rounded-md  hover:bg-green-500 hover:text-white focus:outline-none transition ease-in-out duration-150 w-40">
                                     <span class="mr-2 p-1 rounded-md bg-blue-500">
