@@ -29,7 +29,7 @@ class UserController extends Controller
             $users = $users->where('role',$req->input('role'));
         }
 
-        $users = $users->paginate(50);
+        $users = $users->orderBy('name','ASC')->paginate(50);
 
         return view('users.index', compact('users'));
     }

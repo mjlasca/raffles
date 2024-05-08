@@ -71,7 +71,7 @@
                             </td>
                             <td class="p-2">
                               <p class=""><span class="font-semibold">{{ $item->type}}</span> @if ($item->type == 'Anticipado')
-                                  con el {{ intval($item->percentage_condition) }}%
+                                con mínimo ${{ number_format($item->percentage_condition) }}
                               @endif</p>
                             </td>
                             <td class="p-2">
@@ -385,7 +385,7 @@
                             </td>
                             <td class="p-2">
                               <p class=""><span class="font-semibold">{{ $item->type}}</span> @if ($item->type == 'Anticipado')
-                                  con el {{ intval($item->percentage_condition) }}%
+                                  con mínimo ${{ number_format($item->percentage_condition) }}
                               @endif</p>
                             </td>
                             <td class="p-2">

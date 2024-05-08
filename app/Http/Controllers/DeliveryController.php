@@ -62,7 +62,7 @@ class DeliveryController extends Controller
     public function create()
     {
         $raffles = Raffle::where('raffle_status',1)->where('status',1)->select('id','name')->get();
-        $sellers_users = User::select('id','name','lastname')->where('role','Vendedor')->get();
+        $sellers_users = User::select('id','name','lastname')->where('role','Vendedor')->orderBy('name','ASC')->get();
         return view('deliveries.create', compact('raffles','sellers_users'));
     }
 
@@ -118,12 +118,23 @@ class DeliveryController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id, Request $req)
+    public function show($id)
+    {
+        $delivery = Delivery::find($id);
+        return view('deliveries.show', compact('delivery'));
+    }
+
+    /**
+     * Display the specified resource.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function payment($id, Request $req)
     {
         $delivery = Delivery::find($id);
         if(!empty($req->input('format')))
             return response()->json($delivery);
-        return view('deliveries.show', compact('delivery'));
     }
 
     /**

@@ -144,7 +144,7 @@ delivery_id.addEventListener('change', async () => {
     if(!content_tickets.classList.contains('hidden'))
         content_tickets.classList.add('hidden');
     
-    await  fetch(currentDomain+"/entregas/"+delivery_id.value+"?format=json")
+    await  fetch(currentDomain+"/deliveries/payment/"+delivery_id.value+"?format=json")
         .then(response => {
           if (!response.ok) {
             throw new Error(`Error de red - Código: ${response.status}`);

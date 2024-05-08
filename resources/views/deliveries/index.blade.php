@@ -70,8 +70,8 @@
                                 <td class="py-2 px-4">{{ $deliverie->description }}</td>
                                 <td class="py-2 px-4">{{ $deliverie->raffle->name }}</td>
                                 <td class="py-2 px-4">{{ $deliverie->user->name }} {{ $deliverie->user->lastname }}</td>
-                                <td class="py-2 px-4">{{ $deliverie->total }}</td>
-                                <td class="py-2 px-4">{{ $deliverie->used }}</td>
+                                <td class="py-2 px-4">${{ number_format($deliverie->total) }}</td>
+                                <td class="py-2 px-4">${{ number_format($deliverie->used) }}</td>
                                 <td class="py-2 px-4">{{ $deliverie->redited->name }} {{ $deliverie->redited->lastname }}</td>
                                 
                                 <td class="py-2 px-4 md:flex grid grid-cols-2 gap-2">

@@ -55,7 +55,7 @@ class AssignmentController extends Controller
     public function create()
     {
         $raffles = Raffle::where('raffle_status',0)->select('id','name')->get();
-        $sellers_users = User::select('id','name','lastname')->where('role','Vendedor')->get();
+        $sellers_users = User::select('id','name','lastname')->where('role','Vendedor')->orderBy('name','ASC')->get();
         return view('assignment.create', compact('raffles','sellers_users'));
     }
 
