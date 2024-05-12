@@ -106,7 +106,11 @@
                                     <td class="py-2 px-4">{{ $ticket->ticket_number }}</td>
                                     <td class="py-2 px-4">{{ $ticket->user->name }} {{ $ticket->user->lastname }}</td>
                                     <td class="py-2 px-4 text-right">${{ $ticket->price }}</td>
-                                    <td class="py-2 px-4 text-right">${{ $ticket->payment }}</td>
+                                    @if (strpos($ticket->movements, 'distribuido') !== false)
+                                        <td class="py-2 px-4 text-right bg-red-100">${{ $ticket->payment }}</td>
+                                    @else
+                                        <td class="py-2 px-4 text-right">${{ $ticket->payment }}</td>
+                                    @endif
                                     <td class="py-2 px-4 text-right">{{ $ticket->customer_name }}</td>
                                     <td class="py-2 px-4 text-right"> @if ($ticket->price == $ticket->payment) ${{ $ticket->assignment->commission }} @else $0 @endif </td>
                                     <td class="py-2 px-4 md:flex grid grid-cols-2 gap-2">

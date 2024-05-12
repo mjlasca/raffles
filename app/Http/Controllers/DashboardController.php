@@ -66,6 +66,17 @@ class DashboardController extends Controller
                                 ->groupBy('tickets.raffle_id')
                                 ->get();     
 
+            $deliveries = Delivery::select(
+                                    'raffle_id',
+                                    'user_id',
+                                    DB::raw('SUM(total) as total'),
+                                    DB::raw('SUM(used) as used')
+                                )
+                                ->whereIn('raffle_id',$raffles)
+                                ->groupBy('raffle_id','user_id')
+                                ->get();
+        
+            $data['deliveries'] = $deliveries;
             $data['commissions'] = $commisions;
             $data['sellers_deliveries'] = $sellers_deliveries;
 
@@ -94,7 +105,8 @@ class DashboardController extends Controller
                                 ->get();
 
             $data['commisions'] = $commisions;
-            
+
+
             
         }
 

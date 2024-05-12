@@ -222,19 +222,19 @@
                           </tr>
                         </thead>
                         <tbody >
-                          @foreach ($data['sellers_deliveries'] as $item)
+                          @foreach ($data['deliveries'] as $item)
                           <tr class="border-b">
                             <td class="p-2">  
                                   <p class="">{{$item->raffle->name}}</p>
                             </td>
                             <td class="p-2">
-                              <p class="">{{$item->user->name}} {{$item->user->lastname}}<br>${{ number_format($item->raffle->price * $item->raffle->tickets_number ) }}</p>
+                              <p class="">{{$item->user->name}} {{$item->user->lastname}}</p>
                             </td>
                             <td class="p-2">
-                              <p class=" text-right">${{ number_format($item->total_used) }}</p>
+                              <p class=" text-right">${{ number_format($item->total) }}</p>
                             </td>
                             <td class="p-2">
-                              <p class=" text-right">${{ number_format(($item->raffle->price * $item->raffle->tickets_number ) - $item->total_used) }}</p>
+                              <p class=" text-right">${{ number_format($item->used) }}</p>
                             </td>
                             
                           </tr>    
@@ -272,7 +272,7 @@
                               <p class="">{{$item->user->name}} {{$item->user->lastname}}</p>
                             </td>
                             <td class="p-2">
-                              <a href="https://wa.me/57{{$item->user->phone}}?text={{route('boletas.index')}}" target="_blank">
+                              <a href="https://wa.me/57{{$item->user->phone}}?text={{route('boletas.index')}}?user_id={{$item->user_id}}%26raffle_id={{$item->raffle_id}}" target="_blank">
                                 <p class=" text-right"><img class="w-8" src="{{ asset('img/icons/whatsapp-icon.svg') }}" alt="" srcset=""></p>
                               </a>
                             </td>

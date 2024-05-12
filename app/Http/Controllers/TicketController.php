@@ -25,7 +25,7 @@ class TicketController extends Controller
         $current_user = Auth::user();
         $filter = $request->all();
         $raffles = Raffle::select('id','name')->get();
-        $sellers_users = User::select('id','name','lastname')->where('role','Vendedor')->get();
+        $sellers_users = User::select('id','name','lastname')->where('role','Vendedor')->orderBy('name','ASC')->get();
         if($current_user->role === 'Vendedor'){
             $sellers_users = User::select('id','name','lastname')->where('role','Vendedor')->where('id',$current_user->id)->get();
             $raffles = Assignment::select('raffles.id as raffle_id', 'raffles.name')
@@ -149,6 +149,7 @@ class TicketController extends Controller
     }
 
     public function payall(Request $req){
+
         $current_user = Auth::user();
         
         if($req->input('delivery_id')){
@@ -163,31 +164,25 @@ class TicketController extends Controller
             foreach ($tickets_0 as $key => $ticket) {
                 $ticketIds[] = $ticket->id;
             }
-
+            //price ticket
+            $price = $tickets_0[0]->price;
+            
             //base total tickets initial
             $total_b = $tickets_0->sum('payment');
-            //dynamic total tickets
-            $total_x = 0;
-
-            //cant tickets
-            $count_ticket = count($tickets_0);
 
             //concat history payment
             $history = "'". $current_user->name." ".$current_user->lastname." ha hecho un pago distribuido " .date("d-m-Y h:i:s") ."'";
             
             //results update
             $restUpdate = 0;
-            $cont = 0;
-            while( ($total_b == 0 && $cont == 0) || $total_b > $total_x){
-                $cont++;
-                //distribution money to ticket
-                $additionalPayment = floor($to_use / $count_ticket);
+            
+            foreach ($ticketIds as $key => $value) {
 
                 //update ticket
-                $rUpdate = Ticket::whereIn('id', $ticketIds)
-                        ->whereRaw('price >= payment + ?', [$additionalPayment]) // Asegura que price sea mayor o igual a payment + $additionalPayment
+                $rUpdate = Ticket::where('id', $value)
+                        ->whereRaw('price > payment ') // Asegura que price sea mayor o igual a payment + $additionalPayment
                         ->update([
-                            'payment' => DB::raw('payment + ' . $additionalPayment),
+                            'payment' => DB::raw(' price - payment '),
                             'movements' =>  DB::raw("IFNULL(CONCAT($history,movements), $history)")
                         ]);
                         
@@ -195,80 +190,42 @@ class TicketController extends Controller
                     $restUpdate += (int)$rUpdate;
                 }
                 
-                
-                
                 //after sum
                 $total_x = Ticket::whereIn('id', $ticketIds)->sum('payment');
+                $to_use_dynamic = abs($total_b - $total_x);
+                
+                if($to_use_dynamic >= ($to_use - $price) ){
+                    
+                    $result_used = $to_use - $to_use_dynamic; 
+                    //update ticket
+                    $rUpdate = Ticket::where('raffle_id', $delivery->raffle_id)
+                        ->where('user_id', $delivery->user_id)
+                        ->whereRaw('(price - payment) >=  '.$result_used)
+                        ->first();
 
-                //use after payment update
-                $to_use = $total_x -  $total_b;
+                    if ($rUpdate) {
+                        $rUpdate->update([
+                            'payment' => $result_used,
+                            'movements' => DB::raw("IFNULL(CONCAT($history, movements), $history)")
+                        ]);
+                    }
+
+                    $restUpdate = 1;
+                    break;
+                }
+
             }
 
             if($restUpdate > 0){
                 //condition for money used update in delivery table
-                if($to_use_0 - $to_use > 0){
-                    $delivery->update([
-                        'used' => DB::raw('used + ' . ($to_use_0 - $to_use) ),
-                    ]);
-                }else{
-                    $delivery->update([
-                        'used' => DB::raw('used + ' . $to_use_0 ),
-                    ]);
-                }
+                $delivery->update([
+                    'used' => DB::raw('used + ' . $to_use_dynamic ),
+                ]);
             }
-                        
-
             
             return redirect()->route('boletas.index', ['raffle_id' => $delivery->raffle_id, 'user_id' => $delivery->user_id]);
         }
-        
 
-        /*
-        
-        tengo que asignar a las boletas que tenga disponibles
-
-for hasta que disponible sea cero
-
-la boleta disponible es aquella que valor - abono > 0
-
-n boletas
-
-cantdispo = disponible / n
-
-ACtualizó t boletas update boletas con cantdisponible donde (cantdisponible + abono) <= valor
-
-con t <= n
-
-acá vuelvo y reviso el disponible de esa entrega
-
-la boleta disponible es aquella que valor - abono > 0
-
-n boletas
-
-cantdispo = disponible / n
-
-        $current_user = Auth::user();
-        $delivery_id = $req->input('delivery_id');
-        if(!empty($delivery_id)){
-            $concat = [];
-            $total = 0;
-            for ($i=0; $i < count($tickets) ; $i++) { 
-                Ticket::where('ticket_number', $tickets[$i])->where('raffle_id',$raffle_id)->update(['customer_name' => $names[$i], 'customer_phone' => $phones[$i]]);
-                $concat[] = $tickets[$i].",".$payments[$i];
-                $total += $payments[$i];
-            }
-
-            Delivery::where('id',$delivery_id)->increment('used', $total);
-
-            $data['delivery_id'] = $delivery_id;
-            $data['payment_value'] = $total;
-            $data['detail'] = implode(";", $concat);
-            $data['create_user'] = $current_user->id;
-            $data['edit_user'] = $current_user->id;
-            PaymentTicket::create($data);
-        }
-        
-        return redirect()->route('boletas.index', ['raffle_id' => $raffle_id, 'user_id' => $user_id]);*/
     }
 
     public function checkTicket(Request $req){
