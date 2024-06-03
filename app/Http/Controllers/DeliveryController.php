@@ -61,7 +61,9 @@ class DeliveryController extends Controller
      */
     public function create()
     {
-        $raffles = Raffle::where('raffle_status',1)->where('status',1)->select('id','name')->get();
+        $raffles = Raffle::where('status',1)->select('raffles.id','raffles.name')->leftJoin(
+            'assignments', 'assignments.raffle_id', '=', 'raffles.id'
+        )->groupBy('raffles.id')->get();
         $sellers_users = User::select('id','name','lastname')->where('role','Vendedor')->orderBy('name','ASC')->get();
         return view('deliveries.create', compact('raffles','sellers_users'));
     }
@@ -74,10 +76,6 @@ class DeliveryController extends Controller
      */
     public function store(Request $request)
     {
-        /**
-         * falta hacer validación de entregas por usuario, ya que no importa cuantas entregas haga un usuario (así supera sus asignaciones)
-         * se valida sólo por el monto de la rifa
-         */
         $user = Auth::user();
         $data = $request->all();
         

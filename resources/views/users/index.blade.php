@@ -61,9 +61,11 @@
                                     <a href="{{ route('usuarios.edit', $user->id) }}" class="text-yellow-500 hover:bg-green-500 p-1 bg-blue-500 rounded-md mr-1">
                                         <img class="h-5" src="{{ asset('img/icons/edit-icon.svg') }}" alt="Editar" title="Editar">
                                     </a>
-                                    <a href="{{ route('usuarios.destroy', $user->id) }}" class="text-yellow-500 hover:bg-green-500 p-1 bg-red-500 rounded-md mr-1">
-                                        <img class="h-5" src="{{ asset('img/icons/delete-icon.svg') }}" alt="Eliminar" title="Eliminar">
-                                    </a>
+                                    <form action="{{ route('usuarios.delete', $user->id) }}" method="POST" onsubmit="return confirm('Está segur@ de eliminar el registro')">
+                                        @csrf
+                                        @method('PUT')
+                                        <button class="text-yellow-500 hover:bg-green-500 p-1 bg-red-500 rounded-md mr-1"><img class="h-5" src="{{ asset('img/icons/delete-icon.svg') }}" alt="Eliminar registro" title="Ver registro"></button>
+                                    </form>
                                 </td>
                             </tr>
                         @endforeach

@@ -17,7 +17,7 @@ class UserController extends Controller
      */
     public function index(Request $req)
     {
-        $users = User::where('id','>',0);
+        $users = User::where('enabled',1);
 
         if($req->input('keyword')){
             $users = $users->where('name', 'like', '%'.$req->input('keyword').'%')
@@ -124,7 +124,22 @@ class UserController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        
+    }
+
+    /**
+     * disabled user
+     */
+    public function delete(int $id){
+
+        $user = User::find($id);
+        if($user){
+            $user->update([
+                'enabled' => 0
+            ]); 
+        }
+
+        return redirect()->route('usuarios.index');
     }
 
     public function export(){

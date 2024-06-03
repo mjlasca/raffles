@@ -30,6 +30,8 @@ Route::resource('usuarios', UserController::class)->middleware(['auth','roleAcce
 
 Route::get('/users/export', [UserController::class, 'export'])->middleware(['auth'])->name('usuarios.export');
 
+Route::put('/users/{id}', [UserController::class, 'delete'])->middleware(['auth','roleAccess:Secretaria-Administrador'])->name('usuarios.delete');
+
 Route::resource('asignaciones', AssignmentController::class)->middleware(['auth',"roleAccess:Secretaria-Administrador"])->parameters([
     'asignaciones' => 'assignment',
 ]);
