@@ -61,7 +61,7 @@
                 <div class="d-cell"><span class="space">---------------------------</span><span>Monto:</span> ${{ number_format($delivery->total, 2, ',', '.') }}</div>
             </div>
             <div class="detalle">
-                <span>Vendedor(a):</span>{{ $delivery->user->name }}
+                <span>Vendedor(a):</span>{{ $delivery->user->name }} {{ $delivery->user->lastname }}
             </div>
             <div class="detalle d-table">
                 <div class="d-cell"><span>Teléfono:</span>{{ $delivery->user->phone }}</div>
@@ -93,7 +93,7 @@
                 <div class="d-cell"><span class="space">---------------------------</span><span>Monto:</span> ${{ number_format($delivery->total, 2, ',', '.') }}</div>
             </div>
             <div class="detalle">
-                <span>Vendedor(a):</span>{{ $delivery->user->name }}
+                <span>Vendedor(a):</span>{{ $delivery->user->name }} {{ $delivery->user->lastname }}
             </div>
             <div class="detalle d-table">
                 <div class="d-cell"><span>Teléfono:</span>{{ $delivery->user->phone }}</div>
