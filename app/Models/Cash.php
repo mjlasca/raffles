@@ -12,7 +12,7 @@ class Cash extends Model
     protected $fillable = [
         'day_date', 
         'real_money_box',
-        'real_money_box',
+        'manual_money_box',
         'difference',
         'deliveries',
         'day_outings',
