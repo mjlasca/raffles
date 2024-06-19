@@ -25,17 +25,14 @@ class DashboardController extends Controller
         $current_user = Auth::user();
         $data = [];
         if($current_user->role == 'Administrador' || $current_user->role == 'Secretaria'){
-            $raffles = Raffle::whereHas('prizes', function($query) {
-                                    $query->where('award_date', '>=', now());
-                                    $query->where('type', 'Mayor');
-                                })->with(['prizes', 'deliveries' => function ($query) {
+            $raffles = Raffle::where('raffle_date','>',now())->with(['deliveries' => function ($query) {
                                     $query->select('raffle_id', DB::raw('SUM(total) as delivery_total'));
                                 }])->get();
                                 
-            $data['current_raffles'] = $raffles;
-        
-
+            $data['current_raffles'] = $raffles;                    
+                                
             $raffles = Raffle::select('id')->where('raffle_date','>',now())->get();
+            
             /*$sellers_deliveries = Ticket::select('raffle_id','user_id',
                                 DB::raw('SUM(price) as total_tickets'),
                                 DB::raw('(SELECT SUM(total) FROM deliveries WHERE deliveries.raffle_id = tickets.raffle_id AND deliveries.user_id = tickets.user_id) as total_delivery')
