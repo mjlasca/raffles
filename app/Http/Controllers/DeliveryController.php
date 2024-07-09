@@ -86,7 +86,7 @@ class DeliveryController extends Controller
             $sum = Delivery::where('raffle_id',$raffle_id)->where('user_id',$user_)->sum('total') + $data['total'];
             $sumTicket = Ticket::where('raffle_id',$raffle_id)->where('user_id',$user_)->sum('price');
             $sumPayment = Ticket::where('raffle_id',$raffle_id)->where('user_id',$user_)->sum('payment');
-            $sumTotal = ($sumTicket - $sumPayment );
+            $sumTotal = ($sumTicket - $sum ) < 0 ? 0 : ($sumTicket - $sum );
             $raffle = Raffle::find($data['raffle_id']);
             
         }
@@ -96,7 +96,7 @@ class DeliveryController extends Controller
                 'total' => ['required', 'delivery_total:'.$data['raffle_id'].':'.$data['user_id']]
             ],
             [
-                'total.delivery_total' => 'El valor de entrega supera el monto total de la rifa, Total sin engrega $('.number_format($sumTotal,0).') Suma total entregas $('.number_format($sum,0).')',
+                'total.delivery_total' => 'El total a entregar debe ser $('.number_format($sumTicket,0).'). El valor de entrega supera el monto total de la rifa, total sin engrega $('.number_format($sumTotal,0).') Suma total entregas mas la actual $('.number_format($sum,0).')',
             ]
         );
         
