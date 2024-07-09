@@ -53,11 +53,9 @@ class AppServiceProvider extends ServiceProvider
             
             $sum = Delivery::where('raffle_id',$raffle_id)->where('user_id',$user)->sum('total') + $value;
             $sumTicket = Ticket::where('raffle_id',$raffle_id)->where('user_id',$user)->sum('price');
-            $sumPayment = Ticket::where('raffle_id',$raffle_id)->where('user_id',$user)->sum('payment');
-
-            $sumTotal = ($sumTicket - $sumPayment );
-            
-            return $sumTotal >= $sum;
+            //$sumPayment = Ticket::where('raffle_id',$raffle_id)->where('user_id',$user)->sum('payment');
+            //$sumTotal = ($sumTicket - $sumPayment );
+            return $sumTicket >= $sum;
         });
 
         Validator::extend('length_ticket', function ($attribute, $value, $parameters, $validator) {

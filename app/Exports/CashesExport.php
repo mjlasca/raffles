@@ -11,10 +11,12 @@ class CashesExport implements FromCollection, WithHeadings
 {
     private $date1;
     private $date2;
+    private $raffle_id;
 
     public function __construct($req) {
         $this->date1 = $req->input('date1');
         $this->date2 = $req->input('date2');
+        $this->raffle_id = $req->input('raffle_id');
     }
 
     /**

@@ -144,7 +144,7 @@ class DeliveryController extends Controller
     public function edit($id)
     {
         $delivery = Delivery::find($id);
-        $raffles = Raffle::where('raffle_status',0)->select('id','name')->get();
+        $raffles = Raffle::where('raffle_status',1)->select('id','name')->get();
         $sellers_users = User::select('id','name','lastname')->where('role','Vendedor')->get();
         return view('deliveries.edit', compact('delivery','raffles','sellers_users'));
     }

@@ -74,7 +74,7 @@
                                 <td class="py-2 px-4">${{ number_format($deliverie->used) }}</td>
                                 <td class="py-2 px-4">{{ $deliverie->redited->name }} {{ $deliverie->redited->lastname }}</td>
                                 
-                                <td class="py-2 px-4 md:flex grid grid-cols-2 gap-2">
+                                <td class="py-2 px-4 grid grid-cols-2 gap-2">
                                     <a href="{{ route('entregas.show', $deliverie->id) }}" class="text-blue-500 hover:bg-green-500 p-1 bg-blue-500 rounded-md mr-1">
                                         <img class="h-5" src="{{ asset('img/icons/show-icon.svg') }}" alt="Ver registro" title="Ver registro">
                                     </a>
