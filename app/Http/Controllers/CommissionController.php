@@ -49,21 +49,24 @@ class CommissionController extends Controller
                             $query->where('raffle_status', '>', 0);
                         })
                         ->whereColumn('price', 'payment')
+                        ->join('users', 'tickets.user_id', '=', 'users.id')
+                        ->orderBy('users.name', 'ASC')
+                        ->select('tickets.*')
                         ->get();
                         
         $sellers_users = [];
-        $sum = 0;
+        $sum = [];
         $aux = [];
         foreach ($tickets as $key => $ticket) {
-            $sum += $ticket->assignment->commission;
-            
+            $sum[$ticket->user_id] = $sum[$ticket->user_id] ?? 0;
+            $sum[$ticket->user_id] += $ticket->assignment->commission;
             $aux[$ticket->user_id][] = [
                 'ticket' => $ticket,
             ];
             $sellers_users[$ticket->user_id] = [
-                'user' => $ticket->user->name,
+                'user' => $ticket->user->name . " " .$ticket->user->lastname,
                 'user_id' => $ticket->user_id,
-                'sum' => $sum,
+                'sum' => $sum[$ticket->user_id],
                 'detail' => $aux[$ticket->user_id]
             ];
             
