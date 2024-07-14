@@ -23,7 +23,7 @@ class DeliveryController extends Controller
     public function index(Request $req)
     {
         $deliveries = Delivery::orderBy('updated_at', 'DESC');
-        $sellers_users = User::select('id','name','lastname')->where('role','Vendedor')->get();
+        $sellers_users = User::select('id','name','lastname')->where('role','Vendedor')->orderBy('name','ASC')->get();
         if(!empty($req->input('date1'))){
             $date1 = $req->input('date1');
             $date2 = $date1;

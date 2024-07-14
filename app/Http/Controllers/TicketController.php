@@ -149,83 +149,53 @@ class TicketController extends Controller
     }
 
     public function payall(Request $req){
-
         $current_user = Auth::user();
-        
         if($req->input('delivery_id')){
             $delivery = Delivery::find($req->input('delivery_id'));
-
             $to_use = $delivery->total - $delivery->used;
-            $to_use_0 = $delivery->total - $delivery->used;
             $tickets_0 = Ticket::where('raffle_id',$delivery->raffle_id)->where('user_id',$delivery->user_id)->whereColumn('price','>','payment')->get();
-
             //tickets id base
             $ticketIds = [];
             foreach ($tickets_0 as $key => $ticket) {
                 $ticketIds[] = $ticket->id;
             }
-            //price ticket
-            $price = $tickets_0[0]->price;
-            
-            //base total tickets initial
-            $total_b = $tickets_0->sum('payment');
-
             //concat history payment
-            $history = "'". $current_user->name." ".$current_user->lastname." ha hecho un pago distribuido " .date("d-m-Y h:i:s") ."'";
-            
-            //results update
-            $restUpdate = 0;
-            
+            $history = "'". $current_user->name." ".$current_user->lastname." ha hecho un pago distribuido [pay] " .date("d-m-Y h:i:s") ."'";
+            $to_use_dynamic = $to_use;
+            $total_b = 0;
             foreach ($ticketIds as $key => $value) {
-
-                //update ticket
-                $rUpdate = Ticket::where('id', $value)
-                        ->whereRaw('price > payment ') // Asegura que price sea mayor o igual a payment + $additionalPayment
-                        ->update([
-                            'payment' => DB::raw(' price - payment '),
-                            'movements' =>  DB::raw("IFNULL(CONCAT($history,movements), $history)")
-                        ]);
-                        
-                if(is_numeric($rUpdate)){
-                    $restUpdate += (int)$rUpdate;
-                }
-                
-                //after sum
-                $total_x = Ticket::whereIn('id', $ticketIds)->sum('payment');
-                $to_use_dynamic = abs($total_b - $total_x);
-                
-                if($to_use_dynamic >= ($to_use - $price) ){
-                    
-                    $result_used = $to_use - $to_use_dynamic; 
-                    //update ticket
-                    $rUpdate = Ticket::where('raffle_id', $delivery->raffle_id)
-                        ->where('user_id', $delivery->user_id)
-                        ->whereRaw('(price - payment) >=  '.$result_used)
-                        ->first();
-
-                    if ($rUpdate) {
-                        $rUpdate->update([
-                            'payment' => $result_used,
-                            'movements' => DB::raw("IFNULL(CONCAT($history, movements), $history)")
-                        ]);
+                if($to_use_dynamic > 0){
+                    $rUpdate = Ticket::where('id', $value)
+                            ->whereRaw('price > payment ')
+                            ->get();
+                    $price = $rUpdate->sum('price');
+                    $payment = $rUpdate->sum('payment');
+                    $diff = $price - $payment;
+                    if($diff >= $to_use_dynamic)
+                        $diff = $to_use_dynamic;
+                    if($diff > 0 && ($total_b + $diff) <= $to_use){
+                        $to_use_dynamic = $to_use_dynamic - $diff;
+                        $temHistory = str_replace('[pay]', " por $".number_format($diff,0), $history);
+                        Ticket::where('id', $value)
+                            ->whereRaw('price > payment ')
+                            ->update([
+                                'payment' => DB::raw(' price - payment '),
+                                'movements' =>  DB::raw("IFNULL(CONCAT($temHistory,movements), $temHistory)")
+                            ]);
+                        $total_b += $diff;
                     }
-
-                    $restUpdate = 1;
+                }else{
                     break;
                 }
-
             }
-
-            if($restUpdate > 0){
+            if($total_b > 0){
                 //condition for money used update in delivery table
                 $delivery->update([
-                    'used' => DB::raw('used + ' . $to_use_dynamic ),
+                    'used' => DB::raw('used + ' . $total_b ),
                 ]);
             }
-            
             return redirect()->route('boletas.index', ['raffle_id' => $delivery->raffle_id, 'user_id' => $delivery->user_id]);
         }
-
     }
 
     public function checkTicket(Request $req){
