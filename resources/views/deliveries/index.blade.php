@@ -62,8 +62,16 @@
                             <th class="py-2 px-4 border-b">Acciones</th>
                         </tr>
                     </thead>
+                    @php
+                        $total = 0;
+                        $total2 = 0;
+                    @endphp
                     <tbody>
                         @foreach($deliveries as $deliverie)
+                            @php
+                                $total = $total + $deliverie->total;
+                                $total2 = $total2 + $deliverie->used;
+                            @endphp
                             <tr class="hover:bg-gray-100 border-b">
                                 <td class="py-2 px-4">{{ $deliverie->updated_at }}</td>
                                 <td class="py-2 px-4">{{ $deliverie->id }}</td>
@@ -93,6 +101,13 @@
                                 </td>
                             </tr>
                         @endforeach
+                        <tr>
+                            <td ></td>
+                            <td colspan="4">TOTAL</td>
+                            <td class="py-2 px-4">${{number_format($total)}}</td>
+                            <td class="py-2 px-4">${{number_format($total2)}}</td>
+                            <td></td>
+                        </tr>
                     </tbody>
                 </table>
                 
