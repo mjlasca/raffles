@@ -65,6 +65,17 @@
                 <div class="overflow-x-auto">
                     <table class="min-w-full">
                         <thead>
+                            @if ($totals)
+                                <tr class="hover:bg-blue-500 hover:text-white bg-red-100">
+                                    <td colspan="2"></td>
+                                    <td colspan="2">TOTALES $</td>
+                                    <td class="py-2 px-4 text-right">{{ number_format($totals['total']) }}</td>
+                                    <td class="py-2 px-4 text-right">{{ number_format($totals['payment']) }}</td>
+                                    <td></td>
+                                    <td class="py-2 px-4 text-right">{{ number_format($totals['commission']) }}</td>
+                                    <td></td>
+                                </tr>                                
+                            @endif
                             <tr class="text-md font-semibold tracking-wide text-left text-white bg-green-500 uppercase border-b border-gray-600">
                                 @if (auth()->user()->role === 'Administrador' || auth()->user()->role === 'Secretaria')
                                 <th class="py-2 px-4 border-b">
@@ -83,6 +94,7 @@
                             </tr>
                         </thead>
                         <tbody>
+                            
                             @foreach($tickets as $ticket)
                                 <tr class="hover:bg-gray-100 border-b @if ($ticket->removable == 1)
                                     bg-green-100

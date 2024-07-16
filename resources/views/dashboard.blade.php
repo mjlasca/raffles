@@ -206,7 +206,7 @@
       
       <div class=" rounded-lg shadow">
         <div class="h-40">
-            <img class="w-full h-40 rounded-t-lg" src="https://www.ondasdeibague.com/images/Archivo/dinero_colombiano_0320.jpg" alt="" srcset="">
+            <img class="w-full h-40 rounded-t-lg" src="https://i.pinimg.com/originals/2d/30/a8/2d30a852489756c66c282226abaf6f3d.jpg" alt="" srcset="">
         </div>
         <div class="mt-3">
             <b class="p-3 text-2xl">Entregas pendientes</b>
@@ -217,27 +217,29 @@
                           <tr class="text-md font-semibold tracking-wide text-left bg-green-500 text-white uppercase border-b border-gray-600">
                             <th class="px-4">Rifa</th>
                             <th class="px-4">Asignado</th>
-                            <th class="px-4">Entregado</th>
-                            <th class="px-4">Saldo</th>
+                            <th class="px-4">Entrega</th>
+                            <th class="px-4">Canjeado</th>
                           </tr>
                         </thead>
                         <tbody >
                           @foreach ($data['deliveries'] as $item)
-                          <tr class="border-b">
-                            <td class="p-2">  
-                                  <p class="">{{$item->raffle->name}}</p>
-                            </td>
-                            <td class="p-2">
-                              <p class="">{{$item->user->name}} {{$item->user->lastname}}</p>
-                            </td>
-                            <td class="p-2">
-                              <p class=" text-right">${{ number_format($item->total) }}</p>
-                            </td>
-                            <td class="p-2">
-                              <p class=" text-right">${{ number_format($item->used) }}</p>
-                            </td>
-                            
-                          </tr>    
+                            @if ($item->total > $item->used)
+                            <tr class="border-b">
+                              <td class="p-2">  
+                                    <p class="">{{$item->raffle->name}}</p>
+                              </td>
+                              <td class="p-2">
+                                <p class="">{{$item->user->name}} {{$item->user->lastname}}</p>
+                              </td>
+                              <td class="p-2">
+                                <p class=" text-right">${{ number_format($item->total) }}</p>
+                              </td>
+                              <td class="p-2">
+                                <p class=" text-right">${{ number_format($item->used) }}</p>
+                              </td>
+                              
+                            </tr>          
+                            @endif
                           @endforeach
                         </tbody>
                       </table>

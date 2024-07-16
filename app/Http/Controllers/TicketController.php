@@ -24,6 +24,7 @@ class TicketController extends Controller
     {
         $current_user = Auth::user();
         $filter = $request->all();
+        $totals = ['total' => 0,'payment' => 0,'commission' => 0];
         $raffles = Raffle::select('id','name')->get();
         $sellers_users = User::select('id','name','lastname')->where('role','Vendedor')->orderBy('name','ASC')->get();
         if($current_user->role === 'Vendedor'){
@@ -48,12 +49,31 @@ class TicketController extends Controller
             $tickets = $tickets->orderBy('raffle_id')->orderBy('ticket_number')->paginate(100);
             $tickets->appends($filter);
             
+            $ticketsTotal = Ticket::select(
+                DB::raw('SUM(tickets.price) as total_price'),
+                DB::raw('SUM(tickets.payment) as total_payment'),
+                DB::raw('SUM(CASE WHEN tickets.price = tickets.payment THEN assignments.commission ELSE 0 END) as total_commission')
+            )
+            ->join('assignments', 'tickets.assignment_id', '=', 'assignments.id');
+            if(isset($filter["raffle_id"]))
+                $ticketsTotal->where('tickets.raffle_id', $filter['raffle_id']);
+            if(isset($filter["user_id"]))
+                $ticketsTotal->where('tickets.user_id', $filter['user_id']);
             
+            $ticketsTotal = $ticketsTotal->get();
 
-            return view('tickets.index', compact('tickets','raffles','sellers_users'));
+            if(!empty($ticketsTotal)){
+                $totals = [
+                    'total' => $ticketsTotal[0]['total_price'],
+                    'payment' => $ticketsTotal[0]['total_payment'],
+                    'commission' => $ticketsTotal[0]['total_commission']
+                ];
+            }
+
+            return view('tickets.index', compact('tickets','raffles','sellers_users','totals'));
         }
         
-        return view('tickets.index', compact('raffles','sellers_users'));
+        return view('tickets.index', compact('raffles','sellers_users','totals'));
     }
 
     /**
