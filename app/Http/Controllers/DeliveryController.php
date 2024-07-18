@@ -65,7 +65,8 @@ class DeliveryController extends Controller
             'assignments', 'assignments.raffle_id', '=', 'raffles.id'
         )->groupBy('raffles.id')->get();
         $sellers_users = User::select('id','name','lastname')->where('role','Vendedor')->orderBy('name','ASC')->get();
-        return view('deliveries.create', compact('raffles','sellers_users'));
+        $date = date('Y-m-d');
+        return view('deliveries.create', compact('raffles','sellers_users','date'));
     }
 
     /**

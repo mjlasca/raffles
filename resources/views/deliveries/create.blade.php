@@ -17,7 +17,9 @@
 
                 <div class="mb-4 w-52">
                     <label for="total" class="block text-gray-700 text-sm font-bold mb-2">Fecha de entrega</label>
-                    <input type="date" min="0" name="date" id="date" class="w-full border rounded-md py-2 px-3" step="0.01" value="{{old('date')}}" required>
+                    <input type="date" min="0" name="date" id="date" class="w-full border rounded-md py-2 px-3" step="0.01" @if (old('date'))
+                        value="{{old('date')}}"
+                    @else value="{{$date}}" @endif  required>
                 </div>
                 
                 <div class="mb-4 md:w-1/2">
