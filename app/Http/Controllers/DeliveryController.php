@@ -93,19 +93,26 @@ class DeliveryController extends Controller
 
         $request->validate(
             [
-                'total' => ['required', 'delivery_total:'.$data['raffle_id'].':'.$data['user_id']]
+                'total' => ['required', 'delivery_total:'.$data['raffle_id'].':'.$data['user_id']],
+                'date' => ['required']
             ],
             [
                 'total.delivery_total' => 'El total a entregar debe ser $('.number_format($sumTicket,0).'). El valor de entrega supera el monto total de la rifa, total sin engrega $('.number_format($sumTotal,0).') Suma total entregas mas la actual $('.number_format($sum,0).')',
             ]
         );
         
+        
         $data['create_user'] = $user->id;
         $data['edit_user'] = $user->id;
-
-        if(Delivery::create($data)){
+        if($deliveryQuery = Delivery::create($data)){
             if( ($raffle->price * $raffle->tickets_number) == ($sum + (+ (!empty($data['total']) ? $data['total'] : 0))))
                 $raffle->update(['status'=>0]);
+            if(isset($data['date'])){
+                $deli = Delivery::find($deliveryQuery->id);
+                $deli->created_at = $data['date']." ".date('h:i:s');
+                $deli->updated_at = $data['date']." ".date('h:i:s');
+                $deli->save();
+            }
         }
         return redirect()->route('entregas.index');
     }
@@ -163,6 +170,8 @@ class DeliveryController extends Controller
         $data = $request->all();
         $data['edit_user'] = $current_user->id;
         $delivery->update($data);
+        $delivery->updated_at = $data['date']." ".date('h:i:s');
+        $delivery->save();
 
         return redirect()->route('entregas.index');
     }

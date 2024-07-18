@@ -15,6 +15,10 @@
                     <textarea name="description" id="description" class="w-full border rounded-md py-2 px-3" required>{{old('description')}}</textarea>
                 </div>
 
+                <div class="mb-4 w-52">
+                    <label for="total" class="block text-gray-700 text-sm font-bold mb-2">Fecha de entrega</label>
+                    <input type="date" min="0" name="date" id="date" class="w-full border rounded-md py-2 px-3" step="0.01" value="{{old('date')}}" required>
+                </div>
                 
                 <div class="mb-4 md:w-1/2">
                     <label for="raffle_id" class="block text-gray-700 text-sm font-bold mb-2">Rifa</label>
