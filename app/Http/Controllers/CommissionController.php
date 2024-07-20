@@ -46,7 +46,7 @@ class CommissionController extends Controller
     public function create()
     {
         $tickets = Ticket::where('payment_commission', null)->whereHas('raffle', function ($query) {
-                            $query->where('raffle_status', '>', 0);
+                            $query->where('raffle_status', '>', -1);
                         })
                         ->whereColumn('price', 'payment')
                         ->join('users', 'tickets.user_id', '=', 'users.id')

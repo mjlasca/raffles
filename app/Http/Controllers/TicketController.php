@@ -59,6 +59,8 @@ class TicketController extends Controller
                 $ticketsTotal->where('tickets.raffle_id', $filter['raffle_id']);
             if(isset($filter["user_id"]))
                 $ticketsTotal->where('tickets.user_id', $filter['user_id']);
+            if(isset($filter["ticket_number"]))
+                $ticketsTotal->where('tickets.ticket_number', $filter['ticket_number']);
             
             $ticketsTotal = $ticketsTotal->get();
 
