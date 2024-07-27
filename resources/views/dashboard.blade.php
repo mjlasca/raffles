@@ -106,7 +106,7 @@
                         <b>Juega el </b>{{$item->raffle_date}}<br>
                         <b data-total-total-raffle="{{$item->price * $item->tickets_number}}">Total rifa </b>${{ number_format($item->price * $item->tickets_number,0,null,".")}}<br>
                         @if( !empty($item->deliveries[0]) )
-                          <b data-total-delivery="{{$item->deliveries[0]->delivery_total}}">Total entregas </b>${{ number_format($item->deliveries[0]->delivery_total,0,null,".")}}<br>
+                          <b data-total-delivery="{{$item->delivery_total}}">Total entregas </b>${{ number_format($item->delivery_total,0,null,".")}}<br>
                         @else
                           <b data-total-delivery="0">Total entregas </b>${{ number_format(0,0,null,".")}}<br>
                         @endif
@@ -304,8 +304,8 @@
                           <b>{{$item->name}}</b><br>
                           <b>Juega el </b>{{$item->raffle_date}}<br>
                           <b data-total-total-raffle="{{$item->price * $item->tickets_number}}">Total rifa </b>${{ number_format($item->price * $item->tickets_number,0,null,".")}}<br>
-                          @if( !empty($item->deliveries[0]) )
-                            <b data-total-delivery="{{$item->deliveries[0]->delivery_total}}">Total entregas </b>${{ number_format($item->deliveries[0]->delivery_total,0,null,".")}}<br>
+                          @if( !empty($item->delivery_total) )
+                            <b data-total-delivery="{{$item->delivery_total}}">Total entregas </b>${{ number_format($item->delivery_total,0,null,".")}}<br>
                           @else
                           <b data-total-delivery="0">Total entregas </b>${{ number_format(0,0,null,".")}}<br>
                           @endif

@@ -22,36 +22,57 @@ class DeliveryController extends Controller
      */
     public function index(Request $req)
     {
-        $deliveries = Delivery::orderBy('updated_at', 'DESC');
+        $deliveries = Delivery::orderBy('id', 'DESC')->orderBy('consecutive','DESC');
         $sellers_users = User::select('id','name','lastname')->where('role','Vendedor')->orderBy('name','ASC')->get();
+        $raffles = Raffle::select('id','name')->orderBy('name','ASC')->get();
         if(!empty($req->input('date1'))){
             $date1 = $req->input('date1');
             $date2 = $date1;
             if($req->input('date2'))
                 $date2 = $req->input('date2');
-            $deliveries = $deliveries->whereBetween('updated_at',[$date1.' 00:00:00',$date2.' 23:59:59']);
+            $deliveries = $deliveries->whereBetween('created_at',[$date1.' 00:00:00',$date2.' 23:59:59']);
         }
 
         if($req->input('user_id')){
             $deliveries = $deliveries->where('user_id',$req->input('user_id'));
+        }
+        if($req->input('raffle_id')){
+            $deliveries = $deliveries->where('raffle_id',$req->input('raffle_id'));
         }
 
         if($req->input('keyword')){
             $keyword = $req->input('keyword');
 
             $deliveries = $deliveries->where(function ($query) use ($keyword) {
-                $query->whereHas('raffle', function ($q) use ($keyword) {
-                    $q->where('name', 'like', '%' . $keyword . '%');
-                })
-                ->orWhereHas('redited', function ($q) use ($keyword) {
+                $query->whereHas('redited', function ($q) use ($keyword) {
                     $q->where('name', 'like', '%' . $keyword . '%')
                       ->orWhere('lastname', 'like', '%' . $keyword . '%');
                 });
             });
         }
 
+        $deliveryTotal = Delivery::select(
+            DB::raw('COUNT(1) as count'),
+            DB::raw('SUM(deliveries.total) as total'),
+            DB::raw('SUM(deliveries.used) as total_used'),
+        );
+        if($req->input('raffle_id'))
+            $deliveryTotal->where('deliveries.raffle_id', $req->input('raffle_id'));
+        if($req->input('user_id'))
+            $deliveryTotal->where('deliveries.user_id', $req->input('user_id'));
+        
+        $deliveryTotal = $deliveryTotal->get();
+
+        if(!empty($deliveryTotal)){
+            $totals = [
+                'count' => $deliveryTotal[0]['count'],
+                'total' => $deliveryTotal[0]['total'],
+                'used' => $deliveryTotal[0]['total_used'],
+            ];
+        }
+
         $deliveries = $deliveries->paginate('50');
-        return view('deliveries.index', compact('deliveries','sellers_users'));
+        return view('deliveries.index', compact('deliveries','sellers_users','raffles','totals'));
     }
 
     /**
@@ -105,6 +126,7 @@ class DeliveryController extends Controller
         
         $data['create_user'] = $user->id;
         $data['edit_user'] = $user->id;
+        $data['consecutive'] = $this->consecutive($data['raffle_id']);
         if($deliveryQuery = Delivery::create($data)){
             if( ($raffle->price * $raffle->tickets_number) == ($sum + (+ (!empty($data['total']) ? $data['total'] : 0))))
                 $raffle->update(['status'=>0]);
@@ -152,7 +174,7 @@ class DeliveryController extends Controller
     public function edit($id)
     {
         $delivery = Delivery::find($id);
-        $raffles = Raffle::where('raffle_status',1)->select('id','name')->get();
+        $raffles = Raffle::where('status',1)->select('id','name')->get();
         $sellers_users = User::select('id','name','lastname')->where('role','Vendedor')->get();
         return view('deliveries.edit', compact('delivery','raffles','sellers_users'));
     }
@@ -169,12 +191,39 @@ class DeliveryController extends Controller
         $current_user =  Auth::user();
         $delivery = Delivery::find($id);
         $data = $request->all();
+        if(isset($data['raffle_id'])){
+            $raffle_id = $data['raffle_id'];
+            $user_ = $data['user_id'];
+            
+            $sum = Delivery::where('raffle_id',$raffle_id)->where('user_id',$user_)->sum('total') + $data['total'];
+            $sumTicket = Ticket::where('raffle_id',$raffle_id)->where('user_id',$user_)->sum('price');
+            $sumPayment = Ticket::where('raffle_id',$raffle_id)->where('user_id',$user_)->sum('payment');
+            $sumTotal = ($sumTicket - $sum ) < 0 ? 0 : ($sumTicket - $sum );
+            $raffle = Raffle::find($data['raffle_id']);
+            
+        }
+        $request->validate(
+            [
+                'raffle_id' => ['delivery_payment:'.$id],
+                'total' => ['required', 'delivery_total:'.$data['raffle_id'].':'.$data['user_id']],
+                'date' => ['required'],
+            ],
+            [
+                'raffle_id.delivery_payment' => 'La entrega ya tiene pagos canjeados, no es posible modificar esta entrega',
+                'total.delivery_total' => 'El total a entregar debe ser $('.number_format($sumTicket,0).'). El valor de entrega supera el monto total de la rifa, total sin engrega $('.number_format($sumTotal,0).') Suma total entregas mas la actual $('.number_format($sum,0).')',
+            ]
+        );
         $data['edit_user'] = $current_user->id;
         $delivery->update($data);
-        $delivery->updated_at = $data['date']." ".date('h:i:s');
+        $delivery->created_at = $data['date']." ".date('h:i:s');
         $delivery->save();
 
         return redirect()->route('entregas.index');
+    }
+
+    private function consecutive($raffle_id){
+        $lastDelivery = Delivery::where('raffle_id', $raffle_id)->count();
+        return $lastDelivery + 1 ?? 1;
     }
 
     public function pdf($id){
@@ -198,5 +247,18 @@ class DeliveryController extends Controller
 
     public function export(Request $req){
         return Excel::download(new DeliveriesExport($req),'Entregas.xlsx');
+    }
+
+    public function proccess() : void {
+        $raffleIds = Delivery::select('raffle_id')->distinct()->pluck('raffle_id');
+
+        foreach ($raffleIds as $raffleId) {
+            $deliveries = Delivery::where('raffle_id', $raffleId)->orderBy('id')->get();
+            $consecutive = 1;
+            foreach ($deliveries as $delivery) {
+                $delivery->consecutive = $consecutive++;
+                $delivery->save();
+            }
+        }
     }
 }

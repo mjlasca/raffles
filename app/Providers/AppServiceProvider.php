@@ -104,5 +104,12 @@ class AppServiceProvider extends ServiceProvider
             
             return false;
         });
+
+        Validator::extend('delivery_payment', function ($attribute, $value, $parameters, $validator) {
+            $delivery = Delivery::find($parameters[0]);
+            if(!empty($delivery))
+                return $delivery->used < 1;
+            return true;
+        });
     }
 }

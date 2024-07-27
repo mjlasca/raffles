@@ -50,6 +50,7 @@ class TicketController extends Controller
             $tickets->appends($filter);
             
             $ticketsTotal = Ticket::select(
+                DB::raw('COUNT(1) as count'),
                 DB::raw('SUM(tickets.price) as total_price'),
                 DB::raw('SUM(tickets.payment) as total_payment'),
                 DB::raw('SUM(CASE WHEN tickets.price = tickets.payment THEN assignments.commission ELSE 0 END) as total_commission')
@@ -66,6 +67,7 @@ class TicketController extends Controller
 
             if(!empty($ticketsTotal)){
                 $totals = [
+                    'count' => $ticketsTotal[0]['count'],
                     'total' => $ticketsTotal[0]['total_price'],
                     'payment' => $ticketsTotal[0]['total_payment'],
                     'commission' => $ticketsTotal[0]['total_commission']

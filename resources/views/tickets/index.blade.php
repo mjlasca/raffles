@@ -68,7 +68,8 @@
                             @if ($totals)
                                 <tr class="hover:bg-blue-500 hover:text-white bg-red-100">
                                     <td colspan="2"></td>
-                                    <td colspan="2">TOTALES $</td>
+                                    <td class="py-2 px-4">{{ $totals['count'] }}</td>
+                                    <td colspan="1">TOTALES $</td>
                                     <td class="py-2 px-4 text-right">{{ number_format($totals['total']) }}</td>
                                     <td class="py-2 px-4 text-right">{{ number_format($totals['payment']) }}</td>
                                     <td></td>

@@ -53,11 +53,11 @@
 <div class="content">
     <div class="recibo">
         <div class="encabezado">
-            Recibo de Caja No. {{ $delivery->id }}
+            Recibo de Caja No. {{ $delivery->id }} / {{$delivery->raffle->name}} # {{$delivery->consecutive}}
         </div>
         <div class="detalles">
             <div class="detalle d-table">
-                <div class="d-cell"><span>Fecha entrega:</span>{{ $delivery->updated_at }}</div>
+                <div class="d-cell"><span>Fecha entrega:</span>{{ $delivery->created_at }}</div>
                 <div class="d-cell"><span class="space">---------------------------</span><span>Monto:</span> ${{ number_format($delivery->total, 2, ',', '.') }}</div>
             </div>
             <div class="detalle">
@@ -85,11 +85,11 @@
     </div>
     <div class="recibo">
         <div class="encabezado">
-            Recibo de Caja No. {{ $delivery->id }}
+            Recibo de Caja No. {{ $delivery->id }} / {{$delivery->raffle->name}} # {{$delivery->consecutive}}
         </div>
         <div class="detalles">
             <div class="detalle d-table">
-                <div class="d-cell"><span>Fecha entrega:</span>{{ $delivery->updated_at }}</div>
+                <div class="d-cell"><span>Fecha entrega:</span>{{ $delivery->created_at }}</div>
                 <div class="d-cell"><span class="space">---------------------------</span><span>Monto:</span> ${{ number_format($delivery->total, 2, ',', '.') }}</div>
             </div>
             <div class="detalle">

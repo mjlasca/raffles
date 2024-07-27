@@ -18,6 +18,7 @@ class Delivery extends Model
         'used',
         'create_user',
         'edit_user',
+        'consecutive'
     ];
 
     public function user()

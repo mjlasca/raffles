@@ -35,6 +35,19 @@
                             </select>
                         </div>
                         <div>
+                            <label for="raffle_id" class="block text-gray-700 text-sm font-bold mb-2">Rifas</label>
+                            <select name="raffle_id" id="raffle_id" class="w-full border rounded-md py-2 px-3" >
+                                <option value="">Seleccione una rifa</option>
+                                @foreach($raffles as $raffle)
+                                    @if ($raffle->id == Request('raffle_id'))
+                                        <option value="{{ $raffle->id }}" selected>{{ $raffle->name }}</option>
+                                    @else    
+                                        <option value="{{ $raffle->id }}">{{ $raffle->name }}</option>
+                                    @endif
+                                @endforeach
+                            </select>
+                        </div>
+                        <div>
                             <label for="date1" class="block text-gray-700 text-sm font-bold mb-2">Fecha inicial</label>
                             <input type="date" class="w-full border rounded-md py-2 px-3" name="date1" id="" value="{{ Request('date1') }}">
                         </div>
@@ -50,9 +63,21 @@
             <div class="overflow-x-auto">
                 <table class="min-w-full">
                     <thead>
+                        @if ($totals)
+                            <tr class="hover:bg-blue-500 hover:text-white bg-red-100">
+                                <td class="py-2 px-4">{{ $totals['count'] }}</td>
+                                <td colspan="2"></td>
+                                <td colspan="3">TOTALES $</td>
+                                <td class="py-2 px-4">{{ number_format($totals['total']) }}</td>
+                                <td class="py-2 px-4">{{ number_format($totals['used']) }}</td>
+                                <td></td>
+                                <td></td>
+                            </tr>                                
+                        @endif
                         <tr class="text-md font-semibold tracking-wide text-left text-white bg-green-500 uppercase border-b border-gray-600">
+                            <th class="py-2 px-4 border-b">Id</th>
+                            <th class="py-2 px-4 border-b">Consecutivo/Rifa</th>
                             <th class="py-2 px-4 border-b">Fecha</th>
-                            <th class="py-2 px-4 border-b">Reg</th>
                             <th class="py-2 px-4 border-b">Descripción</th>
                             <th class="py-2 px-4 border-b">Rifa</th>
                             <th class="py-2 px-4 border-b">Vendedor</th>
@@ -62,19 +87,12 @@
                             <th class="py-2 px-4 border-b">Acciones</th>
                         </tr>
                     </thead>
-                    @php
-                        $total = 0;
-                        $total2 = 0;
-                    @endphp
                     <tbody>
                         @foreach($deliveries as $deliverie)
-                            @php
-                                $total = $total + $deliverie->total;
-                                $total2 = $total2 + $deliverie->used;
-                            @endphp
                             <tr class="hover:bg-gray-100 border-b">
-                                <td class="py-2 px-4">{{ $deliverie->updated_at }}</td>
                                 <td class="py-2 px-4">{{ $deliverie->id }}</td>
+                                <td class="py-2 px-4">{{ $deliverie->consecutive }}</td>
+                                <td class="py-2 px-4">{{ $deliverie->created_at }}</td>
                                 <td class="py-2 px-4">{{ $deliverie->description }}</td>
                                 <td class="py-2 px-4">{{ $deliverie->raffle->name }}</td>
                                 <td class="py-2 px-4">{{ $deliverie->user->name }} {{ $deliverie->user->lastname }}</td>
@@ -101,13 +119,6 @@
                                 </td>
                             </tr>
                         @endforeach
-                        <tr>
-                            <td ></td>
-                            <td colspan="4">TOTAL</td>
-                            <td class="py-2 px-4">${{number_format($total)}}</td>
-                            <td class="py-2 px-4">${{number_format($total2)}}</td>
-                            <td></td>
-                        </tr>
                     </tbody>
                 </table>
                 

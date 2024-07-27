@@ -60,6 +60,15 @@
 
                 <button type="submit" class="bg-blue-500 text-white py-2 px-4 rounded-md">Actualizar</button>
             </form>
+            @if ($errors->any())
+                <div class="alert alert-danger">
+                    <ul>
+                        @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+            @endif
         </div>
     </div>
 @endsection
