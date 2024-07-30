@@ -14,6 +14,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Facades\Excel;
+use Carbon\Carbon;
 
 class TicketController extends Controller
 {
@@ -147,18 +148,26 @@ class TicketController extends Controller
             $total = 0;
             for ($i=0; $i < count($tickets) ; $i++) { 
                 
-                Ticket::where('ticket_number', $tickets[$i])->where('raffle_id',$raffle_id)->increment('payment', $payments[$i]);
+                //Ticket::where('ticket_number', $tickets[$i])->where('raffle_id',$raffle_id)->increment('payment', $payments[$i]);
                 $history = "'| ".$current_user->name." ".$current_user->lastname." ha hecho un abono de $".number_format($payments[$i],0)." el ".date("d-m-Y h:i:s")." '";
-                Ticket::where('ticket_number', $tickets[$i])->where('raffle_id',$raffle_id)->update([
-                    'customer_name' => $names[$i],
-                    'customer_phone' => $phones[$i],
-                    'movements' =>  DB::raw("IFNULL(CONCAT($history,movements), $history)")
-                ]);
-
-                $concat[] = $tickets[$i].",".$payments[$i];
-                $total += $payments[$i];
+                $thirtySecondsAgo = Carbon::now()->subSeconds(30);
+                $affectedRows = Ticket::where('ticket_number', $tickets[$i])
+                    ->where('raffle_id', $raffle_id)
+                    ->where(function($query) use ($thirtySecondsAgo) {
+                        $query->where('updated_at', '<', $thirtySecondsAgo->format('Y-m-d H:i:s'))
+                              ->orWhereNull('updated_at');
+                    })
+                    ->update([
+                        'customer_name' => $names[$i],
+                        'customer_phone' => $phones[$i],
+                        'payment' => DB::raw("payment + {$payments[$i]}"),
+                        'movements' => DB::raw("IFNULL(CONCAT($history, movements), $history)")
+                    ]);
+                if ($affectedRows > 0) {
+                    $concat[] = $tickets[$i].",".$payments[$i];
+                    $total += $payments[$i];
+                }
             }
-
             Delivery::where('id',$delivery_id)->increment('used', $total);
 
             $data['delivery_id'] = $delivery_id;

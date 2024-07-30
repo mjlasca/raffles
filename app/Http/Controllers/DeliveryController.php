@@ -60,6 +60,13 @@ class DeliveryController extends Controller
             $deliveryTotal->where('deliveries.raffle_id', $req->input('raffle_id'));
         if($req->input('user_id'))
             $deliveryTotal->where('deliveries.user_id', $req->input('user_id'));
+        if(!empty($req->input('date1'))){
+            $date1 = $req->input('date1');
+            $date2 = $date1;
+            if($req->input('date2'))
+                $date2 = $req->input('date2');
+            $deliveryTotal = $deliveryTotal->whereBetween('created_at',[$date1.' 00:00:00',$date2.' 23:59:59']);
+        }
         
         $deliveryTotal = $deliveryTotal->get();
 
