@@ -89,7 +89,11 @@
                     </thead>
                     <tbody>
                         @foreach($deliveries as $deliverie)
-                            <tr class="hover:bg-gray-100 border-b">
+                            <tr @if ($deliverie->status == 0)
+                                class="hover:bg-gray-300 bg-red-500 text-white border-b"
+                                @else
+                                class="hover:bg-gray-100 border-b"
+                            @endif >
                                 <td class="py-2 px-4">{{ $deliverie->id }}</td>
                                 <td class="py-2 px-4">{{ $deliverie->consecutive }}</td>
                                 <td class="py-2 px-4">{{ $deliverie->created_at }}</td>
@@ -101,21 +105,22 @@
                                 <td class="py-2 px-4">{{ $deliverie->redited->name }} {{ $deliverie->redited->lastname }}</td>
                                 
                                 <td class="py-2 px-4 grid grid-cols-2 gap-2">
-                                    <a href="{{ route('entregas.show', $deliverie->id) }}" class="text-blue-500 hover:bg-green-500 p-1 bg-blue-500 rounded-md mr-1">
-                                        <img class="h-5" src="{{ asset('img/icons/show-icon.svg') }}" alt="Ver registro" title="Ver registro">
-                                    </a>
-                                    <a href="{{ route('entregas.pdf', $deliverie->id) }}" target="_blank" class="text-blue-500 hover:bg-green-500 p-1 bg-blue-500 rounded-md mr-1">
-                                        <img class="h-5" src="{{ asset('img/icons/pdf-icon.svg') }}" alt="Descargar Recibo" title="Descargar Recibo">
-                                    </a>
-                                    @if ($deliverie->used < 1)
-                                        <a href="{{ route('entregas.edit', $deliverie->id) }}" class="text-yellow-500 hover:bg-green-500 p-1 bg-blue-500 rounded-md mr-1">
-                                            <img class="h-5" src="{{ asset('img/icons/edit-icon.svg') }}" alt="Editar" title="Editar">
+                                    @if ($deliverie->status == 1)
+                                        <a href="{{ route('entregas.show', $deliverie->id) }}" class="text-blue-500 hover:bg-green-500 p-1 bg-blue-500 rounded-md mr-1">
+                                            <img class="h-5" src="{{ asset('img/icons/show-icon.svg') }}" alt="Ver registro" title="Ver registro">
                                         </a>
-                                        <a href="{{ route('entregas.destroy', $deliverie->id) }}" class="text-yellow-500 hover:bg-green-500 p-1 bg-red-500 rounded-md mr-1">
-                                            <img class="h-5" src="{{ asset('img/icons/delete-icon.svg') }}" alt="Eliminar" title="Eliminar">
-                                        </a>    
+                                        <a href="{{ route('entregas.pdf', $deliverie->id) }}" target="_blank" class="text-blue-500 hover:bg-green-500 p-1 bg-blue-500 rounded-md mr-1">
+                                            <img class="h-5" src="{{ asset('img/icons/pdf-icon.svg') }}" alt="Descargar Recibo" title="Descargar Recibo">
+                                        </a>
+                                        @if ($deliverie->used < 1)
+                                            <a href="{{ route('entregas.edit', $deliverie->id) }}" class="text-yellow-500 hover:bg-green-500 p-1 bg-blue-500 rounded-md mr-1">
+                                                <img class="h-5" src="{{ asset('img/icons/edit-icon.svg') }}" alt="Editar" title="Editar">
+                                            </a>
+                                            <a href="{{ route('entregas.cancel', $deliverie->id) }}" onclick="return confirm('Está segur@ de anular el registro')" class="text-yellow-500 hover:bg-green-500 p-1 bg-red-500 rounded-md mr-1">
+                                                <img class="h-5" src="{{ asset('img/icons/delete-icon.svg') }}" alt="Anular" title="Anular">
+                                            </a>    
+                                        @endif
                                     @endif
-                                    
                                 </td>
                             </tr>
                         @endforeach

@@ -122,7 +122,12 @@ class TicketController extends Controller
     public function pay(Request $req)
     {
         $current_user = Auth::user();
-        $deliveries = Delivery::whereColumn('total','>','used')->select('id','raffle_id','user_id','total','used')->get();
+        $deliveries = Delivery::whereColumn('total', '>', 'used')
+                      ->where('status', 1)
+                      ->join('users', 'deliveries.user_id', '=', 'users.id')
+                      ->select('deliveries.id', 'deliveries.raffle_id', 'deliveries.user_id', 'deliveries.total', 'deliveries.used', 'users.name')
+                      ->orderBy('users.name')
+                      ->get();
         
         if($current_user->role === 'Vendedor'){
             $sellers_users = User::select('id','name','lastname')->where('role','Vendedor')->where('id',$current_user->id)->get();

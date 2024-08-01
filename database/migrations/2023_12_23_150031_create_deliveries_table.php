@@ -26,7 +26,7 @@ class CreateDeliveriesTable extends Migration
             $table->text('description')->nullable();
             $table->double('total')->nullable();
             $table->double('used')->default(0);
-            $table->integer('status')->default(0);
+            $table->integer('status')->default(1);
             $table->timestamps();
         });
     }

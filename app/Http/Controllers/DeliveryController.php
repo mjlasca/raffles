@@ -43,7 +43,7 @@ class DeliveryController extends Controller
         if($req->input('keyword')){
             $keyword = $req->input('keyword');
 
-            $deliveries = $deliveries->where(function ($query) use ($keyword) {
+            $deliveries = $deliveries->where('id','like','%' . $keyword . '%')->orWhere('consecutive','like','%' . $keyword . '%')->orWhere(function ($query) use ($keyword) {
                 $query->whereHas('redited', function ($q) use ($keyword) {
                     $q->where('name', 'like', '%' . $keyword . '%')
                       ->orWhere('lastname', 'like', '%' . $keyword . '%');
@@ -134,14 +134,19 @@ class DeliveryController extends Controller
         $data['create_user'] = $user->id;
         $data['edit_user'] = $user->id;
         $data['consecutive'] = $this->consecutive($data['raffle_id']);
-        if($deliveryQuery = Delivery::create($data)){
+        $existingDelivery = Delivery::where('raffle_id',$data['raffle_id'])
+                            ->where('user_id',$data['user_id'])
+                            ->where('description',$data['description'])
+                            ->where('created_at', $data['date']." ".date('h:i:s'))
+                            ->first();
+        if( empty($existingDelivery) && $deliveryQuery = Delivery::create($data)){
             if( ($raffle->price * $raffle->tickets_number) == ($sum + (+ (!empty($data['total']) ? $data['total'] : 0))))
                 $raffle->update(['status'=>0]);
             if(isset($data['date'])){
-                $deli = Delivery::find($deliveryQuery->id);
-                $deli->created_at = $data['date']." ".date('h:i:s');
-                $deli->updated_at = $data['date']." ".date('h:i:s');
-                $deli->save();
+                //$deli = Delivery::find($deliveryQuery->id);
+                $deliveryQuery->created_at = $data['date']." ".date('h:i:s');
+                $deliveryQuery->updated_at = $data['date']." ".date('h:i:s');
+                $deliveryQuery->save();
             }
         }
         return redirect()->route('entregas.index');
@@ -250,6 +255,17 @@ class DeliveryController extends Controller
     public function destroy($id)
     {
         //
+    }
+
+    public function cancel($id)
+    {
+        $delivery = Delivery::find($id);
+        if(!empty($delivery)){
+            $delivery->update([
+                'status' => 0
+            ]);
+        }
+        return redirect()->route('entregas.index');
     }
 
     public function export(Request $req){

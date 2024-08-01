@@ -83,6 +83,7 @@ Route::resource('entregas', DeliveryController::class)->middleware(['auth','role
 Route::get('/entregas/pdf/{id}', [DeliveryController::class, 'pdf'])->middleware(['auth'])->name('entregas.pdf');
 Route::get('/deliveries/export', [DeliveryController::class, 'export'])->middleware(['auth'])->name('entregas.export');
 Route::get('/deliveries/payment/{id}', [DeliveryController::class, 'payment'])->middleware(['auth'])->name('entregas.payment');
+Route::get('/deliveries/cancel/{id}', [DeliveryController::class, 'cancel'])->middleware(['auth','roleAccess:Secretaria-Administrador'])->name('entregas.cancel');
 Route::get('/deliveries/proccess', [DeliveryController::class, 'proccess'])->middleware(['auth','roleAccess:Administrador'])->name('entregas.proccess');
 
 //Route::view('/', 'dashboard')->middleware(['auth']);
