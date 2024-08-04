@@ -56,6 +56,7 @@ class DeliveryController extends Controller
             DB::raw('SUM(deliveries.total) as total'),
             DB::raw('SUM(deliveries.used) as total_used'),
         );
+        $deliveryTotal->where('status',1);
         if($req->input('raffle_id'))
             $deliveryTotal->where('deliveries.raffle_id', $req->input('raffle_id'));
         if($req->input('user_id'))
