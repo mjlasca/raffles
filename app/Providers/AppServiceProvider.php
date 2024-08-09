@@ -41,6 +41,8 @@ class AppServiceProvider extends ServiceProvider
         });
 
         Validator::extend('jackpot', function ($attribute, $value, $parameters, $validator) {
+            if($value == 'Anticipado')
+                return true;
             $exists = Prize::where('raffle_id', $parameters[0])->where('type',$value)->exists();
             return !$exists;
         });
