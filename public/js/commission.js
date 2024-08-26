@@ -24,6 +24,14 @@ input_select.addEventListener('change', function(event){
 
 });
 
+function showAndHide(class_){
+  const classDetail = document.querySelector('.'+class_);
+  if(classDetail.classList.contains('hidden'))
+    classDetail.classList.remove('hidden');
+  else
+    classDetail.classList.add('hidden');
+}
+
 
 function confirmCommission(text = "¿Está segur@ de realizar el registro de comisión?"){
   return confirm(text);

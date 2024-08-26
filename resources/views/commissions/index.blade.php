@@ -39,6 +39,7 @@
                         <tr class="text-md font-semibold tracking-wide text-left text-white bg-green-500 uppercase border-b border-gray-600">
                             <th class="py-2 px-4 border-b">id</th>
                             <th class="py-2 px-4 border-b">Fecha</th>
+                            <th class="py-2 px-4 border-b">Rifa</th>
                             <th class="py-2 px-4 border-b">Vendedor(a)</th>
                             <th class="py-2 px-4 border-b">Total liquidado</th>
                             <th class="py-2 px-4 border-b">Ver</th>
@@ -50,6 +51,7 @@
                         <tr class="hover:bg-gray-100 border-b">
                             <td class="py-2 px-4">{{ $commission->id }}</td>
                             <td class="py-2 px-4">{{ $commission->updated_at }}</td>
+                            <td class="py-2 px-4">{{ $commission->raffle->name }}</td>
                             <td class="py-2 px-4">{{ $commission->user->name }} {{ $commission->user->lastname }}</td>
                             <td class="py-2 px-4">${{  number_format($commission->total,2) }}</td>
                             

@@ -58,20 +58,20 @@ class CommissionController extends Controller
         $sum = [];
         $aux = [];
         foreach ($tickets as $key => $ticket) {
-            $sum[$ticket->user_id] = $sum[$ticket->user_id] ?? 0;
-            $sum[$ticket->user_id] += $ticket->assignment->commission;
-            $aux[$ticket->user_id][] = [
+            $sum[$ticket->user_id][$ticket->raffle_id] = $sum[$ticket->user_id][$ticket->raffle_id] ?? 0;
+            $sum[$ticket->user_id][$ticket->raffle_id] += $ticket->assignment->commission;
+            $aux[$ticket->user_id][$ticket->raffle_id][] = [
                 'ticket' => $ticket,
             ];
-            $sellers_users[$ticket->user_id] = [
+            $sellers_users[$ticket->user_id][$ticket->raffle_id] = [
                 'user' => $ticket->user->name . " " .$ticket->user->lastname,
                 'user_id' => $ticket->user_id,
-                'sum' => $sum[$ticket->user_id],
-                'detail' => $aux[$ticket->user_id]
+                'raffle' => $ticket->raffle,
+                'sum' => $sum[$ticket->user_id][$ticket->raffle_id],
+                'detail' => $aux[$ticket->user_id][$ticket->raffle_id]
             ];
             
         }
-        
         return view('commissions.create', compact('sellers_users'));
     }
 
@@ -83,16 +83,13 @@ class CommissionController extends Controller
      */
     public function store(Request $request)
     {
-
-        if(!empty($request->input('user_id'))){
+        if(!empty($request->input('user_id')) && !empty($request->input('raffle_id'))){
             $user = Auth::user();
-
-            $tickets = Ticket::where('user_id',$request->input('user_id'))->whereHas('raffle', function ($query) {
-                $query->where('raffle_status', '>', 0);
-            })
+            
+            $tickets = Ticket::where('user_id',$request->input('user_id'))->where('raffle_id',$request->input('raffle_id'))
             ->whereColumn('price', 'payment')
             ->get();
-
+            
             $data = [
                 'user_id' => $request->input('user_id') ,
                 'percentage'=> 0,
