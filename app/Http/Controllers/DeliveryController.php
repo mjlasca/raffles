@@ -113,7 +113,7 @@ class DeliveryController extends Controller
             $raffle_id = $data['raffle_id'];
             $user_ = $data['user_id'];
             
-            $sum = Delivery::where('raffle_id',$raffle_id)->where('user_id',$user_)->sum('total') + $data['total'];
+            $sum = Delivery::where('raffle_id',$raffle_id)->where('user_id',$user_)->where('status',1)->sum('total') + $data['total'];
             $sumTicket = Ticket::where('raffle_id',$raffle_id)->where('user_id',$user_)->sum('price');
             $sumPayment = Ticket::where('raffle_id',$raffle_id)->where('user_id',$user_)->sum('payment');
             $sumTotal = ($sumTicket - $sum ) < 0 ? 0 : ($sumTicket - $sum );
@@ -208,7 +208,7 @@ class DeliveryController extends Controller
             $raffle_id = $data['raffle_id'];
             $user_ = $data['user_id'];
             
-            $sum = Delivery::where('raffle_id',$raffle_id)->where('user_id',$user_)->sum('total') + $data['total'];
+            $sum = Delivery::where('raffle_id',$raffle_id)->where('id','!=',$id)->where('status',1)->where('user_id',$user_)->sum('total') + $data['total'];
             $sumTicket = Ticket::where('raffle_id',$raffle_id)->where('user_id',$user_)->sum('price');
             $sumPayment = Ticket::where('raffle_id',$raffle_id)->where('user_id',$user_)->sum('payment');
             $sumTotal = ($sumTicket - $sum ) < 0 ? 0 : ($sumTicket - $sum );
@@ -218,7 +218,7 @@ class DeliveryController extends Controller
         $request->validate(
             [
                 'raffle_id' => ['delivery_payment:'.$id],
-                'total' => ['required', 'delivery_total:'.$data['raffle_id'].':'.$data['user_id']],
+                'total' => ['required', 'delivery_total:'.$data['raffle_id'].':'.$data['user_id'].':'.$id],
                 'date' => ['required'],
             ],
             [

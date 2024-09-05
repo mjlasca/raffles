@@ -54,7 +54,7 @@
 
                 <div class="mb-4 w-52">
                     <label for="total" class="block text-gray-700 text-sm font-bold mb-2">Valor entrega:</label>
-                    <input type="number" name="total" id="total" class="w-full border rounded-md py-2 px-3" step="0.01" value="{{$delivery->total}}" required>
+                    <input type="number" min="1" name="total" id="total" class="w-full border rounded-md py-2 px-3" step="0.01" value="{{$delivery->total}}" required>
                 </div>
 
 

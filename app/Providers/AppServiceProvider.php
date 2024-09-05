@@ -53,7 +53,9 @@ class AppServiceProvider extends ServiceProvider
             $raffle_id = $data[0];
             $user = $data[1];
             
-            $sum = Delivery::where('raffle_id',$raffle_id)->where('user_id',$user)->sum('total') + $value;
+            $sum = Delivery::where('raffle_id',$raffle_id)->where('status',1)->where('user_id',$user)->sum('total') + $value;
+            if(isset($data[2]))
+                $sum = Delivery::where('raffle_id',$raffle_id)->where('id','!=',$data[2])->where('status',1)->where('user_id',$user)->sum('total') + $value;
             $sumTicket = Ticket::where('raffle_id',$raffle_id)->where('user_id',$user)->sum('price');
             //$sumPayment = Ticket::where('raffle_id',$raffle_id)->where('user_id',$user)->sum('payment');
             //$sumTotal = ($sumTicket - $sumPayment );
