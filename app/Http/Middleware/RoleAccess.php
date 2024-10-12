@@ -26,6 +26,6 @@ class RoleAccess
         }
         
         
-        return redirect('dashboard');
+        return redirect()->route('dashboard');
     }
 }

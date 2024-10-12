@@ -91,7 +91,7 @@
                         @endif
                         
                         <li class="mb-2">
-                            <a href="/dashboard" class="inline-flex  @if(request()->is('dashboard') || request()->path() == '/') bg-green-500 @else bg-blue-500 @endif items-center px-3 py-3 border  text-sm font-lg rounded-md  hover:bg-green-500 hover:text-white focus:outline-none transition ease-in-out duration-150 w-40">
+                            <a href="/" class="inline-flex  @if(request()->path() == '/') bg-green-500 @else bg-blue-500 @endif items-center px-3 py-3 border  text-sm font-lg rounded-md  hover:bg-green-500 hover:text-white focus:outline-none transition ease-in-out duration-150 w-40">
                                 <span class="mr-2 p-1 rounded-md bg-blue-500">
                                     <img class="h-5 fill-white" src="{{ asset('img/icons/tile-icon.svg') }}" alt="">
                                 </span>

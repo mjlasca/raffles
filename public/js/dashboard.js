@@ -10,16 +10,18 @@ chart_raffle.forEach(ch => {
 
 
 function setChart(ctx, total_raffle, total_delivery){
-  console.log(ctx);
-  console.log(total_raffle);
-  console.log(total_delivery);
-  //const ctx = document.getElementById(id);
+  let perceDeli = 0;
+  let perceRaff = 0;
+  if(total_raffle && total_delivery){
+    perceDeli = ( total_delivery / total_raffle ) * 100;
+    perceRaff = 100 - perceDeli;
+  }
   new Chart(ctx, {
     type: 'pie',
     data: {
+      labels: ['Porcentaje entregas', 'Porcentaje saldo rifa'],
       datasets: [{
-        label: ['Entregas','Total rifa'],
-        data: [total_delivery, total_raffle],
+        data: [perceDeli.toFixed(2), perceRaff.toFixed(2)],
         borderWidth: 1
       }]
     },

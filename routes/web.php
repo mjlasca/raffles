@@ -75,7 +75,7 @@ Route::post('/tickets/setpay', [TicketController::class, 'setpay'])->middleware(
 Route::post('/tickets/payall', [TicketController::class, 'payall'])->middleware(['auth'])->name('tickets.payall');
 Route::post('/tickets/removable', [TicketController::class, 'removable'])->middleware(['auth'])->name('tickets.removable');
 
-Route::get('/resultados', [PrizeController::class, 'results'])->name('prizes.rasults');
+Route::get('/resultados', [PrizeController::class, 'results'])->name('prizes.results');
 
 Route::resource('entregas', DeliveryController::class)->middleware(['auth','roleAccess:Secretaria-Administrador'])->parameters([
     'entregas' => 'deliveries',
@@ -86,11 +86,5 @@ Route::get('/deliveries/payment/{id}', [DeliveryController::class, 'payment'])->
 Route::get('/deliveries/cancel/{id}', [DeliveryController::class, 'cancel'])->middleware(['auth','roleAccess:Secretaria-Administrador'])->name('entregas.cancel');
 Route::get('/deliveries/proccess', [DeliveryController::class, 'proccess'])->middleware(['auth','roleAccess:Administrador'])->name('entregas.proccess');
 
-//Route::view('/', 'dashboard')->middleware(['auth']);
 Route::get('/', [DashboardController::class, 'index'])->middleware(['auth'])->name('dashboard');
-Route::get('/dashboard', [DashboardController::class, 'index'])->middleware(['auth'])->name('dashboard');
-/*Route::view('profile', 'profile')
-    ->middleware(['auth'])
-    ->name('profile');*/
-
 

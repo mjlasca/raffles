@@ -99,8 +99,8 @@
           <div class="p-2 justify-between mt-2">
               <div>
                 @foreach ($data['current_raffles'] as $item)
-                  <div class="flex chart-raffle">
-                    <div class="w-1/2">
+                  <div class="mb-2 flex chart-raffle justify-center items-center border-1 border-gray-200 rounded-lg">
+                    <div class="w-1/2 p-2">
                       <p>
                         <b>{{$item->name}}</b><br>
                         <b>Juega el </b>{{$item->raffle_date}}<br>
@@ -211,8 +211,8 @@
         <div class="mt-3">
             <b class="p-3 text-2xl">Entregas pendientes</b>
             <div class="p-2 justify-between mt-2">
-                <div>
-                    <table class="w-full mb-5">
+                <div class="w-full mb-5 overflow-auto">
+                    <table>
                         <thead>
                           <tr class="text-md font-semibold tracking-wide text-left bg-green-500 text-white uppercase border-b border-gray-600">
                             <th class="px-4">Rifa</th>
@@ -297,25 +297,27 @@
             <b class="p-3 text-2xl">Rifas vigentes</b>
             <div class="p-2 justify-between mt-2">
                 <div>
-                  @foreach ($data['current_raffles'] as $item)
-                    <div class="flex chart-raffle">
-                      <div class="w-1/2">
-                        <p>
-                          <b>{{$item->name}}</b><br>
-                          <b>Juega el </b>{{$item->raffle_date}}<br>
-                          <b data-total-total-raffle="{{$item->price * $item->tickets_number}}">Total rifa </b>${{ number_format($item->price * $item->tickets_number,0,null,".")}}<br>
-                          @if( !empty($item->delivery_total) )
-                            <b data-total-delivery="{{$item->delivery_total}}">Total entregas </b>${{ number_format($item->delivery_total,0,null,".")}}<br>
-                          @else
-                          <b data-total-delivery="0">Total entregas </b>${{ number_format(0,0,null,".")}}<br>
-                          @endif
-                        </p>
+                  @if(isset($data['current_raffles']))
+                    @foreach ($data['current_raffles'] as $item)
+                    <div class="mb-2 flex chart-raffle justify-center items-center border-1 border-gray-200 rounded-lg">
+                        <div class="w-1/2 p-2">
+                          <p>
+                            <b>{{$item->name}}</b><br>
+                            <b>Juega el </b>{{$item->raffle_date}}<br>
+                            <b data-total-total-raffle="{{$item->price * $item->tickets_number}}">Total rifa </b>${{ number_format($item->price * $item->tickets_number,0,null,".")}}<br>
+                            @if( !empty($item->delivery_total) )
+                              <b data-total-delivery="{{$item->delivery_total}}">Total entregas </b>${{ number_format($item->delivery_total,0,null,".")}}<br>
+                            @else
+                            <b data-total-delivery="0">Total entregas </b>${{ number_format(0,0,null,".")}}<br>
+                            @endif
+                          </p>
+                        </div>
+                        <div class="w-1/2">
+                          <canvas  id="chart-{{$item->id}}"></canvas>
+                        </div>
                       </div>
-                      <div class="w-1/2">
-                        <canvas  id="chart-{{$item->id}}"></canvas>
-                      </div>
-                    </div>
-                  @endforeach
+                    @endforeach
+                  @endif
                 </div>
             </div>
         </div>
@@ -337,21 +339,23 @@
                           </tr>
                         </thead>
                         <tbody >
-                          @foreach ($data['commissions'] as $item)
-                          <tr class="border-b">
-                            <td class="p-2">
-                              <div class="flex items-center text-sm">
-                                <div>
-                                  <p class="">{{$item->raffle->name}}</p>
+                          @if(isset($data['commissions']))
+                            @foreach ($data['commissions'] as $item)
+                            <tr class="border-b">
+                              <td class="p-2">
+                                <div class="flex items-center text-sm">
+                                  <div>
+                                    <p class="">{{$item->raffle->name}}</p>
+                                  </div>
                                 </div>
-                              </div>
-                            </td>
-                            <td class="p-2">
-                              <p class="text-right ">${{ number_format($item->total) }}</p>
-                            </td>
-                            
-                          </tr>    
-                          @endforeach
+                              </td>
+                              <td class="p-2">
+                                <p class="text-right ">${{ number_format($item->total) }}</p>
+                              </td>
+                              
+                            </tr>    
+                            @endforeach
+                          @endif
                         </tbody>
                       </table>
                 </div>
@@ -376,26 +380,28 @@
                           </tr>
                         </thead>
                         <tbody >
-                          @foreach ($data['prizes'] as $item)
-                          <tr class="border-b">
-                            <td class="p-2">
-                              <div class="flex items-center text-sm">
-                                <div>
-                                  <p class="">{{$item->raffle->name}}</p>
+                          @if(isset($data['prizes']))
+                            @foreach ($data['prizes'] as $item)
+                            <tr class="border-b">
+                              <td class="p-2">
+                                <div class="flex items-center text-sm">
+                                  <div>
+                                    <p class="">{{$item->raffle->name}}</p>
+                                  </div>
                                 </div>
-                              </div>
-                            </td>
-                            <td class="p-2">
-                              <p class=""><span class="font-semibold">{{ $item->type}}</span> @if ($item->type == 'Anticipado')
-                                  con mínimo ${{ number_format($item->percentage_condition) }}
-                              @endif</p>
-                            </td>
-                            <td class="p-2">
-                              <p class="">{{ $item->award_date}}</p>
-                            </td>
-                            
-                          </tr>    
-                          @endforeach
+                              </td>
+                              <td class="p-2">
+                                <p class=""><span class="font-semibold">{{ $item->type}}</span> @if ($item->type == 'Anticipado')
+                                    con mínimo ${{ number_format($item->percentage_condition) }}
+                                @endif</p>
+                              </td>
+                              <td class="p-2">
+                                <p class="">{{ $item->award_date}}</p>
+                              </td>
+                              
+                            </tr>    
+                            @endforeach
+                          @endif
                         </tbody>
                       </table>
                 </div>

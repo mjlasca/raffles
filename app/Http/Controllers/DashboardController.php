@@ -41,23 +41,13 @@ class DashboardController extends Controller
             $data['current_raffles'] = $raffles;                    
                                 
             $raffles = Raffle::select('id')->where('raffle_date','>',now())->get();
+            if($current_user->role == 'Secretaria'){
+                $sellers_deliveries = Delivery::select('raffle_id','user_id')->whereIn('raffle_id',$raffles)
+                ->groupBy('user_id')
+                ->get();
+                $data['sellers_deliveries'] = $sellers_deliveries;
+            }
             
-            /*$sellers_deliveries = Ticket::select('raffle_id','user_id',
-                                DB::raw('SUM(price) as total_tickets'),
-                                DB::raw('(SELECT SUM(total) FROM deliveries WHERE deliveries.raffle_id = tickets.raffle_id AND deliveries.user_id = tickets.user_id) as total_delivery')
-                                )
-                                ->whereIn('raffle_id',$raffles)->groupBy('raffle_id','user_id')->get();
-                        */
-            $sellers_deliveries = Ticket::select(
-                                    'tickets.raffle_id',
-                                    'tickets.user_id',
-                                    DB::raw('SUM(deliveries.used) as total_used'),
-                                    DB::raw('SUM(deliveries.total) as total')
-                                )
-                                ->leftJoin('deliveries', 'tickets.raffle_id', '=', 'deliveries.raffle_id')
-                                ->whereIn('tickets.raffle_id',$raffles)
-                                ->groupBy('tickets.raffle_id')
-                                ->get();
 
             $commisions = Ticket::select(
                                     'tickets.raffle_id',
@@ -84,17 +74,12 @@ class DashboardController extends Controller
         
             $data['deliveries'] = $deliveries;
             $data['commissions'] = $commisions;
-            $data['sellers_deliveries'] = $sellers_deliveries;
+            
 
         }
 
         if($current_user->role == 'Vendedor'){
 
-            /*$raffles = Raffle::whereHas('prizes', function($query) {
-                                    $query->where('award_date', '>=', now());
-                                })->with(['prizes', 'deliveries' => function ($query) {
-                                    $query->select('raffle_id', DB::raw('SUM(total) as delivery_total'));
-                                }])->get();*/
             $raffles = Raffle::select('id')->where('raffle_date','>',now())->get();
             $commisions = Ticket::select(
                                     'tickets.raffle_id',
@@ -111,9 +96,6 @@ class DashboardController extends Controller
                                 ->get();
 
             $data['commisions'] = $commisions;
-
-
-            
         }
 
         $prizes = Prize::select('raffle_id','detail','award_date','percentage_condition','type','id')
