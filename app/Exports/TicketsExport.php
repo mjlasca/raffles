@@ -45,7 +45,7 @@ class TicketsExport implements FromCollection, WithHeadings, WithEvents
         if(!empty($this->userId))
             $tickets = $tickets->where('user_id',$this->userId);
 
-        return $tickets->get();
+        return $tickets->orderBy('ticket_number','ASC')->get();
     }
 
     public function headings(): array
