@@ -58,7 +58,7 @@ tickets_pay.addEventListener('change', async function(event) {
             const siguienteInput = target.nextElementSibling;
             const nameInput = siguienteInput.nextElementSibling;
             const phoneInput = nameInput.nextElementSibling;
-
+            const used_ = document.querySelector('#used_');
             // Verificar si el siguiente elemento es un input
             if (siguienteInput && siguienteInput.classList.contains('ticket-payment')) {
             await fetch(currentDomain+"/tickets/checkticket?number="+target.value+"&raffle_id="+raffle_id.value+"&user_id="+user_id.value)
@@ -76,6 +76,7 @@ tickets_pay.addEventListener('change', async function(event) {
                         siguienteInput.max = (data[0].price - data[0].payment);
                         nameInput.value = data[0].customer_name;
                         phoneInput.value = data[0].customer_phone;
+                        
                     }else{
                         alert("El número de boleta no pertenece a ésta usuario y rifa");
                         siguienteInput.placeholder = "#Abono";
@@ -116,11 +117,11 @@ tickets_pay.addEventListener('change', async function(event) {
                             target.placeholder = ( data[0].price - data[0].payment );
                             target.value = "";
                        }
-                       
                        if(calculateTotal() === false){
                             alert("La suma total ha superado el disponible");
                             target.value = "";
                        }
+                       used_.textContent = calculateTotal(true);
                     }
                 })
                 .catch(error => {
@@ -163,6 +164,7 @@ delivery_id.addEventListener('change', async () => {
                     <p>Total usado : ${ data.used == null ? 0 : data.used.toLocaleString() }</p>
                     </div>
                     <p>Disponible : <span class="hidden" id="availible">${ (data.total - data.used) }</span><span>${ (data.total - data.used).toLocaleString() }</span></p>
+                    <p class="bg-green-100">Dinero usado : $<span id="used_">0</span></p>
                     </div>
                     <div class="sm:w-1/2 p-4 flex">
                         <form method="POST" action="/tickets/payall" onsubmit="return confirm('¿Está seguro de distribuir lo disponible? si lo hace, el sistema asignará equitativamente a cada boleta que tenga para ésta rifa');">
@@ -193,7 +195,7 @@ function clearInputs(){
 }
     
 
-function calculateTotal() {
+function calculateTotal(value = null) {
     
     const inputsPayment = document.querySelectorAll('.ticket-payment');
     const availible = document.getElementById('availible');
@@ -205,6 +207,8 @@ function calculateTotal() {
     if(totalInputs > parseFloat( availible.innerText.replace('.','')))
         return false;
     
+    if(value)
+        return totalInputs;
     
     return true;
 }
