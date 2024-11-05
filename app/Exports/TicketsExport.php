@@ -2,6 +2,7 @@
 
 namespace App\Exports;
 
+use App\Models\Delivery;
 use App\Models\Raffle;
 use App\Models\Ticket;
 use App\Models\User;
@@ -83,6 +84,8 @@ class TicketsExport implements FromCollection, WithHeadings, WithEvents
                     $sheet->setCellValue('G2', $sumPayment);
                     $sheet->setCellValue('F3', 'Saldo pendiente');
                     $sheet->setCellValue('G3', ($sumPrice - $sumPayment));
+                    $sheet->setCellValue('F4', 'Entregas hechas');
+                    $sheet->setCellValue('G4', $this->getDelivery($user, $raffle));
                     $sheet->setCellValue('A3', 'Rifa:  ' . $raffle->name);
                     $sheet->setCellValue('C3', 'No. Boletas:  ' . $countTicket);
                     $sheet->setCellValue('A4', 'Vendedor(a): ' . $user->name." ".$user->lastname);
@@ -133,5 +136,17 @@ class TicketsExport implements FromCollection, WithHeadings, WithEvents
         }
 
         
+    }
+
+    /**
+     * Get delivery for raffle and user
+     * 
+     * @param User $user
+     * @param Raffle $raffle
+     * @return float
+     */
+    public function getDelivery(User $user, Raffle $raffle) : float {
+        $result = Delivery::where('user_id',$user->id)->where('raffle_id',$raffle->id)->sum('total');
+        return (float)$result ?? 0;
     }
 }

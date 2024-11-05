@@ -83,7 +83,7 @@
                 
             </div>
         </div>
-        <div class="mt-5">
+        <div class="pagination mt-5">
             {{$assignments->links()}}
         </div>
     </div>

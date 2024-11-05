@@ -154,7 +154,7 @@
                 <button class="bg-blue-500 text-white py-2 px-4 rounded-md action-checks">Guardar selección desprendibles</button> 
             @endisset
         @endif
-        <div class="pag mt-5">
+        <div class="pagination pag mt-5">
             @isset($tickets)
             {{$tickets->links()}}
             @endisset

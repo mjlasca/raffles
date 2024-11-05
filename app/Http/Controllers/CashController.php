@@ -4,6 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Exports\CashesExport;
 use App\Models\Cash;
+use App\Models\Commissions;
+use App\Models\Delivery;
+use App\Models\Outflow;
 use App\Models\Raffle;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -20,103 +23,99 @@ class CashController extends Controller
     public function index(Request $request)
     {
         $raffles = Raffle::select('id','name')->get();
-        $date1 = date('Y-m-d', strtotime('-30 days'));
+        $date1 = date('Y-m-d', strtotime('-10 days'));
         $date2 = date('Y-m-d');
 
-        if(!empty($request->input('date1')))
+        $raffle_id = null;
+        if(!empty($request->input('date1'))){
             $date1 = $request->input('date1');
-        if(!empty($request->input('date2')))
+        }
+        if(!empty($request->input('date2'))){
             $date2 = $request->input('date2');
+        }
+        if(!empty($request->input('raffle_id'))){
+            $raffle_id = $request->input('raffle_id');
+        }
 
-        if(!empty($request->input('raffle_id')))
-            $dayTotal = $this->queryMovements($date1,$date2, $request->input('raffle_id'));
-        else
-            $dayTotal = $this->queryMovements($date1,$date2);
-
-        return view('cashes.index', compact('dayTotal','raffles'));
+        $cashes = $this->queryMovements($date1,$date2,$raffle_id);
+        return view('cashes.index', compact('cashes','raffles'));
     }
 
     private function queryMovements($date1, $date2, $raffle_id = null){
-        $dayTotal = DB::table('deliveries')
-            ->select(DB::raw('DATE(updated_at) as day_date'), DB::raw('SUM(total) as deliveries_total'))
-            ->whereBetween('updated_at',[$date1.' 00:00:00',$date2.' 23:59:59'])
-            ->groupBy(DB::raw('DATE(updated_at)'))
-            ->orderBy('updated_at','DESC')
-            ->get();
 
-        $dayTotal = $dayTotal->merge(
-            DB::table('outflows')
-                ->select(DB::raw('DATE(updated_at) as day_date'), DB::raw('SUM(total) as outflows_total'))
-                ->whereBetween('updated_at',[$date1.' 00:00:00',$date2.' 23:59:59'])
-                ->groupBy(DB::raw('DATE(updated_at)'))
-                ->orderBy('updated_at','DESC')
-                ->get()
-        );
+        /*$totals = Raffle::where('id', $raffle_id)
+                ->withSum(['deliveries' => function ($query) use ($date1, $date2) {
+                    $query->whereBetween('created_at', [$date1, $date2]);
+                }], 'total')
+                ->withSum(['commissions' => function ($query) use ($date1, $date2) {
+                    $query->whereBetween('created_at', [$date1, $date2]);
+                }], 'total')
+                ->withSum(['outflows' => function ($query) use ($date1, $date2) {
+                    $query->whereBetween('created_at', [$date1, $date2]);
+                }], 'total')
+                ->paginate(50);*/
+                
+        $deliveries = Delivery::select(DB::raw('DATE(created_at) as date'), DB::raw('SUM(total) as total'), 'raffle_id')
+                        ->whereBetween('created_at', [$date1, $date2])
+                        ->groupBy('date', 'raffle_id')
+                        ->get();
+                    
+                    if(!empty($raffle_id)){
+                        $deliveries = Delivery::select(DB::raw('DATE(created_at) as date'), DB::raw('SUM(total) as total'), 'raffle_id')
+                        ->whereBetween('created_at', [$date1, $date2])
+                        ->where('raffle_id', $raffle_id)
+                        ->groupBy('date', 'raffle_id')
+                        ->get();
+                    }
+                        
+                    
+                    
+        $commissions = Commissions::select(DB::raw('DATE(created_at) as date'), DB::raw('SUM(total) as total'), 'raffle_id')
+                        ->whereBetween('created_at', [$date1, $date2])
+                        ->groupBy('date', 'raffle_id')
+                        ->get();
+
+                        if(!empty($raffle_id)){
+                            $commissions = Commissions::select(DB::raw('DATE(created_at) as date'), DB::raw('SUM(total) as total'), 'raffle_id')
+                                ->whereBetween('created_at', [$date1, $date2])
+                                ->where('raffle_id', $raffle_id)
+                                ->groupBy('date', 'raffle_id')
+                                ->get();
+                        }
+                            
+        $outflows = Outflow::select(DB::raw('DATE(created_at) as date'), DB::raw('SUM(total) as total'), 'raffle_id')
+                        ->whereBetween('created_at', [$date1, $date2])
+                        ->groupBy('date', 'raffle_id')
+                        ->get();                
+
+                        if(!empty($raffle_id)){
+                            $outflows = Outflow::select(DB::raw('DATE(created_at) as date'), DB::raw('SUM(total) as total'), 'raffle_id')
+                                ->whereBetween('created_at', [$date1, $date2])
+                                ->where('raffle_id', $raffle_id)
+                                ->groupBy('date', 'raffle_id')
+                                ->get();                
+                        }
         
-
-        $dayTotal = $dayTotal->merge(
-            DB::table('commissions')
-                ->select(DB::raw('DATE(updated_at) as day_date'), DB::raw('SUM(total) as commissions_total'))
-                ->whereBetween('updated_at',[$date1.' 00:00:00',$date2.' 23:59:59'])
-                ->groupBy(DB::raw('DATE(updated_at)'))
-                ->orderBy('updated_at','DESC')
-                ->get()
-        );
-
-        if(!empty($raffle_id)){
-            $dayTotal = DB::table('deliveries')
-            ->select(DB::raw('DATE(updated_at) as day_date'), DB::raw('SUM(total) as deliveries_total'))
-            ->where('raffle_id',$raffle_id)
-            ->whereBetween('updated_at',[$date1.' 00:00:00',$date2.' 23:59:59'])
-            ->groupBy(DB::raw('DATE(updated_at)'))
-            ->orderBy('updated_at','DESC')
-            ->get();
-
-            $dayTotal = $dayTotal->merge(
-                DB::table('outflows')
-                    ->select(DB::raw('DATE(updated_at) as day_date'), DB::raw('SUM(total) as outflows_total'))
-                    ->where('raffle_id',$raffle_id)
-                    ->whereBetween('updated_at',[$date1.' 00:00:00',$date2.' 23:59:59'])
-                    ->groupBy(DB::raw('DATE(updated_at)'))
-                    ->orderBy('updated_at','DESC')
-                    ->get()
-            );
-            
-
-            $dayTotal = $dayTotal->merge(
-                DB::table('commissions')
-                    ->select(DB::raw('DATE(updated_at) as day_date'), DB::raw('SUM(total) as commissions_total'))
-                    ->where('raffle_id',$raffle_id)
-                    ->whereBetween('updated_at',[$date1.' 00:00:00',$date2.' 23:59:59'])
-                    ->groupBy(DB::raw('DATE(updated_at)'))
-                    ->orderBy('updated_at','DESC')
-                    ->get()
-            );
+        $results = [];
+        $results['totals']['deliveries'] = 0;
+        $results['totals']['commissions'] = 0;
+        $results['totals']['outflows'] = 0;
+        foreach ($deliveries as $key => $value) {
+            $results[$value->date][$value->raffle->id]['deliveries'] = $value->total;
+            $results[$value->date][$value->raffle->id]['raffle'] = $value->raffle;
+            $results['totals']['deliveries'] += $value->total;
         }
-
-        $dayTotal = $dayTotal->merge( Cash::select('updated_at','manual_money_box','day_date','id','real_money_box','difference','deliveries','day_outings','create_user','edit_user',)
-                    ->whereBetween('day_date',[$date1.' 00:00:00',$date2.' 23:59:59'])
-                    ->orderBy('day_date','DESC')
-                    ->get() 
-        );
-
-        $dayTotal = $dayTotal->groupBy('day_date')->map(function ($item) {
-            $cash = null;
-            foreach ($item as $key => $value) {
-                if(is_a($value, Cash::class)){
-                    $cash = $value;
-                    break;
-                }
-            }
-            return [
-                'deliveries_total' => $item->sum('deliveries_total'),
-                'outflows_total' => $item->sum('outflows_total'),
-                'commissions_total' => $item->sum('commissions_total'),
-                'cash' => $cash
-            ];
-        });
-
-        return $dayTotal;
+        foreach ($commissions as $key => $value) {
+            $results[$value->date][$value->raffle->id]['commissions'] = $value->total;
+            $results[$value->date][$value->raffle->id]['raffle'] = $value->raffle;
+            $results['totals']['commissions'] += $value->total;
+        }
+        foreach ($outflows as $key => $value) {
+            $results[$value->date][$value->raffle->id]['outflows'] = $value->total;
+            $results[$value->date][$value->raffle->id]['raffle'] = $value->raffle;
+            $results['totals']['outflows'] += $value->total;
+        }
+        return $results;
     }
 
     /**

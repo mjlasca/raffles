@@ -46,8 +46,20 @@
             <div class="overflow-x-auto">
                 <table class="min-w-full">
                     <thead>
+                        @foreach($cashes as $key => $cash)
+                            @if ($key == 'totals')
+                            <tr class="text-md font-semibold tracking-wide text-left bg-red-100 uppercase border-b border-gray-600">
+                                <th colspan="2"></th>
+                                <th class="py-2 px-4 border-b text-right">${{ number_format($cash['deliveries'],2)}}</th>
+                                <th class="py-2 px-4 border-b text-right">${{ number_format($cash['outflows'],2)}}</th>
+                                <th class="py-2 px-4 border-b text-right">${{ number_format($cash['commissions'],2)}}</th>
+                                <th colspan="2"></th>
+                            </tr>        
+                            @endif
+                        @endforeach
                         <tr class="text-md font-semibold tracking-wide text-left text-white bg-green-500 uppercase border-b border-gray-600">
                             <th class="py-2 px-4 border-b">Fecha</th>
+                            <th class="py-2 px-4 border-b">Rifa</th>
                             <th class="py-2 px-4 border-b">Total entregas</th>
                             <th class="py-2 px-4 border-b">Total salidas</th>
                             <th class="py-2 px-4 border-b">Total comisiones</th>
@@ -56,57 +68,24 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @php
-                            $totals = ['deliveries' => 0,'outflows' => 0,'commission' => 0];
-                        @endphp
-                        @foreach($dayTotal as $key => $day)
-                            <tr class="hover:bg-gray-100 border-b">
-                                <td class="py-2 px-4">{{ $key }}</td>
-                                <td class="py-2 px-4">{{ number_format($day['deliveries_total'],2) }}</td>
-                                <td class="py-2 px-4">{{ number_format($day['outflows_total'],2) }}</td>
-                                <td class="py-2 px-4">{{ number_format($day['commissions_total'],2) }}</td>
-                                @if ( !empty( $day['cash']->id ))
-                                    <td class="py-2 px-4">
-                                        <b>Fecha cierre:</b> {{$day['cash']->updated_at}}<br>
-                                        <b>Cerrado por:</b> {{$day['cash']->redited->name}} {{$day['cash']->redited->lastname}}<br>
-                                        <b>Total:</b> {{$day['cash']->real_money_box}}<br>
-                                        <b>Dinero manual:</b> {{$day['cash']->manual_money_box}}<br>
-                                        <b>Diferencia:</b> {{$day['cash']->difference}}<br>
-                                    </td>
-                                @else
-                                    <td class="py-2 px-4">No se ha cerrado el arqueo</td>
-                                @endif
-                                <td class="py-2 px-4 md:flex grid grid-cols-2 gap-2">
-                                    @if ( !empty( $day['cash']->id ))
-                                        <form action="{{ route('arqueos.destroy', $day['cash']) }}" method="POST" onsubmit="return confirmCommission('Está segur@ de eliminar la liquidación')">
-                                            @csrf
-                                            @method('DELETE')
-                                            <button class="text-yellow-500 hover:bg-green-500 p-1 bg-red-500 rounded-md mr-1"><img class="h-5" src="{{ asset('img/icons/delete-icon.svg') }}" alt="Eliminar registro" title="Ver registro"></button>
-                                        </form>
-                                    @else
-                                        <a href="{{ route('arqueos.create', ['date' => $key]) }}" class="text-blue-500 hover:bg-green-500 p-1 bg-blue-500 rounded-md mr-1">
-                                            <img class="h-5" src="{{ asset('img/icons/add-icon.svg') }}" alt="Cerrar día" title="Cerrar día">
-                                        </a>
-                                    @endif
-                                    
-                                    
-                                </td>
-                            </tr>
-                            @php
-                                $totals['deliveries'] = $totals['deliveries'] +  $day['deliveries_total'];
-                                $totals['outflows'] = $totals['outflows'] +  $day['outflows_total'];
-                                $totals['commission'] = $totals['commission'] +  $day['commissions_total'];
-                            @endphp
+                        @foreach($cashes as $key => $cash)
+                            @if ($key != 'totals')
+                                <tr class="hover:bg-gray-100 border-b">
+                                    <td class="py-2 px-4 bg-green-100" colspan="7">{{ $key }}</td>
+                                    @foreach ($cash as $item)
+                                    <tr class="hover:bg-gray-100 border-b">
+                                        <td class="py-2 px-4"></td>
+                                        <td class="py-2 px-4">{{ $item['raffle']->name }}</td>
+                                        <td class="py-2 px-4 text-right">${{ number_format($item['deliveries'] ?? 0,2) }}</td>
+                                        <td class="py-2 px-4 text-right">${{ number_format($item['outflows'] ?? 0,2) }}</td>    
+                                        <td class="py-2 px-4 text-right">${{ number_format($item['commissions'] ?? 0,2) }}</td>
+                                        <td class="py-2 px-4"></td>
+                                        <td class="py-2 px-4"></td>
+                                    </tr>
+                                    @endforeach    
+                                </tr>
+                            @endif
                         @endforeach
-                        @if ( !empty($totals) )
-                            <tr class="bg-blue-100 border-b">
-                                <td class="py-2 px-4"><b>TOTALES $</b></td>
-                                <td class="py-2 px-4">{{ number_format($totals['deliveries'],2) }}</td>
-                                <td class="py-2 px-4">{{ number_format($totals['outflows'],2) }}</td>
-                                <td class="py-2 px-4">{{ number_format($totals['commission'],2) }}</td>
-                                <td class="py-2 px-4" colspan="2"></td>
-                            </tr>
-                        @endif
                     </tbody>
                 </table>
                 

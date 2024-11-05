@@ -19,13 +19,13 @@ class OutFlowController extends Controller
      */
     public function index(Request $req)
     {
-        $outflows  = Outflow::orderBy('updated_at', 'DESC');
+        $outflows  = Outflow::orderBy('created_at', 'DESC');
         if(!empty($req->input('date1'))){
             $date1 = $req->input('date1');
             $date2 = $date1;
             if($req->input('date2'))
                 $date2 = $req->input('date2');
-            $outflows = $outflows->whereBetween(DB::raw('DATE(updated_at)'),[$date1,$date2]);
+            $outflows = $outflows->whereBetween(DB::raw('DATE(created_at)'),[$date1,$date2]);
         }
 
         if($req->input('keyword')){

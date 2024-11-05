@@ -67,7 +67,7 @@
                 
             </div>
         </div>
-        <div class="mt-5">
+        <div class="pagination mt-5">
             {{$raffles->links()}}
         </div>
     </div>
