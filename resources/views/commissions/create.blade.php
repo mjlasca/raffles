@@ -9,7 +9,39 @@
 
             <div>
                 
-                    @csrf
+                    <div>
+                        <form method="GET"  class="p-6">
+                            <div class="md:flex">
+                                <div>
+                                    <label for="user_id" class="block text-gray-700 text-sm font-bold mb-2">Vendedor</label>
+                                    <select name="user_id" id="user_id" class="w-full border rounded-md py-2 px-3" >
+                                        <option value="">Seleccione un vendedor</option>
+                                        @foreach($sellers as $seller)
+                                            @if ($seller->id == Request('user_id'))
+                                                <option value="{{ $seller->id }}" selected>{{ $seller->name }} {{ $seller->lastname }}</option>
+                                            @else    
+                                                <option value="{{ $seller->id }}">{{ $seller->name }} {{ $seller->lastname }}</option>
+                                            @endif
+                                        @endforeach
+                                    </select>
+                                </div>
+                                <div>
+                                    <label for="raffle_id" class="block text-gray-700 text-sm font-bold mb-2">Rifas</label>
+                                    <select name="raffle_id" id="raffle_id" class="w-full border rounded-md py-2 px-3" >
+                                        <option value="">Seleccione una rifa</option>
+                                        @foreach($raffles as $raffle)
+                                            @if ($raffle->id == Request('raffle_id'))
+                                                <option value="{{ $raffle->id }}" selected>{{ $raffle->name }}</option>
+                                            @else    
+                                                <option value="{{ $raffle->id }}">{{ $raffle->name }}</option>
+                                            @endif
+                                        @endforeach
+                                    </select>
+                                </div>
+                            </div>
+                            <button type="submit" class="mt-2 bg-blue-500 text-white py-2 px-4 rounded-md w-full md:w-64">Filtrar consulta</button>
+                        </form>
+                    </div>
                     <div>
                         <table class="min-w-full">
                             <thead>

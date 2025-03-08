@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Exports\DeliveriesExport;
 use App\Models\Delivery;
+use App\Models\PaymentTicket;
 use App\Models\Raffle;
 use App\Models\Ticket;
 use App\Models\User;
@@ -162,7 +163,19 @@ class DeliveryController extends Controller
     public function show($id)
     {
         $delivery = Delivery::find($id);
-        return view('deliveries.show', compact('delivery'));
+        $paymentTicket = PaymentTicket::where('delivery_id',$id)->get();
+        $payments = [];
+        foreach ($paymentTicket as $key => $pay) {
+            $arrayPays = explode(';',$pay->detail);
+            foreach ($arrayPays as $k => $val) {
+                $arrVal = explode(',',$val);
+                $payments[] = [
+                    'ticket_number'  => $arrVal[0],
+                    'payment' => $arrVal[1]
+                ];
+            }
+        }
+        return view('deliveries.show', compact('delivery','payments'));
     }
 
     /**
@@ -261,12 +274,40 @@ class DeliveryController extends Controller
     public function cancel($id)
     {
         $delivery = Delivery::find($id);
+        $current_user = Auth::user();
+        if($delivery->used > 0){
+            $paymentReturn = PaymentTicket::where('delivery_id',$id)->get();
+            $data = [];
+            foreach ($paymentReturn as $key => $pay) {
+                
+                if(!empty($pay->detail)){
+                    $arrPay = explode(';',$pay->detail);
+                    if( is_array($arrPay) ){
+                        foreach ($arrPay as $key => $value) {
+                            $payment = explode(',', $value);
+                            $history = "| ".$current_user->name." ".$current_user->lastname." ha ANULADO el abono en la entrega No. $delivery->consecutive por $".number_format($payment[1],0)." el ".date("d-m-Y h:i:s")." ";
+                            $rest = Ticket::where('ticket_number', intval($payment[0]))
+                                    ->where('raffle_id', intval($delivery->raffle_id))
+                                    ->update([
+                                        'payment' => DB::raw("payment - " . intval($payment[1])),
+                                        'movements' => DB::raw("CONCAT(" . DB::getPdo()->quote($history) . ", movements)")
+                                    ]);
+                        }
+                    }
+                }
+                if($rest > 0){
+                    $pay->update(
+                        ['status' => 2]
+                    );
+                }
+            }
+        }
         if(!empty($delivery)){
             $delivery->update([
                 'status' => 0
             ]);
         }
-        return redirect()->route('entregas.index');
+        return redirect()->route('entregas.index',['keyword' => $id]);
     }
 
     public function export(Request $req){

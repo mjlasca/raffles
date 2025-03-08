@@ -118,8 +118,18 @@
                                             </a>
                                             <a href="{{ route('entregas.cancel', $deliverie->id) }}" onclick="return confirm('Está segur@ de anular el registro')" class="text-yellow-500 hover:bg-green-500 p-1 bg-red-500 rounded-md mr-1">
                                                 <img class="h-5" src="{{ asset('img/icons/delete-icon.svg') }}" alt="Anular" title="Anular">
-                                            </a>    
+                                            </a> 
+                                        @else
+                                            @if ( auth()->user()->role === 'Administrador' )
+                                                <a href="{{ route('entregas.cancel', $deliverie->id) }}" onclick="return confirm('Está segur@ de anular el registro')" class="text-yellow-500 hover:bg-green-500 p-1 bg-red-500 rounded-md mr-1">
+                                                    <img class="h-5" src="{{ asset('img/icons/delete-icon.svg') }}" alt="Anular" title="Anular">
+                                                </a>    
+                                            @endif
                                         @endif
+                                    @else
+                                        <a href="{{ route('entregas.show', $deliverie->id) }}" class="text-blue-500 hover:bg-green-500 p-1 bg-blue-500 rounded-md mr-1">
+                                            <img class="h-5" src="{{ asset('img/icons/show-icon.svg') }}" alt="Ver registro" title="Ver registro">
+                                        </a>
                                     @endif
                                 </td>
                             </tr>

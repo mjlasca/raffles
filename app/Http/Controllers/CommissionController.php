@@ -4,7 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Exports\CommissionsExport;
 use App\Models\Commissions;
+use App\Models\Raffle;
 use App\Models\Ticket;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -43,8 +45,10 @@ class CommissionController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function create(Request $req)
     {
+        $sellers = User::select('id','name','lastname')->where('role','Vendedor')->orderBy('name','ASC')->get();
+        $raffles = Raffle::select('id','name')->orderBy('name','ASC')->get();
         $tickets = Ticket::where('payment_commission', null)->whereHas('raffle', function ($query) {
                             $query->where('raffle_status', '>', -1);
                         })
@@ -53,26 +57,35 @@ class CommissionController extends Controller
                         ->orderBy('users.name', 'ASC')
                         ->select('tickets.*')
                         ->get();
-                        
+                        //dd($req->input('user_id'));
+        if($req->input('user_id'))
+            $tickets = $tickets->where('user_id',$req->input('user_id'));
+        if($req->input('raffle_id'))
+            $tickets = $tickets->where('raffle_id',$req->input('raffle_id'));                        
+        //$tickets = $tickets->get();
         $sellers_users = [];
-        $sum = [];
-        $aux = [];
-        foreach ($tickets as $key => $ticket) {
-            $sum[$ticket->user_id][$ticket->raffle_id] = $sum[$ticket->user_id][$ticket->raffle_id] ?? 0;
-            $sum[$ticket->user_id][$ticket->raffle_id] += $ticket->assignment->commission;
-            $aux[$ticket->user_id][$ticket->raffle_id][] = [
-                'ticket' => $ticket,
-            ];
-            $sellers_users[$ticket->user_id][$ticket->raffle_id] = [
-                'user' => $ticket->user->name . " " .$ticket->user->lastname,
-                'user_id' => $ticket->user_id,
-                'raffle' => $ticket->raffle,
-                'sum' => $sum[$ticket->user_id][$ticket->raffle_id],
-                'detail' => $aux[$ticket->user_id][$ticket->raffle_id]
-            ];
-            
-        }
-        return view('commissions.create', compact('sellers_users'));
+        if($req->input('raffle_id') || $req->input('user_id'))
+        {
+            $sum = [];
+            $aux = [];
+            foreach ($tickets as $key => $ticket) {
+                $sum[$ticket->user_id][$ticket->raffle_id] = $sum[$ticket->user_id][$ticket->raffle_id] ?? 0;
+                $sum[$ticket->user_id][$ticket->raffle_id] += $ticket->assignment->commission;
+                $aux[$ticket->user_id][$ticket->raffle_id][] = [
+                    'ticket' => $ticket,
+                ];
+                $sellers_users[$ticket->user_id][$ticket->raffle_id] = [
+                    'user' => $ticket->user->name . " " .$ticket->user->lastname,
+                    'user_id' => $ticket->user_id,
+                    'raffle' => $ticket->raffle,
+                    'sum' => $sum[$ticket->user_id][$ticket->raffle_id],
+                    'detail' => $aux[$ticket->user_id][$ticket->raffle_id]
+                ];
+                
+            }
+        }                
+        
+        return view('commissions.create', compact('sellers_users','sellers','raffles'));
     }
 
     /**
