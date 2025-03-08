@@ -59,6 +59,9 @@ class RaffleController extends Controller
     public function store(Request $request)
     {
         $user = Auth::user();
+        $request->merge([
+            'disabled' => $request->has('disabled') ? 1 : 0
+        ]);
         $data = $request->all();
         $data['create_user'] = $user->id;
         $data['edit_user'] = $user->id;
@@ -103,6 +106,9 @@ class RaffleController extends Controller
     {
         // Lógica para actualizar la rifa en la base de datos
         $raffle = Raffle::find($id);
+        $request->merge([
+            'disabled' => $request->has('disabled') ? 1 : 0
+        ]);
         $raffle->update($request->all());
 
         return redirect()->route('rifas.index');

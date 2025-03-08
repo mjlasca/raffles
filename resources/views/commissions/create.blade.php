@@ -27,7 +27,7 @@
                                 </div>
                                 <div>
                                     <label for="raffle_id" class="block text-gray-700 text-sm font-bold mb-2">Rifas</label>
-                                    <select name="raffle_id" id="raffle_id" class="w-full border rounded-md py-2 px-3" >
+                                    <select name="raffle_id" id="raffle_id" class="w-full border rounded-md py-2 px-3" required >
                                         <option value="">Seleccione una rifa</option>
                                         @foreach($raffles as $raffle)
                                             @if ($raffle->id == Request('raffle_id'))
@@ -78,7 +78,7 @@
                                     </tr>
                                     <tr>
                                         <td colspan="4">
-                                            <div class="detail--ticket bg-green-100 p-2 grid grid-cols-3 hidden detail-{{$ticket['raffle']->id}}{{$ticket['user_id']}}">
+                                            <div class="detail--ticket bg-green-100 dark:text-gray-400 p-2 grid grid-cols-3 hidden detail-{{$ticket['raffle']->id}}{{$ticket['user_id']}}">
                                                 @foreach ($ticket['detail'] as $detail)
                                                     <a href="/boletas?raffle_id={{$detail['ticket']->raffle_id}}&ticket_number={{$detail['ticket']->ticket_number}}" target="_blank" class="text-md hover:text-indigo-600 transition duration-500 ease-in-out p-1">
                                                         <div class="p-2 rounded mt-1 shadow-md flex justify-between">

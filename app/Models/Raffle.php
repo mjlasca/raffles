@@ -18,6 +18,7 @@ class Raffle extends Model
         'tickets_number',
         'ticket_commission',
         'raffle_status',
+        'disabled',
         'status',
         'create_user',
         'edit_user',

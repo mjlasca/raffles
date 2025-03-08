@@ -28,7 +28,7 @@
 
                 <div class="mb-4 w-52">
                     <label for="raffle_date" class="block text-gray-700 text-sm font-bold mb-2">Fecha sorteo: </label>
-                    <input type="date" min="{{ now()->format('Y-m-d') }}" name="raffle_date" id="raffle_date" class="w-full border rounded-md py-2 px-3" value="{{ \Carbon\Carbon::parse($raffle->raffle_date)->format('Y-m-d') }}" required>
+                    <input type="date"  name="raffle_date" id="raffle_date" class="w-full border rounded-md py-2 px-3" value="{{ \Carbon\Carbon::parse($raffle->raffle_date)->format('Y-m-d') }}" required>
                 </div>
 
                 <div class="mb-4 w-52">
@@ -39,6 +39,13 @@
                 <div class="mb-4 w-52">
                     <label for="ticket_commission" class="block text-gray-700 text-sm font-bold mb-2">Comisión por boleta:</label>
                     <input type="number" name="ticket_commission" id="ticket_commission" class="w-full border rounded-md py-2 px-3" value="{{ $raffle->ticket_commission }}"  required>
+                </div>
+
+                <div class="mb-4 d-flex">
+                    <div class="">
+                        <input class="w-7 h-7 mr-2" type="checkbox"  name="disabled" id="disabled" value="{{$raffle->disabled}}" @if ($raffle->disabled == 1) checked @endif >
+                    </div>
+                    <label for="disabled" class="block text-gray-700 text-sm font-bold mt-1">Rifa cerrada</label>
                 </div>
 
                 <button type="submit" class="bg-blue-500 text-white py-2 px-4 rounded-md">Actualizar Rifa</button>

@@ -3,7 +3,11 @@
 @section('content')
     <div class="container mx-auto mt-8">
         <div class="bg-white shadow-md overflow-hidden rounded-md">
-            <div class="py-4 px-6 bg-blue-500 flex text-white fill-white">
+            @if ($raffle->disabled == 0)
+                <div class="py-4 px-6 bg-blue-500 flex text-white fill-white">
+            @else
+                <div class="py-4 px-6 bg-orange-500 flex text-white fill-white">
+            @endif
                 <h2 class="text-2xl font-semibold">{{ $raffle->name }}</h2>
             </div>
 
@@ -19,6 +23,7 @@
                 @else
                 <p class="mb-4"><strong>Rifa asignada:</strong> SI</p>
                 @endif
+                <p class="mb-4 "><strong>Rifa abierta/cerrada:</strong> @if($raffle->disabled == 0 ) ABIERTA @else <span class="bg-orange-500">CERRADA</span> @endif</p>
                 
             </div>
         </div>

@@ -91,7 +91,7 @@ class DeliveryController extends Controller
      */
     public function create()
     {
-        $raffles = Raffle::where('status',1)->select('raffles.id','raffles.name')->leftJoin(
+        $raffles = Raffle::where('status',1)->where('disabled',0)->select('raffles.id','raffles.name')->leftJoin(
             'assignments', 'assignments.raffle_id', '=', 'raffles.id'
         )->groupBy('raffles.id')->get();
         $sellers_users = User::select('id','name','lastname')->where('role','Vendedor')->orderBy('name','ASC')->get();
@@ -200,7 +200,7 @@ class DeliveryController extends Controller
     public function edit($id)
     {
         $delivery = Delivery::find($id);
-        $raffles = Raffle::where('status',1)->select('id','name')->get();
+        $raffles = Raffle::where('status',1)->select('id','name')->where('disabled',0)->get();
         $sellers_users = User::select('id','name','lastname')->where('role','Vendedor')->get();
         return view('deliveries.edit', compact('delivery','raffles','sellers_users'));
     }

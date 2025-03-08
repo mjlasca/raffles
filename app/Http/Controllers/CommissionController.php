@@ -22,6 +22,7 @@ class CommissionController extends Controller
     public function index(Request $req)
     {
         $commissions = Commissions::orderBy('updated_at', 'DESC');
+        $raffles = Raffle::select('id','name')->where('disabled',0)->orderBy('name','ASC')->get();
         if(!empty($req->input('date1'))){
             $date1 = $req->input('date1');
             $date2 = $req->input('date2');
@@ -35,9 +36,13 @@ class CommissionController extends Controller
                 $query->orWhere('lastname', 'like', '%'.$req->input('keyword').'%');
             });
         }
+        if($req->input('raffle_id')){
+
+            $commissions = $commissions->where('raffle_id',$req->input('raffle_id'));
+        }
         
         $commissions = $commissions->paginate(50);
-        return view('commissions.index', compact('commissions'));
+        return view('commissions.index', compact('commissions','raffles'));
     }
 
     /**
@@ -48,7 +53,7 @@ class CommissionController extends Controller
     public function create(Request $req)
     {
         $sellers = User::select('id','name','lastname')->where('role','Vendedor')->orderBy('name','ASC')->get();
-        $raffles = Raffle::select('id','name')->orderBy('name','ASC')->get();
+        $raffles = Raffle::select('id','name')->where('disabled',0)->orderBy('name','ASC')->get();
         $tickets = Ticket::where('payment_commission', null)->whereHas('raffle', function ($query) {
                             $query->where('raffle_status', '>', -1);
                         })

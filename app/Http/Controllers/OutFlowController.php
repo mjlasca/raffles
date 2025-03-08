@@ -20,6 +20,7 @@ class OutFlowController extends Controller
     public function index(Request $req)
     {
         $outflows  = Outflow::orderBy('created_at', 'DESC');
+        $raffles = Raffle::select('id','name')->where('disabled',0)->orderBy('name','ASC')->get();
         if(!empty($req->input('date1'))){
             $date1 = $req->input('date1');
             $date2 = $date1;
@@ -41,9 +42,13 @@ class OutFlowController extends Controller
                 });
             });
         }
+        if($req->input('raffle_id')){
+
+            $outflows = $outflows->where('raffle_id',$req->input('raffle_id'));
+        }
 
         $outflows = $outflows->paginate('50');
-        return view('outflows.index', compact('outflows'));
+        return view('outflows.index', compact('outflows','raffles'));
     }
 
     /**
@@ -53,7 +58,7 @@ class OutFlowController extends Controller
      */
     public function create()
     {
-        $raffles = Raffle::where('raffle_date', '>=','NOW()')->get();
+        $raffles = Raffle::where('raffle_date', '>=','NOW()')->where('disabled',0)->orderBy('name','ASC')->get();
         return view('outflows.create',compact('raffles'));
     }
 

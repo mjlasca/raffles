@@ -35,10 +35,12 @@
                     <input type="text" pattern="[0-9]{2,7}" title="La cantidad de tickets debe tener sólo números, hasta 6 caracteres" name="tickets_number" id="tickets_number" class="w-full border rounded-md py-2 px-3"  required>
                 </div>
 
-                <!--<div class="mb-4 w-52">
-                    <label for="ticket_commission" class="block text-gray-700 text-sm font-bold mb-2">Comisión por boleta:</label>
-                    <input type="number" name="ticket_commission" id="ticket_commission" class="w-full border rounded-md py-2 px-3" step="0.01" required>
-                </div>-->
+                <div class="mb-4 d-flex">
+                    <div class="">
+                        <input class="w-7 h-7 mr-2" type="checkbox"  name="disabled" id="disabled" value="1" >
+                    </div>
+                    <label for="disabled" class="block text-gray-700 text-sm font-bold mt-1">Rifa cerrada</label>
+                </div>
 
                 <button type="submit" class="bg-blue-500 text-white py-2 px-4 rounded-md">Guardar</button>
             </form>

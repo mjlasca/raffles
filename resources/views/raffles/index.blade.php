@@ -41,6 +41,7 @@
                             <th class="py-2 px-4 border-b">Descripción</th>
                             <th class="py-2 px-4 border-b">Precio</th>
                             <th class="py-2 px-4 border-b">Fecha sorteo</th>
+                            <th class="py-2 px-4 border-b">Abierta/Cerrada</th>
                             <th class="py-2 px-4 border-b">Acciones</th>
                         </tr>
                     </thead>
@@ -51,6 +52,11 @@
                                 <td class="py-2 px-4">{{ $raffle->description }}</td>
                                 <td class="py-2 px-4">${{ $raffle->price }}</td>
                                 <td class="py-2 px-4">{{ \Carbon\Carbon::parse($raffle->raffle_date)->format('Y-m-d') }}</td>
+                                @if ($raffle->disabled == 0)
+                                    <td class="py-2 px-4">ABIERTA</td>
+                                @else
+                                    <td class="py-2 px-4 bg-orange-500">CERRADA</td>
+                                @endif
                                 <td class="py-2 px-4 grid grid-cols-2 gap-2 md:flex">
                                     <a href="{{ route('rifas.show', $raffle->id) }}" class="text-blue-500 hover:bg-green-500 p-1 bg-blue-500 rounded-md mr-1">
                                         <img class="h-5" src="{{ asset('img/icons/show-icon.svg') }}" alt="Ver registro" title="Ver registro">
