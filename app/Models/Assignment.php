@@ -16,12 +16,18 @@ class Assignment extends Model
         'tickets_total',
         'create_user',
         'edit_user',
+        'user_referred',
         'commission'
     ];
 
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function referred()
+    {
+        return $this->belongsTo(User::class, 'user_referred');
     }
 
     public function raffle()

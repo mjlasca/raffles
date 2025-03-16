@@ -56,6 +56,7 @@ Route::resource('arqueos', CashController::class)->middleware(['auth'])->paramet
     'arqueos' => 'cash',
 ]);
 Route::get('/cashes/export', [CashController::class, 'export'])->middleware(['auth'])->name('arqueos.export');
+Route::get('/cashes/dayview/{date}', [CashController::class, 'dayView'])->middleware(['auth'])->name('arqueos.dayview');
 
 Route::middleware(['auth'])->group(function () {
     Route::resource('boletas', TicketController::class)->parameters([

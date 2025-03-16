@@ -50,6 +50,21 @@
                     <input type="number" name="commission" id="commission" value="{{old('commission')}}" class="w-full border rounded-md py-2 px-3" required>
                 </div>
 
+                <div class="mb-4 md:w-1/2">
+                    <label for="user_referred" class="block text-gray-700 text-sm font-bold mb-2">Vendedor(es)</label>
+                    <select name="user_referred" id="user_referred" class="w-full border rounded-md py-2 px-3" required>
+                            <option value="">Seleccione un(a) vendedor(a)</option>
+                        @foreach($sellers_users as $seller)
+                            @if ($seller->id == old('user_referred'))
+                                <option value="{{ $seller->id }}" selected>{{ $seller->name }} {{ $seller->lastname }}</option>
+                            @else    
+                                <option value="{{ $seller->id }}">{{ $seller->name }} {{ $seller->lastname }}</option>
+                            @endif
+                            
+                        @endforeach
+                    </select>
+                </div>
+
                 <div class="mb-3">
                     
                     <div class="flex">

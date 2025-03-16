@@ -68,7 +68,7 @@ class CashController extends Controller
                         ->get();
                     }
                         
-                    
+                            
                     
         $commissions = Commissions::select(DB::raw('DATE(created_at) as date'), DB::raw('SUM(total) as total'), 'raffle_id')
                         ->whereBetween('created_at', [$date1, $date2])
@@ -166,12 +166,40 @@ class CashController extends Controller
     /**
      * Display the specified resource.
      *
+     * @param  string  $date
+     * @return \Illuminate\Http\Response
+     */
+    public function dayView(Request $req, $date)
+    {
+        $raffles = Raffle::select('id','name')->get();
+        $deliveries = Delivery::where('created_at','>=', $date." 00:01:00")->where('created_at','<=', $date." 23:59:59");
+        $outflows = Outflow::where('created_at','>=', $date." 00:01:00")->where('created_at','<=', $date." 23:59:59");
+        $commissions = Commissions::where('created_at','>=', $date." 00:01:00")->where('created_at','<=', $date." 23:59:59");
+        $raffle_ = "Todas las rifas";
+        
+        if($req->input('raffle_id')){
+            $raffle = Raffle::find($req->input('raffle_id'));
+            $raffle_ = $raffle->name;
+            $deliveries = $deliveries->where('raffle_id',$req->input('raffle_id'));
+            $outflows = $outflows->where('raffle_id',$req->input('raffle_id'));
+            $commissions = $commissions->where('raffle_id',$req->input('raffle_id'));
+        }
+        $deliveries = $deliveries->get();
+        $outflows = $outflows->get();
+        $commissions = $commissions->get();
+
+        return view('cashes.dayview', compact('deliveries','outflows','date','raffles','raffle_','commissions'));
+    }
+
+    /**
+     * Display the specified resource.
+     *
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
     public function show($id)
     {
-        //
+        
     }
 
     /**

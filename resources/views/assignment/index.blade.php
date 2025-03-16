@@ -8,7 +8,7 @@
                 <a class="ml-2 p-1 mt-1 bg-green-500 rounded-lg hover:bg-green-500" href="{{route('asignaciones.create')}}">
                     <img class="h-5" src="{{ asset('img/icons/add-icon.svg') }}" alt="">
                 </a>
-                <a class="ml-2 p-1 mt-1 bg-green-500 rounded-lg hover:bg-green-500" href="{{route('asignaciones.export')}}?date1={{ Request('date1') }}&date2={{ Request('date2') }}">
+                <a class="ml-2 p-1 mt-1 bg-green-500 rounded-lg hover:bg-green-500" href="{{route('asignaciones.export')}}?date1={{ Request('date1') }}&date2={{ Request('date2') }}&raffle_id={{ Request('raffle_id') }}">
                     <img class="h-5" src="{{ asset('img/icons/export-icon.svg') }}" alt="">
                 </a>
             </div>
@@ -19,6 +19,19 @@
                         <div>
                             <label for="keyword" class="block text-gray-700 text-sm font-bold mb-2">Buscar coincidencia</label>
                             <input type="text" class="w-full border rounded-md py-2 px-3" name="keyword" id="" value="{{ Request('keyword') }}" placeholder="Buscar rifa o usuario">
+                        </div>
+                        <div>
+                            <label for="raffle_id" class="block text-gray-700 text-sm font-bold mb-2">Rifas</label>
+                            <select name="raffle_id" id="raffle_id" class="w-full border rounded-md py-2 px-3"  >
+                                <option value="">Seleccione una rifa</option>
+                                @foreach($raffles as $raffle)
+                                    @if ($raffle->id == Request('raffle_id'))
+                                        <option value="{{ $raffle->id }}" selected>{{ $raffle->name }}</option>
+                                    @else    
+                                        <option value="{{ $raffle->id }}">{{ $raffle->name }}</option>
+                                    @endif
+                                @endforeach
+                            </select>
                         </div>
                         <div>
                             <label for="date1" class="block text-gray-700 text-sm font-bold mb-2">Fecha inicial</label>
@@ -39,6 +52,7 @@
                             <th class="py-2 px-4 border-b">Fecha asignación</th>
                             <th class="py-2 px-4 border-b">Nombre rifa</th>
                             <th class="py-2 px-4 border-b">Vendedor</th>
+                            <th class="py-2 px-4 border-b">Referido</th>
                             <th class="py-2 px-4 border-b">Comisión</th>
                             <th class="py-2 px-4 border-b"># Boletas asignadas</th>
                             <th class="py-2 px-4 border-b">Acciones</th>
@@ -58,6 +72,11 @@
                                 </td>
                                 <td class="py-2 px-4">
                                     {{ $assignment->user->name }} {{ $assignment->user->lastname }}
+                                </td>
+                                <td class="py-2 px-4">
+                                    @if (!empty($assignment->user_referred))
+                                        {{  $assignment->referred->name }} {{  $assignment->referred->lastname }}    
+                                    @endif
                                 </td>
                                 <td class="py-2 px-4">
                                     ${{  number_format( $assignment->commission,0) }}

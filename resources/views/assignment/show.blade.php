@@ -4,10 +4,14 @@
     <div class="container mx-auto mt-8">
         <div class="bg-white shadow-md overflow-hidden rounded-md">
             <div class="py-4 px-6 bg-blue-500 flex text-white fill-white">
-                <h2 class="text-2xl font-semibold">{{ $assignment->raffle->name }} / {{ $assignment->user->name }}</h2>
+                <h2 class="text-2xl font-semibold">{{ $assignment->raffle->name }} / {{ $assignment->user->name }} {{ $assignment->user->lastname }}</h2>
             </div>
 
             <div class="p-6">
+                @if (!empty($assignment->user_referred))
+                    <p class="mb-4"><strong>Referido:</strong> {{ $assignment->referred->name }} {{ $assignment->referred->lastname }} </p>    
+                @endif
+                
                 <p class="mb-4"><strong>Total boletas:</strong> {{ $assignment->tickets_total }} </p>
                 <div class="grid grid-cols-10 gap-2">
                 @foreach ($table as $item)

@@ -22,7 +22,7 @@ class AssignmentController extends Controller
     public function index(Request $req)
     {
         $assignments = Assignment::orderBy('updated_at','DESC');
-
+        $raffles = Raffle::select('id','name')->where('disabled',0)->orderBy('name','ASC')->get();
         if($req->input('date1')){
             $date1 = $req->input('date1');
             $date2 = $date1;
@@ -33,20 +33,21 @@ class AssignmentController extends Controller
         }
 
         if($req->input('keyword')){
-            $assignments = $assignments->whereHas('raffle', function ($query) use ($req) {
-                $query->where('name', 'like', '%'.$req->input('keyword').'%');
-            });
-
             $assignments = $assignments->orWhereHas('user', function ($query) use ($req) {
                 $query->where('name', 'like', '%'.$req->input('keyword').'%');
                 $query->orWhere('lastname', 'like', '%'.$req->input('keyword').'%');
             });
         }
 
+        if($req->input('raffle_id')){
+
+            $assignments = $assignments->where('raffle_id',$req->input('raffle_id'));
+        }
+
         
 
         $assignments = $assignments->paginate(50);
-        return view('assignment.index', compact('assignments'));
+        return view('assignment.index', compact('assignments','raffles'));
     }
 
     /**
@@ -54,7 +55,7 @@ class AssignmentController extends Controller
      */
     public function create()
     {
-        $raffles = Raffle::where('raffle_status',0)->select('id','name')->get();
+        $raffles = Raffle::where('raffle_status',0)->where('disabled',0)->select('id','name')->get();
         $sellers_users = User::select('id','name','lastname')->where('role','Vendedor')->orderBy('name','ASC')->get();
         return view('assignment.create', compact('raffles','sellers_users'));
     }
@@ -95,13 +96,13 @@ class AssignmentController extends Controller
         $data['create_user'] = $user->id;
         $data['edit_user'] = $user->id;
         
-        $this->setAssignment($data['user_id'], $raffle[0], $tickets,$data['commission']);
+        $this->setAssignment($data['user_id'], $raffle[0], $tickets,$data);
         return redirect()->route('asignaciones.index');
 
         
     }
 
-    private function setAssignment($user, Raffle $raffle, $tickets, $commission){
+    private function setAssignment($user, Raffle $raffle, $tickets, $data_){
         $current_user = Auth::user();
 
         $dataCreate['tickets_numbers'] = implode(" ",$tickets);
@@ -110,7 +111,8 @@ class AssignmentController extends Controller
         $dataCreate['tickets_total'] = count($tickets);
         $dataCreate['create_user'] = $current_user->id;
         $dataCreate['edit_user'] = $current_user->id;
-        $dataCreate['commission'] = $commission;
+        $dataCreate['commission'] = $data_['commission'];
+        $dataCreate['user_referred'] = $data_['user_referred'];
         $assign = Assignment::create($dataCreate);
         
         if($assign){
