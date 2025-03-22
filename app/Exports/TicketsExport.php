@@ -146,7 +146,7 @@ class TicketsExport implements FromCollection, WithHeadings, WithEvents
      * @return float
      */
     public function getDelivery(User $user, Raffle $raffle) : float {
-        $result = Delivery::where('user_id',$user->id)->where('raffle_id',$raffle->id)->sum('total');
+        $result = Delivery::where('user_id',$user->id)->where('raffle_id',$raffle->id)->where('status',1)->sum('total');
         return (float)$result ?? 0;
     }
 }
