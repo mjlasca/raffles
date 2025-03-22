@@ -9,7 +9,7 @@
             <form method="GET"  class="p-6">
                     
                 <div class="md:flex w-80">
-                    <div>
+                    <div class="w-9/12">
                         <select name="raffle_id" id="raffle_id" class="w-full border rounded-md py-2 px-3" >
                             <option value="">Todas las rifas</option>
                             @foreach($raffles as $raffle)
@@ -22,7 +22,9 @@
                             @endforeach
                         </select>
                     </div>
-                    <button type="submit" class="bg-blue-500 text-white py-2 px-2 rounded-md w-full">Filtrar</button>
+                    <div class="w-3/12">
+                        <button type="submit" class="bg-blue-500 text-white py-2 px-2 rounded-md w-full">Filtrar</button>
+                    </div>
                 </div>
                 
             </form>
@@ -81,14 +83,14 @@
                         @foreach ($outflows as $outflow)
                         <tr class="hover:bg-gray-100 border-b">
                          <td class="py-2 px-4 ">{{ \Carbon\Carbon::parse($outflow->created_at)->format('d/m/Y h:i:s') }}</td>
-                         <td class="py-2 px-4 max-w-20">{{$delivery->raffle->name}} <br>{{ $outflow->detail }}</td>
+                         <td class="py-2 px-4 max-w-20">{{$outflow->raffle->name}} <br>{{ $outflow->detail }}</td>
                          <td class="py-2 px-4 text-right">${{ number_format($outflow->total) }}</td>
                         </tr>
                         @endforeach
                         @foreach ($commissions as $commission)
                         <tr class="hover:bg-gray-100 border-b">
                          <td class="py-2 px-4 ">{{ \Carbon\Carbon::parse($commission->created_at)->format('d/m/Y h:i:s') }}</td>
-                         <td class="py-2 px-4 max-w-20">{{$delivery->raffle->name}} <br>Pago Comisión a {{ $commission->user->name." ".$commission->user->lastname }}</td>
+                         <td class="py-2 px-4 max-w-20">{{$commission->raffle->name}} <br>Pago Comisión a {{ $commission->user->name." ".$commission->user->lastname }}</td>
                          <td class="py-2 px-4 text-right">${{ number_format($commission->total) }}</td>
                         </tr>
                         @endforeach

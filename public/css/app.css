@@ -12642,6 +12642,9 @@ video {
 .w-2\/5 {
   width: 40%;
 }
+.w-3\/12 {
+  width: 25%;
+}
 .w-4\/5 {
   width: 80%;
 }
@@ -12671,6 +12674,9 @@ video {
 }
 .w-80 {
   width: 20rem;
+}
+.w-9\/12 {
+  width: 75%;
 }
 .w-auto {
   width: auto;
