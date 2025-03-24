@@ -2,9 +2,9 @@ const tickets_pay = document.querySelector('.tickets-pay');
 const content_tickets = document.querySelector('.content-tickets');
 const ticket_row = `
                     <input type="number" name="ticket_number[]" class="ticket-number w-full border rounded-md py-2 px-3" placeholder="#Boleta" autocomplete="off" required>
-                    <input type="number" min="1" name="ticket_payment[]" class="ticket-payment w-full border rounded-md py-2 px-3" placeholder="#Abono" autocomplete="off" required>    
-                    <input type="text" name="customer_name[]" class="ticket w-full border rounded-md py-2 px-3" placeholder="Nombre" autocomplete="off" >    
-                        <input type="number" name="customer_phone[]" class="ticket w-full border rounded-md py-2 px-3" placeholder="Teléfono" autocomplete="off" >    
+                    <input type="number" min="1" name="ticket_payment[]" class="ticket-payment w-full border rounded-md py-2 px-3" placeholder="#Abono" autocomplete="off" required>
+                    <input type="text" name="customer_name[]" class="ticket w-full border rounded-md py-2 px-3" placeholder="Nombre" autocomplete="off" >
+                        <input type="number" name="customer_phone[]" class="ticket w-full border rounded-md py-2 px-3" placeholder="Teléfono" autocomplete="off" >
                     <button type="button" class="bg-red-500 text-white  less px-3 rounded-md">-</button>
                 `;
 const button_more = document.querySelectorAll('.more');
@@ -44,7 +44,7 @@ function validateUnique(target) {
         target.focus();
         return false;
     }
-        
+
 
     return true;
 }
@@ -66,17 +66,17 @@ tickets_pay.addEventListener('change', async function(event) {
                 if (!response.ok) {
                     throw new Error(`Error de red - Código: ${response.status}`);
                 }
-            
+
                 return response.json();
                 })
                 .then(data => {
-                    
+
                     if(data != ''){
                         siguienteInput.placeholder = (data[0].price - data[0].payment);
                         siguienteInput.max = (data[0].price - data[0].payment);
                         nameInput.value = data[0].customer_name;
                         phoneInput.value = data[0].customer_phone;
-                        
+
                     }else{
                         alert("El número de boleta no pertenece a ésta usuario y rifa");
                         siguienteInput.placeholder = "#Abono";
@@ -88,8 +88,8 @@ tickets_pay.addEventListener('change', async function(event) {
                 console.error('Error en la solicitud:', error.message);
                 });
                 // Acceder al siguiente input
-                
-                
+
+
             }
         }
     }
@@ -100,17 +100,17 @@ tickets_pay.addEventListener('change', async function(event) {
             const prevInput = target.previousElementSibling;
 
             // Verificar si el siguiente elemento es un input
-                
+
                 fetch(currentDomain+"/tickets/checkticket?number="+prevInput.value+"&raffle_id="+raffle_id.value+"&user_id="+user_id.value)
                 .then(response => {
                 if (!response.ok) {
                     throw new Error(`Error de red - Código: ${response.status}`);
                 }
-            
+
                 return response.json();
                 })
                 .then(data => {
-                    
+
                     if(data){
                        if(( data[0].price - data[0].payment ) < target.value){
                             alert("El valor que está ingresando sobrepasa el saldo de la boleta, el saldo es de "+( data[0].price - data[0].payment ));
@@ -128,9 +128,9 @@ tickets_pay.addEventListener('change', async function(event) {
                 console.error('Error en la solicitud:', error.message);
                 });
                 // Acceder al siguiente input
-                
-                
-            
+
+
+
         }
     }
 });
@@ -144,48 +144,56 @@ delivery_id.addEventListener('change', async () => {
     delivery_data.innerHTML = "";
     if(!content_tickets.classList.contains('hidden'))
         content_tickets.classList.add('hidden');
-    
+
     await  fetch(currentDomain+"/deliveries/payment/"+delivery_id.value+"?format=json")
         .then(response => {
           if (!response.ok) {
             throw new Error(`Error de red - Código: ${response.status}`);
           }
-      
+
           return response.json();
         })
         .then(data => {
-            
+            const rest_ = (data.delivery.total - data.delivery.used);
           delivery_data.innerHTML = `
                 <div class="sm:flex p-2">
                     <div class="sm:w-1/2">
-                    <p>${data.description}</p>
+                    <p>${data.delivery.description}</p>
                     <div class="flex">
-                    <p class="mr-2">Total entrega : ${data.total.toLocaleString()}</p>
-                    <p>Total usado : ${ data.used == null ? 0 : data.used.toLocaleString() }</p>
+                    <p class="mr-2">Total entrega : ${data.delivery.total.toLocaleString()}</p>
+                    <p>Total usado : ${ data.delivery.used == null ? 0 : data.delivery.used.toLocaleString() }</p>
                     </div>
-                    <p>Disponible : <span class="hidden" id="availible">${ (data.total - data.used) }</span><span>${ (data.total - data.used).toLocaleString() }</span></p>
+                    <p>Disponible : <span class="hidden" id="availible">${ rest_ }</span><span>${ rest_.toLocaleString() }</span></p>
                     <p class="bg-green-100">Dinero usado : $<span id="used_">0</span></p>
                     </div>
-                    <div class="sm:w-1/2 p-4 flex">
-                        <form method="POST" action="/tickets/payall" onsubmit="return confirm('¿Está seguro de distribuir lo disponible? si lo hace, el sistema asignará equitativamente a cada boleta que tenga para ésta rifa');">
-                        <input type="hidden" value="${delivery_id.value}" name="delivery_id">
-                        <input class="bg-red-500 text-white py-2 px-4 rounded-md" type="submit" value="Distribuir pago">
-                        <input type="hidden" name="_token" value="${token_.value}">
-                        </form>
-                    </div>
+                    <a href="javascript:void(0);" id="modalPay" onclick="showModalPay()" class="bg-red-500 text-white py-2 px-4 rounded-md">Distribuir pago</a>
                 </div>
             `;
-            
-            user_id.value = data.user_id;
-            raffle_id.value = data.raffle_id;
+
+            user_id.value = data.delivery.user_id;
+            raffle_id.value = data.delivery.raffle_id;
+            delivery_id.setAttribute('data-price',data.raffle.price <= rest_ ? data.raffle.price : rest_ );
             content_tickets.classList.remove('hidden');
         })
         .catch(error => {
           console.error('Error en la solicitud:', error.message);
         });
-    
+
 
 });
+
+function showModalPay(){
+    const modalPay = document.querySelector('.modal-pay');
+    if(modalPay.classList.contains('hidden')){
+        const deliveryModal = document.getElementById('delivery_modal_id');
+        deliveryModal.value = delivery_id.value;
+        const distributiveVal = document.getElementById('distributive_value');
+        distributiveVal.setAttribute('max',delivery_id.getAttribute('data-price'));
+        modalPay.classList.remove('hidden');
+    }else{
+        modalPay.classList.add('hidden');
+    }
+}
 
 function clearInputs(){
     const cleari = document.querySelectorAll('.less');
@@ -193,23 +201,23 @@ function clearInputs(){
         element.parentElement.remove();
     });
 }
-    
+
 
 function calculateTotal(value = null) {
-    
+
     const inputsPayment = document.querySelectorAll('.ticket-payment');
     const availible = document.getElementById('availible');
     let totalInputs = 0;
     inputsPayment.forEach(element => {
         totalInputs += parseFloat(  element.value == "" ? 0 : element.value );
     });
-    
+
     if(totalInputs > parseFloat( availible.innerText.replace('.','')))
         return false;
-    
+
     if(value)
         return totalInputs;
-    
+
     return true;
 }
 

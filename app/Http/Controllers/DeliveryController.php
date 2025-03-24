@@ -69,7 +69,7 @@ class DeliveryController extends Controller
                 $date2 = $req->input('date2');
             $deliveryTotal = $deliveryTotal->whereBetween('created_at',[$date1.' 00:00:00',$date2.' 23:59:59']);
         }
-        
+
         $deliveryTotal = $deliveryTotal->get();
 
         if(!empty($deliveryTotal)){
@@ -109,17 +109,17 @@ class DeliveryController extends Controller
     {
         $user = Auth::user();
         $data = $request->all();
-        
+
         if(isset($data['raffle_id'])){
             $raffle_id = $data['raffle_id'];
             $user_ = $data['user_id'];
-            
+
             $sum = Delivery::where('raffle_id',$raffle_id)->where('user_id',$user_)->where('status',1)->sum('total') + $data['total'];
             $sumTicket = Ticket::where('raffle_id',$raffle_id)->where('user_id',$user_)->sum('price');
             $sumPayment = Ticket::where('raffle_id',$raffle_id)->where('user_id',$user_)->sum('payment');
             $sumTotal = ($sumTicket - $sum ) < 0 ? 0 : ($sumTicket - $sum );
             $raffle = Raffle::find($data['raffle_id']);
-            
+
         }
 
         $request->validate(
@@ -131,8 +131,8 @@ class DeliveryController extends Controller
                 'total.delivery_total' => 'El total a entregar debe ser $('.number_format($sumTicket,0).'). El valor de entrega supera el monto total de la rifa, total sin engrega $('.number_format($sumTotal,0).') Suma total entregas mas la actual $('.number_format($sum,0).')',
             ]
         );
-        
-        
+
+
         $data['create_user'] = $user->id;
         $data['edit_user'] = $user->id;
         $data['consecutive'] = $this->consecutive($data['raffle_id']);
@@ -187,8 +187,11 @@ class DeliveryController extends Controller
     public function payment($id, Request $req)
     {
         $delivery = Delivery::find($id);
-        if(!empty($req->input('format')))
-            return response()->json($delivery);
+        if(!empty($req->input('format'))){
+            $data['delivery'] = $delivery;
+            $data['raffle'] = $delivery->raffle;
+           return response()->json($data);
+        }
     }
 
     /**
@@ -220,13 +223,13 @@ class DeliveryController extends Controller
         if(isset($data['raffle_id'])){
             $raffle_id = $data['raffle_id'];
             $user_ = $data['user_id'];
-            
+
             $sum = Delivery::where('raffle_id',$raffle_id)->where('id','!=',$id)->where('status',1)->where('user_id',$user_)->sum('total') + $data['total'];
             $sumTicket = Ticket::where('raffle_id',$raffle_id)->where('user_id',$user_)->sum('price');
             $sumPayment = Ticket::where('raffle_id',$raffle_id)->where('user_id',$user_)->sum('payment');
             $sumTotal = ($sumTicket - $sum ) < 0 ? 0 : ($sumTicket - $sum );
             $raffle = Raffle::find($data['raffle_id']);
-            
+
         }
         $request->validate(
             [
@@ -279,7 +282,7 @@ class DeliveryController extends Controller
             $paymentReturn = PaymentTicket::where('delivery_id',$id)->get();
             $data = [];
             foreach ($paymentReturn as $key => $pay) {
-                
+
                 if(!empty($pay->detail)){
                     $arrPay = explode(';',$pay->detail);
                     if( is_array($arrPay) ){

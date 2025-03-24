@@ -63,7 +63,7 @@ Route::middleware(['auth'])->group(function () {
         'boletas' => 'ticket',
     ]);
 
-    
+
 });
 Route::get('/tickets', function () {
     return redirect('/boletas');
@@ -71,6 +71,7 @@ Route::get('/tickets', function () {
 Route::get('/tickets/export', [TicketController::class, 'export'])->middleware(['auth'])->name('boletas.export');
 
 Route::get('/tickets/pago', [TicketController::class, 'pay'])->middleware(['auth'])->name('boletas.pay');
+Route::post('/tickets/pago', [TicketController::class, 'pay'])->middleware(['auth'])->name('boletas.pay');
 Route::get('/tickets/checkticket', [TicketController::class, 'checkticket'])->middleware(['auth'])->name('checkticket');
 Route::post('/tickets/setpay', [TicketController::class, 'setpay'])->middleware(['auth'])->name('tickets.setpay');
 Route::post('/tickets/payall', [TicketController::class, 'payall'])->middleware(['auth'])->name('tickets.payall');
