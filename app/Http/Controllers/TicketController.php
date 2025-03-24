@@ -122,19 +122,34 @@ class TicketController extends Controller
     public function pay(Request $req)
     {
         $current_user = Auth::user();
-        $deliveries = Delivery::whereColumn('total', '>', 'used')
+        $selected_user = FALSE;
+        if($req->input('user_deliveries')){
+            $selected_user = TRUE;
+            $deliveries = Delivery::whereColumn('total', '>', 'used')
                       ->where('status', 1)
-                      ->join('users', 'deliveries.user_id', '=', 'users.id')
+                      ->join('users', 
+                      'deliveries.user_id', '=', 'users.id')
                       ->select('deliveries.id', 'deliveries.raffle_id', 'deliveries.user_id', 'deliveries.total', 'deliveries.used', 'users.name')
                       ->orderBy('users.name')
+                      ->groupBy('user_id')
                       ->get();
+        }else{
+            $deliveries = Delivery::whereColumn('total', '>', 'used')
+            ->where('status', 1)
+            ->join('users', 'deliveries.user_id', '=', 'users.id')
+            ->select('deliveries.id', 'deliveries.raffle_id', 'deliveries.user_id', 'deliveries.total', 'deliveries.used', 'users.name')
+            ->orderBy('users.name')
+            ->get();
+        }
+        
         
         if($current_user->role === 'Vendedor'){
             $sellers_users = User::select('id','name','lastname')->where('role','Vendedor')->where('id',$current_user->id)->get();
             $deliveries = Delivery::where('user_id', $current_user->id)->whereColumn('used','<','total')->get();
         }
+        
         $sellers_users = User::select('id','name')->where('role','Vendedor')->get();
-        return view('tickets.pay', compact('deliveries','sellers_users','current_user'));
+        return view('tickets.pay', compact('deliveries','sellers_users','current_user','selected_user'));
     }
 
     public function setpay(Request $req){
