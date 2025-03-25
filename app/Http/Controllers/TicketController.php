@@ -221,30 +221,36 @@ class TicketController extends Controller
                         if(($total_b + $distributiveValue) <= $to_use){
                             $to_use_dynamic = $to_use_dynamic - $distributiveValue;
                             $temHistory = str_replace('[pay]', " por $".number_format($distributiveValue,0), $history);
-                            Ticket::where('id', $value)
+                            
+                            $updTikcet = Ticket::where('id', $value)
                             ->whereRaw("price >= ( payment  + $distributiveValue )") // Nueva condición
                             ->update([
                                 'payment' => DB::raw("payment + $distributiveValue "),
                                 'movements' =>  DB::raw("IFNULL(CONCAT($temHistory,movements), $temHistory)")
                             ]);
-                            $total_b += $distributiveValue;
+                            if($updTikcet > 0)
+                                $total_b += $distributiveValue;
                         }
                     }else{
                         break;
                     }
                 }
-
                 if($total_b > 0){
                     //condition for money used update in delivery table
                     $delivery->update([
                         'used' => DB::raw('used + ' . $total_b ),
                     ]);
+                    return redirect()->route('boletas.index', ['raffle_id' => $delivery->raffle_id, 'user_id' => $delivery->user_id]);
+                }else{
+                    return redirect()->back()
+                    ->withErrors(['msg_error_pay' => 'No se asignó ningún abono porque el valor a distribuir supera el valor total de cada boleta'])
+                    ->withInput();
                 }
-                return redirect()->route('boletas.index', ['raffle_id' => $delivery->raffle_id, 'user_id' => $delivery->user_id]);
+                
             }else{
                 return redirect()->back()
                     ->withErrors(['msg_error_pay' => 'El valor a distribuir supera el saldo de la entrega'])
-                    ->withInput();;
+                    ->withInput();
             }
 
         }

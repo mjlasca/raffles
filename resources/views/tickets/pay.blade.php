@@ -4,7 +4,9 @@
     <div class="container mx-auto mt-8">
         <div class="bg-white shadow-md overflow-hidden rounded-md">
             <div class="py-4 px-6 bg-blue-500 flex text-white fill-white">
-                <h2 class="text-2xl font-semibold">Realizar pago boleta(s) @if ($selected_user !== FALSE) de {{$selected_user->name ." ".$selected_user->lastname}} @endif</h2>
+                
+                <h2 class="ml-2 text-2xl font-semibold">Realizar pago boleta(s) @if ($selected_user !== FALSE) de {{$selected_user->name ." ".$selected_user->lastname}} <a href="" class="bg-green-500 text-white py-2 px-4 rounded-md text-sm">Seleccionar otro usuario</a> @endif</h2>
+                
             </div>
             <div id="error-container">
                 @if ($errors->any())
@@ -17,13 +19,13 @@
                     </div>
                 @endif
             </div>
-            <div class="delivery-data sm:pl-3">
+            <div class="delivery-data sm:pl-3 w-64">
             </div>
             @if ($selected_user == FALSE)
                 <form method="POST" id="formPrePay" action="" class="p-6">
                     @csrf
 
-                    <div class="md:flex">
+                    <div class="">
                         <div class="mb-4 md:w-1/3 mr-2">
                             <label for="delivery_id" class="block text-gray-700 text-sm font-bold mb-2">Usuario</label>
                             <select name="users_deliveries" id="users_deliveries" class="w-full border rounded-md py-2 px-3" required>
@@ -53,9 +55,9 @@
                                 @endforeach
                             </select>
                         </div>
-                        <div class="">
-                            <a href="" class="bg-blue-500 text-white py-2 px-4 rounded-md mt-2">Seleccionar otro usuario</a>
-                        </div>
+                        
+                            
+                        
                         @if ($current_user->role === 'Vendedor')
                             <input type="hidden" name="user_id" id="user_id" value="{{$current_user->id}}">
                         @else
@@ -89,15 +91,15 @@
     </div>
 
     <div class="modal-pay hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 max-h-full bg-blue-500/90">
-        <div class="modal-content w-full h-full flex justify-center items-center">
-            <div class="flex w-1/4">
+        <div class="modal-content w-full h-full flex justify-center items-center rounded-md">
+            <div class="flex w-1/4 p-3 bg-gray-100">
                 <form method="POST" action="/tickets/payall" onsubmit="return confirm('¿Está seguro de distribuir lo disponible? si lo hace, el sistema asignará equitativamente a cada boleta que tenga para ésta rifa');">
                 <input type="number" id="distributive_value" name="distributive_value" class="w-full border rounded-md py-2 px-3" required placeholder="Valor de distribución" autocomplete="off">
-                <p class="text-white">El sistema intentará abonar las boletas con lo que está disponible, es posible que no se pueda abonar todo el saldo, el resto tendrá que hacerse de forma manual</p>
+                <p class="text-white">El sistema intentará abonar las boletas con lo que está disponible, es posible que no se pueda abonar todo el saldo, el resto tendrá que hacerse de forma manual o volver a hacer una distribución con un valor menor</p>
                 <input type="hidden" name="delivery_modal_id" id="delivery_modal_id">
                 @csrf
                 <div class="flex mt-2">
-                    <input class="bg-red-500 text-white py-2 px-4 rounded-md" type="submit" value="Aceptar">
+                    <input class="bg-red-500 dark:bg-red-500 text-white py-2 px-4 rounded-md" type="submit" value="Aceptar">
                     <a class="border text-white py-2 px-4 rounded-md" href="javascript:void(0)" onclick="showModalPay()">Cancelar</a>
                 </div>
                 </form>

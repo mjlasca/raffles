@@ -156,18 +156,21 @@ delivery_id.addEventListener('change', async () => {
         .then(data => {
             const rest_ = (data.delivery.total - data.delivery.used);
           delivery_data.innerHTML = `
-                <div class="sm:flex p-2">
-                    <div class="sm:w-1/2">
+                <div class="p-2">
+                    <div class="p-2">
                     <p>${data.delivery.description}</p>
                     <div class="flex">
                     <p class="mr-2">Total entrega : ${data.delivery.total.toLocaleString()}</p>
                     <p>Total usado : ${ data.delivery.used == null ? 0 : data.delivery.used.toLocaleString() }</p>
                     </div>
                     <p>Disponible : <span class="hidden" id="availible">${ rest_ }</span><span>${ rest_.toLocaleString() }</span></p>
-                    <p class="bg-green-100">Dinero usado : $<span id="used_">0</span></p>
+                    <p class="bg-green-500 p-1">Dinero usado : $<span id="used_">0</span></p>
                     </div>
-                    <a href="javascript:void(0);" id="modalPay" onclick="showModalPay()" class="bg-red-500 text-white py-2 px-4 rounded-md">Distribuir pago</a>
+                    <div class="mt-2 p-2">
+                        <a href="javascript:void(0);" id="modalPay" onclick="showModalPay()" class="bg-red-500 text-white py-2 px-4 rounded-md max-h-10">Distribuir pago</a>    
+                    </div>
                 </div>
+                
             `;
 
             user_id.value = data.delivery.user_id;
