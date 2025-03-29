@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Exports\OutflowsExport;
 use App\Models\Outflow;
+use App\Models\PaymentMethod;
 use App\Models\Raffle;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -21,6 +22,7 @@ class OutFlowController extends Controller
     {
         $outflows  = Outflow::orderBy('created_at', 'DESC');
         $raffles = Raffle::select('id','name')->where('disabled',0)->orderBy('name','ASC')->get();
+        $paymentMethods = PaymentMethod::where('status',1)->get();
         if(!empty($req->input('date1'))){
             $date1 = $req->input('date1');
             $date2 = $date1;
@@ -42,13 +44,13 @@ class OutFlowController extends Controller
                 });
             });
         }
-        if($req->input('raffle_id')){
-
+        if($req->input('raffle_id'))
             $outflows = $outflows->where('raffle_id',$req->input('raffle_id'));
-        }
+        if($req->input('payment_method_id'))
+            $outflows = $outflows->where('payment_method_id',$req->input('payment_method_id'));
 
         $outflows = $outflows->paginate('50');
-        return view('outflows.index', compact('outflows','raffles'));
+        return view('outflows.index', compact('outflows','raffles','paymentMethods'));
     }
 
     /**
@@ -59,7 +61,8 @@ class OutFlowController extends Controller
     public function create()
     {
         $raffles = Raffle::where('raffle_date', '>=','NOW()')->where('disabled',0)->orderBy('name','ASC')->get();
-        return view('outflows.create',compact('raffles'));
+        $paymentMethods = PaymentMethod::where('status',1)->get();
+        return view('outflows.create',compact('raffles','paymentMethods'));
     }
 
     /**
@@ -123,7 +126,7 @@ class OutFlowController extends Controller
     public function destroy(Request $req, Outflow $outflow)
     {
         $current_user = Auth::user();
-        
+
         if($outflow->redited->role === $current_user->role || $current_user->role === 'Administrador')
             $outflow->delete();
         return redirect()->route('salidas.index');
