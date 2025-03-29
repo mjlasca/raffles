@@ -158,6 +158,57 @@ class AssignmentController extends Controller
     }
 
     /**
+     * Change tickets seller to seller from raffle
+     */
+    public function change(Request $req)
+    {
+        $current_user = Auth::user();
+        $raffles = Raffle::select('id','name')->where('disabled',0)->orderBy('name','ASC')->get();
+        $sellers_users = User::select('id','name','lastname')->where('role','Vendedor')->orderBy('name','ASC')->get();
+        $selected['raffle'] = null;
+        if($req->input('user_1')){
+            $req->validate(
+                [
+                    'tickets' => ['required'],
+                ],
+                [
+                    'tickets' => 'No se ha seleccionado ningún ticket',
+                ]
+            );
+            $user_0 = User::find($req->input('user_0'));
+            $movements = "| " . $current_user->name . " " . $current_user->lastname . 
+            " cambió el boleto de usuario, antes ($user_0->name $user_0->lastname) el " . date("d-m-Y h:i:s");
+            Ticket::whereIn('id', $req->input('tickets'))->update([
+                'user_id' => $req->input('user_1'),
+                'movements' => DB::raw("IFNULL(CONCAT(" . DB::getPdo()->quote($movements) . ", movements), " . DB::getPdo()->quote($movements) . ")")
+            ]);
+            $selected['tickets_change'] = Ticket::whereIn('id',$req->input('tickets'))->get();
+        }else{
+            if($req->input('raffle_id')){
+                $selected['raffle'] = Raffle::find($req->input('raffle_id'));
+                $user_0 = User::select('id','name','lastname')->whereIn('id', Ticket::where('raffle_id',$selected['raffle']->id)->pluck('user_id'))
+                ->orderBy('name', 'asc')
+                ->get();
+                
+                $selected['user_0'] = $user_0;
+                if($req->input('user_0')){
+                    $selected['user_0'] = User::find($req->input('user_0'));
+                    $user_1 = User::select('id','name','lastname')->whereIn('id', Ticket::where('raffle_id',$selected['raffle']->id)->where('user_id','!=',$req->input('user_0'))->pluck('user_id'))
+                    ->orderBy('name', 'asc')
+                    ->get();
+                    $selected['user_1'] = $user_1;
+                    $selected['tickets'] = Ticket::select('id','ticket_number')
+                    ->where('raffle_id',$selected['raffle']->id)
+                    ->where('payment',0)
+                    ->where('user_id',$req->input('user_0'))->get();
+                }
+            }
+        }
+        
+        return view('assignment.change', compact('raffles','sellers_users','selected'));
+    }
+
+    /**
      * Update the specified resource in storage.
      */
     public function update(Request $request, string $id)

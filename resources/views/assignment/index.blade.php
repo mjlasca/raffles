@@ -11,6 +11,9 @@
                 <a class="ml-2 p-1 mt-1 bg-green-500 rounded-lg hover:bg-green-500" href="{{route('asignaciones.export')}}?date1={{ Request('date1') }}&date2={{ Request('date2') }}&raffle_id={{ Request('raffle_id') }}">
                     <img class="h-5" src="{{ asset('img/icons/export-icon.svg') }}" alt="">
                 </a>
+                <a class="ml-2 p-1 mt-1 bg-green-500 rounded-lg hover:bg-green-500" href="{{route('asignaciones.change')}}">
+                    <img class="h-5" src="{{ asset('img/icons/group-icon.svg') }}" alt="">
+                </a>
             </div>
             <div>
                 <form method="GET"  class="p-6">

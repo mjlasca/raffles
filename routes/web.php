@@ -38,6 +38,8 @@ Route::resource('asignaciones', AssignmentController::class)->middleware(['auth'
     'asignaciones' => 'assignment',
 ]);
 Route::get('/assignments/export', [AssignmentController::class, 'export'])->middleware(['auth'])->name('asignaciones.export');
+Route::get('/assignments/change', [AssignmentController::class, 'change'])->middleware(['auth'])->name('asignaciones.change');
+Route::post('/assignments/change', [AssignmentController::class, 'change'])->middleware(['auth'])->name('asignaciones.change');
 
 Route::resource('premios', PrizeController::class)->middleware(['auth','roleAccess:Secretaria-Administrador'])->parameters([
     'premios' => 'prize',
