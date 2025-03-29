@@ -25,6 +25,7 @@ Route::resource('rifas', RaffleController::class)->middleware(['auth',"roleAcces
     'rifas' => 'raffles',
 ]);
 Route::get('/raffles/export', [RaffleController::class, 'export'])->middleware(['auth'])->name('rifas.export');
+Route::get('/raffles/export-cons', [RaffleController::class, 'exportRaffle'])->middleware(['auth'])->name('rifas.export_cons');
 
 Route::resource('usuarios', UserController::class)->middleware(['auth','roleAccess:Secretaria-Administrador'])->parameters([
     'usuarios' => 'user',
@@ -38,8 +39,8 @@ Route::resource('asignaciones', AssignmentController::class)->middleware(['auth'
     'asignaciones' => 'assignment',
 ]);
 Route::get('/assignments/export', [AssignmentController::class, 'export'])->middleware(['auth'])->name('asignaciones.export');
-Route::get('/assignments/change', [AssignmentController::class, 'change'])->middleware(['auth'])->name('asignaciones.change');
-Route::post('/assignments/change', [AssignmentController::class, 'change'])->middleware(['auth'])->name('asignaciones.change');
+Route::get('/asignaciones/change/user', [AssignmentController::class, 'change'])->middleware(['auth'])->name('asignaciones.change');
+Route::post('/asignaciones/change/user', [AssignmentController::class, 'change'])->middleware(['auth'])->name('asignaciones.change');
 
 Route::resource('premios', PrizeController::class)->middleware(['auth','roleAccess:Secretaria-Administrador'])->parameters([
     'premios' => 'prize',
@@ -60,7 +61,7 @@ Route::resource('arqueos', CashController::class)->middleware(['auth'])->paramet
     'arqueos' => 'cash',
 ]);
 Route::get('/cashes/export', [CashController::class, 'export'])->middleware(['auth'])->name('arqueos.export');
-Route::get('/cashes/dayview/{date}', [CashController::class, 'dayView'])->middleware(['auth'])->name('arqueos.dayview');
+Route::get('/arqueos/dia/{date}', [CashController::class, 'dayView'])->middleware(['auth'])->name('arqueos.dayview');
 
 Route::middleware(['auth'])->group(function () {
     Route::resource('boletas', TicketController::class)->parameters([

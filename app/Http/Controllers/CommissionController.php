@@ -71,8 +71,10 @@ class CommissionController extends Controller
                         //dd($req->input('user_id'));
         if($req->input('user_id'))
             $tickets = $tickets->where('user_id',$req->input('user_id'));
-        if($req->input('raffle_id'))
+        if($req->input('raffle_id')){
             $tickets = $tickets->where('raffle_id',$req->input('raffle_id'));
+        }
+            
         //$tickets = $tickets->get();
         $sellers_users = [];
         if($req->input('raffle_id') || $req->input('user_id'))

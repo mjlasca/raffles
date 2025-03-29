@@ -3,8 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Exports\RafflesExport;
+use App\Exports\RafflesReportExport;
 use App\Http\Controllers\Controller;
 use App\Models\Raffle;
+use App\Models\Ticket;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -80,7 +82,22 @@ class RaffleController extends Controller
         $raffle = Raffle::find($id);
         if(!empty($req->input('format')))
             return response()->json($raffle);
-        return view('raffles.show', compact('raffle'));
+            $report = Ticket::where('tickets.raffle_id', $raffle->id)
+            ->join('assignments', 'assignments.id', '=', 'tickets.assignment_id')
+            ->selectRaw('tickets.user_id, 
+                         COUNT(tickets.id) as total_tickets, 
+                         SUM(tickets.payment) as total_payment,
+                         SUM(CASE WHEN tickets.payment = tickets.price THEN assignments.commission ELSE 0 END) as total_to_commission,
+                         SUM(assignments.commission) as total_assignment, 
+                         COALESCE((SELECT SUM(commissions.total) FROM commissions WHERE commissions.raffle_id = tickets.raffle_id AND commissions.user_id = tickets.user_id), 0) as total_commissions,
+                         COALESCE((SELECT SUM(deliveries.total) FROM deliveries WHERE deliveries.raffle_id = tickets.raffle_id AND deliveries.user_id = tickets.user_id), 0) as total_deliveries')
+            ->groupBy('tickets.user_id')
+            ->orderByDesc('total_tickets')
+            ->get();
+        
+        
+        
+        return view('raffles.show', compact('raffle','report'));
     }
 
     /**
@@ -129,6 +146,11 @@ class RaffleController extends Controller
 
     public function export(){
         return Excel::download(new RafflesExport,'Rifas.xlsx');
+    }
+
+    public function exportRaffle(Request $req){
+        $raffle = Raffle::find($req->input('raffle_id'));
+        return Excel::download(new RafflesReportExport($req),'Rifa_'.$raffle->name.'.xlsx');
     }
 
     
