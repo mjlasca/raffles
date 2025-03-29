@@ -8,7 +8,7 @@
                 <a class="ml-2 p-1 mt-1 bg-green-500 rounded-lg hover:bg-green-500" href="{{route('entregas.create')}}">
                     <img class="h-5" src="{{ asset('img/icons/add-icon.svg') }}" alt="">
                 </a>
-                <a class="ml-2 p-1 mt-1 bg-green-500 rounded-lg hover:bg-green-500" href="{{route('entregas.export')}}?date1={{Request('date1')}}&date2={{Request('date2')}}&user_id={{Request('user_id')}}&raffle_id={{Request('raffle_id')}}">
+                <a class="ml-2 p-1 mt-1 bg-green-500 rounded-lg hover:bg-green-500" href="{{route('entregas.export')}}?date1={{Request('date1')}}&date2={{Request('date2')}}&user_id={{Request('user_id')}}&raffle_id={{Request('raffle_id')}}&payment_method_id={{Request('payment_method_id')}}">
                     <img class="h-5" src="{{ asset('img/icons/export-icon.svg') }}" alt="">
                 </a>
                 <a class="ml-2 p-1 mt-1 bg-green-500 rounded-lg hover:bg-green-500" href="{{route('paymentmethod.index')}}">
@@ -51,6 +51,19 @@
                             </select>
                         </div>
                         <div>
+                            <label for="raffle_id" class="block text-gray-700 text-sm font-bold mb-2">Método de pago</label>
+                            <select name="payment_method_id" id="payment_method_id" class="w-full border rounded-md py-2 px-3" >
+                                <option value="">Seleccione un método</option>
+                                @foreach($paymentMethods as $pay)
+                                    @if ($pay->id == Request('payment_method_id'))
+                                        <option value="{{ $pay->id }}" selected>{{ $pay->description }}</option>
+                                    @else
+                                        <option value="{{ $pay->id }}">{{ $pay->description }}</option>
+                                    @endif
+                                @endforeach
+                            </select>
+                        </div>
+                        <div>
                             <label for="date1" class="block text-gray-700 text-sm font-bold mb-2">Fecha inicial</label>
                             <input type="date" class="w-full border rounded-md py-2 px-3" name="date1" id="" value="{{ Request('date1') }}">
                         </div>
@@ -69,7 +82,7 @@
                         @if ($totals)
                             <tr class="hover:bg-blue-500 hover:text-white bg-red-100">
                                 <td class="py-2 px-4">{{ $totals['count'] }}</td>
-                                <td colspan="2"></td>
+                                <td colspan="3"></td>
                                 <td colspan="3">TOTALES $</td>
                                 <td class="py-2 px-4">{{ number_format($totals['total']) }}</td>
                                 <td class="py-2 px-4">{{ number_format($totals['used']) }}</td>
@@ -79,8 +92,9 @@
                         @endif
                         <tr class="text-md font-semibold tracking-wide text-left text-white bg-green-500 uppercase border-b border-gray-600">
                             <th class="py-2 px-4 border-b">Id</th>
-                            <th class="py-2 px-4 border-b">Consecutivo/Rifa</th>
+                            <th class="py-2 px-4 border-b">Conse. /Rifa</th>
                             <th class="py-2 px-4 border-b">Fecha</th>
+                            <th class="py-2 px-4 border-b">Método de pago</th>
                             <th class="py-2 px-4 border-b">Descripción</th>
                             <th class="py-2 px-4 border-b">Rifa</th>
                             <th class="py-2 px-4 border-b">Vendedor</th>
@@ -100,6 +114,11 @@
                                 <td class="py-2 px-4">{{ $deliverie->id }}</td>
                                 <td class="py-2 px-4">{{ $deliverie->consecutive }}</td>
                                 <td class="py-2 px-4">{{ $deliverie->created_at }}</td>
+                                @if (empty($deliverie->payment_method_id))
+                                    <td class="py-2 px-4">-- N/A --</td>
+                                @else
+                                    <td class="py-2 px-4">{{ $deliverie->paymentMethod->description }}</td>
+                                @endif
                                 <td class="py-2 px-4">{{ $deliverie->description }}</td>
                                 <td class="py-2 px-4">{{ $deliverie->raffle->name }}</td>
                                 <td class="py-2 px-4">{{ $deliverie->user->name }} {{ $deliverie->user->lastname }}</td>

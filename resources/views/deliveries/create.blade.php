@@ -56,12 +56,11 @@
                 </div>
 
                 <div class="mb-4 md:w-1/2">
-                    <label for="user_id" class="block text-gray-700 text-sm font-bold mb-2">Método de pago</label>
-                    <select name="user_id" id="user_id" class="w-full border rounded-md py-2 px-3" required>
+                    <label for="payment_method_id" class="block text-gray-700 text-sm font-bold mb-2">Método de pago</label>
+                    <select name="payment_method_id" id="payment_method_id" class="w-full border rounded-md py-2 px-3" required>
                         <option value="">Seleccione método pago</option>
                         @foreach($paymentMethods as $pay)
-
-                            @if ($pay->id == $delivery->payment_method_id)
+                            @if ($pay->id == old("payment_method_id"))
                                 <option value="{{ $pay->id }}" selected>{{ $pay->description }}</option>
                             @else
                             <option value="{{ $pay->id }}">{{ $pay->description }}</option>

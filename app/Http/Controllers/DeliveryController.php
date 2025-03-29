@@ -27,6 +27,7 @@ class DeliveryController extends Controller
         $deliveries = Delivery::orderBy('id', 'DESC')->orderBy('consecutive','DESC');
         $sellers_users = User::select('id','name','lastname')->where('role','Vendedor')->orderBy('name','ASC')->get();
         $raffles = Raffle::select('id','name')->orderBy('name','ASC')->get();
+        $paymentMethods = PaymentMethod::where('status',1)->get();
         if(!empty($req->input('date1'))){
             $date1 = $req->input('date1');
             $date2 = $date1;
@@ -40,6 +41,9 @@ class DeliveryController extends Controller
         }
         if($req->input('raffle_id')){
             $deliveries = $deliveries->where('raffle_id',$req->input('raffle_id'));
+        }
+        if($req->input('payment_method_id')){
+            $deliveries = $deliveries->where('payment_method_id',$req->input('payment_method_id'));
         }
 
         if($req->input('keyword')){
@@ -63,6 +67,8 @@ class DeliveryController extends Controller
             $deliveryTotal->where('deliveries.raffle_id', $req->input('raffle_id'));
         if($req->input('user_id'))
             $deliveryTotal->where('deliveries.user_id', $req->input('user_id'));
+        if($req->input('payment_method_id'))
+            $deliveryTotal->where('deliveries.payment_method_id', $req->input('payment_method_id'));
         if(!empty($req->input('date1'))){
             $date1 = $req->input('date1');
             $date2 = $date1;
@@ -82,7 +88,7 @@ class DeliveryController extends Controller
         }
 
         $deliveries = $deliveries->paginate('50');
-        return view('deliveries.index', compact('deliveries','sellers_users','raffles','totals'));
+        return view('deliveries.index', compact('deliveries','sellers_users','raffles','totals','paymentMethods'));
     }
 
     /**
@@ -97,7 +103,7 @@ class DeliveryController extends Controller
         )->groupBy('raffles.id')->get();
         $sellers_users = User::select('id','name','lastname')->where('role','Vendedor')->orderBy('name','ASC')->get();
         $date = date('Y-m-d');
-        $paymentMethods = PaymentMethod::get();
+        $paymentMethods = PaymentMethod::where('status',1)->get();
         return view('deliveries.create', compact('raffles','sellers_users','date','paymentMethods'));
     }
 
@@ -207,7 +213,7 @@ class DeliveryController extends Controller
         $delivery = Delivery::find($id);
         $raffles = Raffle::where('status',1)->select('id','name')->where('disabled',0)->get();
         $sellers_users = User::select('id','name','lastname')->where('role','Vendedor')->get();
-        $paymentMethods = PaymentMethod::get();
+        $paymentMethods = PaymentMethod::where('status',1)->get();
         return view('deliveries.edit', compact('delivery','raffles','sellers_users','paymentMethods'));
     }
 
@@ -229,10 +235,7 @@ class DeliveryController extends Controller
 
             $sum = Delivery::where('raffle_id',$raffle_id)->where('id','!=',$id)->where('status',1)->where('user_id',$user_)->sum('total') + $data['total'];
             $sumTicket = Ticket::where('raffle_id',$raffle_id)->where('user_id',$user_)->sum('price');
-            $sumPayment = Ticket::where('raffle_id',$raffle_id)->where('user_id',$user_)->sum('payment');
             $sumTotal = ($sumTicket - $sum ) < 0 ? 0 : ($sumTicket - $sum );
-            $raffle = Raffle::find($data['raffle_id']);
-
         }
         $request->validate(
             [
