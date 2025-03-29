@@ -10,7 +10,10 @@
             <div class="p-6">
                 <p class="mb-4"><strong>Vendedor:</strong> {{ $commission->user->name }} {{ $commission->user->lastname }}</p>
                 <p class="mb-4"><strong>Total liquidado:</strong> ${{  number_format($commission->total,2) }}</p>
-                <p class="mb-4"><strong>Detalle:</strong> 
+                @if ( !empty( $commission->payment_method_id ) )
+                    <p class="mb-4"><strong>Método de pago:</strong> ${{  $commission->paymentmethod->description }}</p>
+                @endif
+                <p class="mb-4"><strong>Detalle:</strong>
                     @php
                     $array_vals = explode(';', $commission->detail)
                     @endphp
@@ -18,7 +21,7 @@
                             <p>{{$item}}</p>
                         @endforeach
                 </p>
-                
+
             </div>
         </div>
     </div>

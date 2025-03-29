@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Exports\CommissionsExport;
 use App\Models\Commissions;
+use App\Models\PaymentMethod;
 use App\Models\Raffle;
 use App\Models\Ticket;
 use App\Models\User;
@@ -23,6 +24,7 @@ class CommissionController extends Controller
     {
         $commissions = Commissions::orderBy('updated_at', 'DESC');
         $raffles = Raffle::select('id','name')->where('disabled',0)->orderBy('name','ASC')->get();
+        $paymentMethods = PaymentMethod::where('status',1)->get();
         if(!empty($req->input('date1'))){
             $date1 = $req->input('date1');
             $date2 = $req->input('date2');
@@ -40,9 +42,12 @@ class CommissionController extends Controller
 
             $commissions = $commissions->where('raffle_id',$req->input('raffle_id'));
         }
-        
+        if($req->input('payment_method_id')){
+            $commissions = $commissions->where('payment_method_id',$req->input('payment_method_id'));
+        }
+
         $commissions = $commissions->paginate(50);
-        return view('commissions.index', compact('commissions','raffles'));
+        return view('commissions.index', compact('commissions','raffles','paymentMethods'));
     }
 
     /**
@@ -54,6 +59,7 @@ class CommissionController extends Controller
     {
         $sellers = User::select('id','name','lastname')->where('role','Vendedor')->orderBy('name','ASC')->get();
         $raffles = Raffle::select('id','name')->where('disabled',0)->orderBy('name','ASC')->get();
+        $paymentMethods = PaymentMethod::where('status',1)->get();
         $tickets = Ticket::where('payment_commission', null)->whereHas('raffle', function ($query) {
                             $query->where('raffle_status', '>', -1);
                         })
@@ -66,7 +72,7 @@ class CommissionController extends Controller
         if($req->input('user_id'))
             $tickets = $tickets->where('user_id',$req->input('user_id'));
         if($req->input('raffle_id'))
-            $tickets = $tickets->where('raffle_id',$req->input('raffle_id'));                        
+            $tickets = $tickets->where('raffle_id',$req->input('raffle_id'));
         //$tickets = $tickets->get();
         $sellers_users = [];
         if($req->input('raffle_id') || $req->input('user_id'))
@@ -86,11 +92,11 @@ class CommissionController extends Controller
                     'sum' => $sum[$ticket->user_id][$ticket->raffle_id],
                     'detail' => $aux[$ticket->user_id][$ticket->raffle_id]
                 ];
-                
+
             }
-        }                
-        
-        return view('commissions.create', compact('sellers_users','sellers','raffles'));
+        }
+
+        return view('commissions.create', compact('sellers_users','sellers','raffles','paymentMethods'));
     }
 
     /**
@@ -103,11 +109,11 @@ class CommissionController extends Controller
     {
         if(!empty($request->input('user_id')) && !empty($request->input('raffle_id'))){
             $user = Auth::user();
-            
+
             $tickets = Ticket::where('user_id',$request->input('user_id'))->where('raffle_id',$request->input('raffle_id'))
             ->whereColumn('price', 'payment')
             ->get();
-            
+
             $data = [
                 'user_id' => $request->input('user_id') ,
                 'percentage'=> 0,
@@ -116,37 +122,38 @@ class CommissionController extends Controller
                 'detail'=> '',
                 'create_user' => $user->id,
                 'edit_user' => $user->id,
+                'payment_method_id' => $request->input('payment_method_id')
             ];
 
-                $sum = 0;
-                $concat = "";
-                $arrRaffle = [];
-                $commission = false;
-                foreach ($tickets as $key => $ticket) {
-                    
-                    if(!in_array($ticket->raffle_id,$arrRaffle)){
-                        
-                        $data['raffle_id'] = $ticket->raffle_id;
-                        $commission = Commissions::create($data);
-                        $arrRaffle[] = $ticket->raffle_id;
-                        $sum = 0;
-                        $concat = "";
-                    }
+            $sum = 0;
+            $concat = "";
+            $arrRaffle = [];
+            $commission = false;
+            foreach ($tickets as $key => $ticket) {
 
+                if(!in_array($ticket->raffle_id,$arrRaffle)){
 
-                    $sum += $ticket->assignment->commission;
-                    $concat .= $ticket->raffle->name . " Boleta #" . $ticket->ticket_number. " Comisión: ".$ticket->assignment->commission.";";
-                    Ticket::where('ticket_number', $ticket->ticket_number)->where('raffle_id',$ticket->raffle_id)->update([
-                        'payment_commission' =>$commission->id
-                    ]);
-
-                    if($commission){
-                        $commission->update([
-                            'total' => $sum,
-                            'detail'=> $concat
-                        ]);
-                    }
+                    $data['raffle_id'] = $ticket->raffle_id;
+                    $commission = Commissions::create($data);
+                    $arrRaffle[] = $ticket->raffle_id;
+                    $sum = 0;
+                    $concat = "";
                 }
+
+
+                $sum += $ticket->assignment->commission;
+                $concat .= $ticket->raffle->name . " Boleta #" . $ticket->ticket_number. " Comisión: ".$ticket->assignment->commission.";";
+                Ticket::where('ticket_number', $ticket->ticket_number)->where('raffle_id',$ticket->raffle_id)->update([
+                    'payment_commission' =>$commission->id
+                ]);
+
+                if($commission){
+                    $commission->update([
+                        'total' => $sum,
+                        'detail'=> $concat
+                    ]);
+                }
+            }
 
         }
         return redirect()->route('comisiones.index');

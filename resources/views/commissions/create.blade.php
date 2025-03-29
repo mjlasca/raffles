@@ -8,7 +8,7 @@
             </div>
 
             <div>
-                
+
                     <div>
                         <form method="GET"  class="p-6">
                             <div class="md:flex">
@@ -19,7 +19,7 @@
                                         @foreach($sellers as $seller)
                                             @if ($seller->id == Request('user_id'))
                                                 <option value="{{ $seller->id }}" selected>{{ $seller->name }} {{ $seller->lastname }}</option>
-                                            @else    
+                                            @else
                                                 <option value="{{ $seller->id }}">{{ $seller->name }} {{ $seller->lastname }}</option>
                                             @endif
                                         @endforeach
@@ -32,7 +32,7 @@
                                         @foreach($raffles as $raffle)
                                             @if ($raffle->id == Request('raffle_id'))
                                                 <option value="{{ $raffle->id }}" selected>{{ $raffle->name }}</option>
-                                            @else    
+                                            @else
                                                 <option value="{{ $raffle->id }}">{{ $raffle->name }}</option>
                                             @endif
                                         @endforeach
@@ -50,7 +50,7 @@
                                     <th class="py-2 px-4 border-b">Vendedor(a)</th>
                                     <th class="py-2 px-4 border-b">Suma</th>
                                     <th class="py-2 px-4 border-b">Acción</th>
-        
+
                                 </tr>
                             </thead>
                             <tbody>
@@ -67,6 +67,18 @@
                                                         @csrf
                                                         <input type="hidden" value="{{$ticket['user_id']}}" name="user_id">
                                                         <input type="hidden" value="{{$ticket['raffle']->id}}" name="raffle_id">
+                                                        <div class="mb-4 md:w-1/2">
+                                                            <select name="payment_method_id" id="payment_method_id" class="w-full border rounded-md py-2 px-3" required>
+                                                                <option value="">Seleccione método pago</option>
+                                                                @foreach($paymentMethods as $pay)
+                                                                    @if ($pay->id == old("payment_method_id"))
+                                                                        <option value="{{ $pay->id }}" selected>{{ $pay->description }}</option>
+                                                                    @else
+                                                                    <option value="{{ $pay->id }}">{{ $pay->description }}</option>
+                                                                    @endif
+                                                                @endforeach
+                                                            </select>
+                                                        </div>
                                                         <button class="text-white hover:bg-green-500 p-2 px-2 bg-blue-500 rounded-md mr-1 ">Registrar Comisión</button>
                                                     </form>
                                                 </div>
@@ -87,12 +99,12 @@
                                                                 <p>{{$detail['ticket']->raffle->name}}</p>
                                                             </div>
                                                             <div class="text-right">
-                                                                
+
                                                                 <p >Valor boleta : ${{ number_format($detail['ticket']->raffle->price, 0)}}</p>
                                                                 <p >Comisión : ${{ number_format($detail['ticket']->assignment->commission, 0)}}</p>
-                                                                
+
                                                             </div>
-                                                                
+
                                                         </div>
                                                     </a>
                                                 @endforeach
@@ -104,11 +116,11 @@
                             </tbody>
                         </table>
                     </div>
-    
+
                     <button type="submit" class="button--submit hidden bg-blue-500 text-white py-2 px-4 rounded-md">Liquidar comisión</button>
-                
+
             </div>
-            
+
         </div>
     </div>
 
