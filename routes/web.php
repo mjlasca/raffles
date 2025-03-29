@@ -6,10 +6,12 @@ use App\Http\Controllers\CommissionController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DeliveryController;
 use App\Http\Controllers\OutFlowController;
+use App\Http\Controllers\PaymentMethodController;
 use App\Http\Controllers\PrizeController;
 use App\Http\Controllers\RaffleController;
 use App\Http\Controllers\TicketController;
 use App\Http\Controllers\UserController;
+use App\Models\PaymentMethod;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 
@@ -89,4 +91,8 @@ Route::get('/deliveries/cancel/{id}', [DeliveryController::class, 'cancel'])->mi
 Route::get('/deliveries/proccess', [DeliveryController::class, 'proccess'])->middleware(['auth','roleAccess:Administrador'])->name('entregas.proccess');
 
 Route::get('/', [DashboardController::class, 'index'])->middleware(['auth'])->name('dashboard');
+
+//PaymentMethods
+Route::get('/payment-method/', [PaymentMethodController::class, 'index'])->middleware(['auth','roleAccess:Secretaria-Administrador'])->name('paymentmethod.index');
+Route::post('/payment-method/', [PaymentMethodController::class, 'store'])->middleware(['auth','roleAccess:Secretaria-Administrador'])->name('paymentmethod.index');
 

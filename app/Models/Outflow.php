@@ -15,6 +15,7 @@ class Outflow extends Model
         'raffle_id',
         'create_user',
         'edit_user',
+        'payment_method_id'
     ];
 
     public function rcreated()
@@ -30,5 +31,10 @@ class Outflow extends Model
     public function raffle()
     {
         return $this->belongsTo(Raffle::class, 'raffle_id');
+    }
+
+    public function paymentMethod()
+    {
+        return $this->belongsTo(PaymentMethod::class);
     }
 }

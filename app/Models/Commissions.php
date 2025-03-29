@@ -18,6 +18,7 @@ class Commissions extends Model
         'raffle_id',
         'create_user',
         'edit_user',
+        'payment_method_id'
     ];
 
     public function user()
@@ -33,6 +34,11 @@ class Commissions extends Model
     public function raffle()
     {
         return $this->belongsTo(Raffle::class);
+    }
+
+    public function paymentMethod()
+    {
+        return $this->belongsTo(PaymentMethod::class);
     }
 
 }

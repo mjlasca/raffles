@@ -11,11 +11,14 @@
                 <a class="ml-2 p-1 mt-1 bg-green-500 rounded-lg hover:bg-green-500" href="{{route('entregas.export')}}?date1={{Request('date1')}}&date2={{Request('date2')}}&user_id={{Request('user_id')}}&raffle_id={{Request('raffle_id')}}">
                     <img class="h-5" src="{{ asset('img/icons/export-icon.svg') }}" alt="">
                 </a>
+                <a class="ml-2 p-1 mt-1 bg-green-500 rounded-lg hover:bg-green-500" href="{{route('paymentmethod.index')}}">
+                    <img class="h-5" src="{{ asset('img/icons/dollar-icon.svg') }}" alt="Métodos de pago" title="Métodos de pago">
+                </a>
             </div>
 
             <div>
                 <form method="GET"  class="p-6">
-                    
+
                     <div class="md:flex">
                         <div>
                             <label for="keyword" class="block text-gray-700 text-sm font-bold mb-2">Buscar coincidencia</label>
@@ -28,7 +31,7 @@
                                 @foreach($sellers_users as $seller)
                                     @if ($seller->id == Request('user_id'))
                                         <option value="{{ $seller->id }}" selected>{{ $seller->name }} {{ $seller->lastname }}</option>
-                                    @else    
+                                    @else
                                         <option value="{{ $seller->id }}">{{ $seller->name }} {{ $seller->lastname }}</option>
                                     @endif
                                 @endforeach
@@ -41,7 +44,7 @@
                                 @foreach($raffles as $raffle)
                                     @if ($raffle->id == Request('raffle_id'))
                                         <option value="{{ $raffle->id }}" selected>{{ $raffle->name }}</option>
-                                    @else    
+                                    @else
                                         <option value="{{ $raffle->id }}">{{ $raffle->name }}</option>
                                     @endif
                                 @endforeach
@@ -59,7 +62,7 @@
                     <button type="submit" class="mt-2 bg-blue-500 text-white py-2 px-4 rounded-md w-full md:w-64">Filtrar consulta</button>
                 </form>
             </div>
-            
+
             <div class="overflow-x-auto">
                 <table class="min-w-full">
                     <thead>
@@ -72,7 +75,7 @@
                                 <td class="py-2 px-4">{{ number_format($totals['used']) }}</td>
                                 <td></td>
                                 <td></td>
-                            </tr>                                
+                            </tr>
                         @endif
                         <tr class="text-md font-semibold tracking-wide text-left text-white bg-green-500 uppercase border-b border-gray-600">
                             <th class="py-2 px-4 border-b">Id</th>
@@ -103,7 +106,7 @@
                                 <td class="py-2 px-4">${{ number_format($deliverie->total) }}</td>
                                 <td class="py-2 px-4">${{ number_format($deliverie->used) }}</td>
                                 <td class="py-2 px-4">{{ $deliverie->redited->name }} {{ $deliverie->redited->lastname }}</td>
-                                
+
                                 <td class="py-2 px-4 grid grid-cols-2 gap-2">
                                     @if ($deliverie->status == 1)
                                         <a href="{{ route('entregas.show', $deliverie->id) }}" class="text-blue-500 hover:bg-green-500 p-1 bg-blue-500 rounded-md mr-1">
@@ -118,12 +121,12 @@
                                             </a>
                                             <a href="{{ route('entregas.cancel', $deliverie->id) }}" onclick="return confirm('Está segur@ de anular el registro')" class="text-yellow-500 hover:bg-green-500 p-1 bg-red-500 rounded-md mr-1">
                                                 <img class="h-5" src="{{ asset('img/icons/delete-icon.svg') }}" alt="Anular" title="Anular">
-                                            </a> 
+                                            </a>
                                         @else
                                             @if ( auth()->user()->role === 'Administrador' )
                                                 <a href="{{ route('entregas.cancel', $deliverie->id) }}" onclick="return confirm('Está segur@ de anular el registro')" class="text-yellow-500 hover:bg-green-500 p-1 bg-red-500 rounded-md mr-1">
                                                     <img class="h-5" src="{{ asset('img/icons/delete-icon.svg') }}" alt="Anular" title="Anular">
-                                                </a>    
+                                                </a>
                                             @endif
                                         @endif
                                     @else
@@ -136,7 +139,7 @@
                         @endforeach
                     </tbody>
                 </table>
-                
+
             </div>
         </div>
         <div class="pagination mt-5">

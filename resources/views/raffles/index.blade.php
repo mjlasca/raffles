@@ -14,7 +14,7 @@
             </div>
             <div>
                 <form method="GET"  class="p-6">
-                    
+
                     <div class="md:flex">
                         <div>
                             <label for="keyword" class="block text-gray-700 text-sm font-bold mb-2">Buscar coincidencia</label>
@@ -64,13 +64,13 @@
                                     <a href="{{ route('rifas.edit', $raffle->id) }}" class="text-yellow-500 hover:bg-green-500 p-1 bg-blue-500 rounded-md mr-1">
                                         <img class="h-5" src="{{ asset('img/icons/edit-icon.svg') }}" alt="Editar" title="Editar">
                                     </a>
-                                    
+
                                 </td>
                             </tr>
                         @endforeach
                     </tbody>
                 </table>
-                
+
             </div>
         </div>
         <div class="pagination mt-5">

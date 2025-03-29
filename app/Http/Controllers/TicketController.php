@@ -221,7 +221,7 @@ class TicketController extends Controller
                         if(($total_b + $distributiveValue) <= $to_use){
                             $to_use_dynamic = $to_use_dynamic - $distributiveValue;
                             $temHistory = str_replace('[pay]', " por $".number_format($distributiveValue,0), $history);
-                            
+
                             $updTikcet = Ticket::where('id', $value)
                             ->whereRaw("price >= ( payment  + $distributiveValue )") // Nueva condición
                             ->update([
@@ -246,7 +246,7 @@ class TicketController extends Controller
                     ->withErrors(['msg_error_pay' => 'No se asignó ningún abono porque el valor a distribuir supera el valor total de cada boleta'])
                     ->withInput();
                 }
-                
+
             }else{
                 return redirect()->back()
                     ->withErrors(['msg_error_pay' => 'El valor a distribuir supera el saldo de la entrega'])

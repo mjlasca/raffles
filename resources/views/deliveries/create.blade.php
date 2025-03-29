@@ -21,7 +21,7 @@
                         value="{{old('date')}}"
                     @else value="{{$date}}" @endif  required>
                 </div>
-                
+
                 <div class="mb-4 md:w-1/2">
                     <label for="raffle_id" class="block text-gray-700 text-sm font-bold mb-2">Rifa</label>
                     <select name="raffle_id" id="raffle_id" class="w-full border rounded-md py-2 px-3" required>
@@ -29,7 +29,7 @@
                         @foreach($raffles as $raffle)
                             @if ($raffle->id == old('raffle_id'))
                                 <option value="{{ $raffle->id }}" selected>{{ $raffle->name }}</option>
-                            @else    
+                            @else
                                 <option value="{{ $raffle->id }}">{{ $raffle->name }}</option>
                             @endif
                         @endforeach
@@ -43,7 +43,7 @@
                         @foreach($sellers_users as $seller)
                             @if ($seller->id == old('user_id'))
                                 <option value="{{ $seller->id }}" selected>{{ $seller->name }} {{ $seller->lastname }}</option>
-                            @else    
+                            @else
                                 <option value="{{ $seller->id }}">{{ $seller->name }} {{ $seller->lastname }}</option>
                             @endif
                         @endforeach
@@ -54,6 +54,22 @@
                     <label for="total" class="block text-gray-700 text-sm font-bold mb-2">Valor entrega:</label>
                     <input type="number" min="1" name="total" id="total" class="w-full border rounded-md py-2 px-3" step="0.01" value="{{old('total')}}" required>
                 </div>
+
+                <div class="mb-4 md:w-1/2">
+                    <label for="user_id" class="block text-gray-700 text-sm font-bold mb-2">Método de pago</label>
+                    <select name="user_id" id="user_id" class="w-full border rounded-md py-2 px-3" required>
+                        <option value="">Seleccione método pago</option>
+                        @foreach($paymentMethods as $pay)
+
+                            @if ($pay->id == $delivery->payment_method_id)
+                                <option value="{{ $pay->id }}" selected>{{ $pay->description }}</option>
+                            @else
+                            <option value="{{ $pay->id }}">{{ $pay->description }}</option>
+                            @endif
+                        @endforeach
+                    </select>
+                </div>
+
 
 
                 <button type="submit" class="bg-blue-500 text-white py-2 px-4 rounded-md">Guardar</button>
