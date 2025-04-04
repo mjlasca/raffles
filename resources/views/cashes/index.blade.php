@@ -71,8 +71,8 @@
                         @foreach($cashes as $key => $cash)
                             @if ($key != 'totals')
                                 <tr class="hover:bg-gray-100 border-b ">
-                                    <td colspan="6" class="py-2 px-4 bg-green-100 dark:bg-green-500" colspan="7">{{ $key }}</td>
-                                    <td class="py-2 px-4 bg-green-100 dark:bg-green-500" colspan="7">
+                                    <td colspan="6" class="py-2 px-4 bg-green-300 dark:bg-green-500" colspan="7">{{ $key }}</td>
+                                    <td class="py-2 px-4 bg-green-300 dark:bg-green-500" colspan="7">
                                         <a href="{{ route('arqueos.dayview', $key) }}" class="p-1 rounded-md mr-1">
                                             <img class="h-5" src="{{ asset('img/icons/show-icon.svg') }}" alt="Ver registro" title="Ver registro">
                                         </a>

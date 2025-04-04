@@ -85,14 +85,17 @@
                     </form>
                 </div>
                 @if (!empty($selected['tickets_change']))
+                <div class="p-3">
                     <h3 class="h3 mt-5 mb-2">Boletos Modificados</h3>
                     <div class="grid grid-cols-3 md:grid-cols-8 gap-2">
                         @foreach ($selected['tickets_change'] as $ticket)
                             <div class="flex w-20">
-                                <a href="/boletas/{{$ticket->id}}" target="_blank">{{$ticket->ticket_number}}</a>
+                                <a href="/boletas/{{$ticket->id}}" target="_blank" class="bg-green-100">{{$ticket->ticket_number}}</a>
                             </div>    
                         @endforeach
                     </div>
+                </div>
+                    
                 @endif
             @endif
         </div>

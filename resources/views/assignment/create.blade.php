@@ -51,7 +51,7 @@
                 </div>
 
                 <div class="mb-4 md:w-1/2">
-                    <label for="user_referred" class="block text-gray-700 text-sm font-bold mb-2">Vendedor(es)</label>
+                    <label for="user_referred" class="block text-gray-700 text-sm font-bold mb-2">Referido por</label>
                     <select name="user_referred" id="user_referred" class="w-full border rounded-md py-2 px-3" required>
                             <option value="">Seleccione un(a) vendedor(a)</option>
                         @foreach($sellers_users as $seller)
