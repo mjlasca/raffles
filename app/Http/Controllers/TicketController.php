@@ -213,23 +213,31 @@ class TicketController extends Controller
                     $ticketIds[] = $ticket->id;
                 }
                 //concat history payment
-                $history = "'". $current_user->name." ".$current_user->lastname." ha hecho un pago distribuido [pay] " .date("d-m-Y h:i:s") ."|'";
+                $history = $current_user->name." ".$current_user->lastname." ha hecho un pago distribuido [pay] " .date("d-m-Y h:i:s") ."|";
                 $to_use_dynamic = $to_use;
                 $total_b = 0;
+                $concat = [];
                 foreach ($ticketIds as $key => $value) {
                     if($to_use_dynamic > 0){
                         if(($total_b + $distributiveValue) <= $to_use){
                             $to_use_dynamic = $to_use_dynamic - $distributiveValue;
                             $temHistory = str_replace('[pay]', " por $".number_format($distributiveValue,0), $history);
 
-                            $updTikcet = Ticket::where('id', $value)
-                            ->whereRaw("price >= ( payment  + $distributiveValue )") // Nueva condición
-                            ->update([
-                                'payment' => DB::raw("payment + $distributiveValue "),
-                                'movements' =>  DB::raw("IFNULL(CONCAT($temHistory,movements), $temHistory)")
-                            ]);
-                            if($updTikcet > 0)
+                            $ticket = Ticket::where('id', $value)
+                                            ->whereRaw("price >= ( payment + $distributiveValue )")
+                                            ->first();
+
+                            if ($ticket) {
+                                $ticket->payment += $distributiveValue;
+                                $ticket->movements = $ticket->movements 
+                                    ? $temHistory . $ticket->movements 
+                                    : $temHistory;
+                                $ticket->save();
+
                                 $total_b += $distributiveValue;
+                                $concat[] = $ticket->ticket_number . "," . $distributiveValue;
+                            }
+
                         }
                     }else{
                         break;
@@ -240,6 +248,12 @@ class TicketController extends Controller
                     $delivery->update([
                         'used' => DB::raw('used + ' . $total_b ),
                     ]);
+                    $data['delivery_id'] = $delivery->id;
+                    $data['payment_value'] = $total_b;
+                    $data['detail'] = implode(";", $concat);
+                    $data['create_user'] = $current_user->id;
+                    $data['edit_user'] = $current_user->id;
+                    PaymentTicket::create($data);
                     return redirect()->route('boletas.index', ['raffle_id' => $delivery->raffle_id, 'user_id' => $delivery->user_id]);
                 }else{
                     return redirect()->back()
