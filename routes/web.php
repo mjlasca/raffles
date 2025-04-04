@@ -21,7 +21,7 @@ Auth::routes([
 ]);
 
 
-Route::resource('rifas', RaffleController::class)->middleware(['auth',"roleAccess:Administrador"])->parameters([
+Route::resource('rifas', RaffleController::class)->middleware(['auth',"roleAccess:Administrador-Secretaria"])->parameters([
     'rifas' => 'raffles',
 ]);
 Route::get('/raffles/export', [RaffleController::class, 'export'])->middleware(['auth'])->name('rifas.export');
