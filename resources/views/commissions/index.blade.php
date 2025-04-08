@@ -62,6 +62,12 @@
             <div class="overflow-x-auto">
                 <table class="min-w-full">
                     <thead>
+                        <tr class="">
+                            <th class="py-2 px-4 border-b" colspan="5">id</th>
+                            <th class="py-2 px-4 border-b">${{ number_format($commissions->sum('total'))}}</th>
+                            <th class="py-2 px-4 border-b"></th>
+
+                        </tr>
                         <tr class="text-md font-semibold tracking-wide text-left text-white bg-green-500 uppercase border-b border-gray-600">
                             <th class="py-2 px-4 border-b">id</th>
                             <th class="py-2 px-4 border-b">Fecha</th>

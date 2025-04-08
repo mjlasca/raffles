@@ -26,7 +26,7 @@ class DeliveryController extends Controller
     {
         $deliveries = Delivery::orderBy('id', 'DESC')->orderBy('consecutive','DESC');
         $sellers_users = User::select('id','name','lastname')->where('role','Vendedor')->orderBy('name','ASC')->get();
-        $raffles = Raffle::select('id','name')->orderBy('name','ASC')->get();
+        $raffles = Raffle::where('status',1)->select('id','name')->where('disabled',0)->orderBy('name','ASC')->get();
         $paymentMethods = PaymentMethod::where('status',1)->get();
         if(!empty($req->input('date1'))){
             $date1 = $req->input('date1');

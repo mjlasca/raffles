@@ -30,7 +30,6 @@ class CommissionController extends Controller
             $date2 = $req->input('date2');
             $commissions->whereBetween(DB::raw('DATE(updated_at)'),[$date1,$date2]);
         }
-
         if($req->input('keyword')){
 
             $commissions = $commissions->whereHas('user', function ($query) use ($req) {
@@ -45,7 +44,6 @@ class CommissionController extends Controller
         if($req->input('payment_method_id')){
             $commissions = $commissions->where('payment_method_id',$req->input('payment_method_id'));
         }
-
         $commissions = $commissions->paginate(50);
         return view('commissions.index', compact('commissions','raffles','paymentMethods'));
     }
@@ -76,11 +74,13 @@ class CommissionController extends Controller
         }
             
         //$tickets = $tickets->get();
+        $totalCommission = 0;
         $sellers_users = [];
         if($req->input('raffle_id') || $req->input('user_id'))
         {
             $sum = [];
             $aux = [];
+            
             foreach ($tickets as $key => $ticket) {
                 $sum[$ticket->user_id][$ticket->raffle_id] = $sum[$ticket->user_id][$ticket->raffle_id] ?? 0;
                 $sum[$ticket->user_id][$ticket->raffle_id] += $ticket->assignment->commission;
@@ -94,11 +94,11 @@ class CommissionController extends Controller
                     'sum' => $sum[$ticket->user_id][$ticket->raffle_id],
                     'detail' => $aux[$ticket->user_id][$ticket->raffle_id]
                 ];
-
+                $totalCommission += $ticket->assignment->commission;
             }
         }
 
-        return view('commissions.create', compact('sellers_users','sellers','raffles','paymentMethods'));
+        return view('commissions.create', compact('sellers_users','sellers','raffles','paymentMethods','totalCommission'));
     }
 
     /**

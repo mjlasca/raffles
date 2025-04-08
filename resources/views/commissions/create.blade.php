@@ -46,9 +46,14 @@
                         <table class="min-w-full">
                             <thead>
                                 <tr class="text-md font-semibold tracking-wide text-left text-white bg-green-500 uppercase border-b border-gray-600">
+                                    <th class="py-2 px-4 border-b" colspan="2"></th>
+                                    <th class="py-2 px-4 border-b text-right">${{ number_format($totalCommission)}}</th>
+
+                                </tr>
+                                <tr class="text-md font-semibold tracking-wide text-left text-white bg-green-500 uppercase border-b border-gray-600">
                                     <th class="py-2 px-4 border-b">Rifa</th>
                                     <th class="py-2 px-4 border-b">Vendedor(a)</th>
-                                    <th class="py-2 px-4 border-b">Suma</th>
+                                    <th class="py-2 px-4 border-b text-right">Suma</th>
                                     <th class="py-2 px-4 border-b">Acción</th>
 
                                 </tr>
@@ -59,7 +64,7 @@
                                     <tr class="hover:bg-gray-100 border-b">
                                         <td class="py-2 px-4">{{ $ticket['raffle']->name }}</td>
                                         <td class="py-2 px-4">{{ $ticket['user'] }}</td>
-                                        <td class="py-2 px-4">${{ number_format($ticket['sum']) }}</td>
+                                        <td class="py-2 px-4 text-right">${{ number_format($ticket['sum']) }}</td>
                                         <td class="py-2 px-4 ">
                                             <div class="text-left">
                                                 <div class="text-left mb-2">
