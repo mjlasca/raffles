@@ -95,7 +95,17 @@
           <img class="h-40 rounded-t-lg" src="{{ asset('img/image-3.png') }}" alt="" srcset="">
       </div>
       <div class="mt-3">
-          <b class="p-3 text-2xl">Rifas vigentes</b>
+          @if (Request('before'))
+            <b class="p-3 text-2xl">Rifas Anteriores </b>    
+            <p>
+              <a class="bg-green-400 ml-3" href="/">Ver Rifas Vigentes</a>
+            </p>
+          @else
+            <b class="p-3 text-2xl">Rifas vigentes </b>
+            <p>
+              <a class="bg-green-400 ml-3" href="?before=true">Ver Rifas anteriores</a>
+            </p>
+          @endif
           <div class="p-2 justify-between mt-2">
               <div>
                 @foreach ($data['current_raffles'] as $item)
@@ -294,7 +304,17 @@
             <img class="h-40 rounded-t-lg" src="{{ asset('img/image-3.png') }}" alt="" srcset="">
         </div>
         <div class="mt-3">
-            <b class="p-3 text-2xl">Rifas vigentes</b>
+          @if (Request('before'))
+            <b class="p-3 text-2xl">Rifas Anteriores </b>    
+            <p>
+              <a class="bg-green-400 ml-3" href="/">Ver Rifas Vigentes</a>
+            </p>
+          @else
+            <b class="p-3 text-2xl">Rifas vigentes </b>
+            <p>
+              <a class="bg-green-400 ml-3" href="?before=true">Ver Rifas anteriores</a>
+            </p>
+          @endif
             <div class="p-2 justify-between mt-2">
                 <div>
                   @if(isset($data['current_raffles']))

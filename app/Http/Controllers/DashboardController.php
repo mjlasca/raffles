@@ -20,14 +20,11 @@ class DashboardController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
         $current_user = Auth::user();
         $data = [];
         if($current_user->role == 'Administrador' || $current_user->role == 'Secretaria'){
-            $raffles = Raffle::where('raffle_date','>',now())->with(['deliveries' => function ($query) {
-                                    $query->select('raffle_id',DB::raw('SUM(deliveries.total) as total'));
-                                }])->get();
             $raffles = Raffle::select(
                                 'raffles.*',
                                 'deliveries.raffle_id',
@@ -37,7 +34,17 @@ class DashboardController extends Controller
                                 ->where('raffles.raffle_date','>',now())
                                 ->groupBy('deliveries.raffle_id')
                                 ->get();                                
-                                
+            if($request->input('before')){
+                $raffles = Raffle::select(
+                    'raffles.*',
+                    'deliveries.raffle_id',
+                    DB::raw('SUM(deliveries.used) as delivery_used'),
+                    DB::raw('SUM(deliveries.total) as delivery_total'))
+                    ->leftJoin('deliveries', 'raffles.id', '=', 'deliveries.raffle_id')
+                    ->where('raffles.raffle_date','<',now())
+                    ->groupBy('deliveries.raffle_id')
+                    ->get();
+            }
             $data['current_raffles'] = $raffles;                    
                                 
             $raffles = Raffle::select('id')->where('raffle_date','>',now())->get();
