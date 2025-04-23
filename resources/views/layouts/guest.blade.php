@@ -13,9 +13,6 @@
         <link href="{{ asset('css/app.css') }}" rel="stylesheet">        
     </head>
     <body class="font-sans text-gray-900 bg-gray-100 m-0 overflow-hidden">
-        <div class="bg-red-500 text-white p-5 w-full text-center h4 fixed">
-            ENTORNO DE PRUEBAS
-        </div>
         <div class="flex items-center justify-center h-screen">
             <div class="md:w-3/5 flex items-center justify-center">
                 <div class=" w-80">

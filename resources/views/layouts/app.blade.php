@@ -63,9 +63,6 @@
     </style>
 </head>
 <body>
-    <div class="bg-red-500 text-white p-1 w-full text-center h3 fixed">
-        ENTORNO DE PRUEBAS
-    </div>
     <div class="flex">
         <!--Sidebar-->
         <div class="sidebar-raffle sm:flex h-screen bg-gray-800 hidden">
