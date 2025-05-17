@@ -14,12 +14,21 @@ use App\Http\Controllers\UserController;
 use App\Models\PaymentMethod;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 Auth::routes([
     'reset' => false, // Reset Password Routes...
     'verify' => false, // Email Verification Routes...
 ]);
 
+Route::get('/testzone', function () {
+dd([
+    'php_timezone' => date_default_timezone_get(),
+    'laravel_now' => now(),
+    'mysql_now' => DB::select("SELECT NOW() as now")[0]->now
+]);
+
+});
 
 Route::resource('rifas', RaffleController::class)->middleware(['auth',"roleAccess:Administrador-Secretaria"])->parameters([
     'rifas' => 'raffles',

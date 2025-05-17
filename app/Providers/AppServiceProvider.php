@@ -7,6 +7,7 @@ use App\Models\Prize;
 use App\Models\Raffle;
 use App\Models\Ticket;
 use App\Models\User;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Validator;
 
@@ -29,6 +30,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
+        DB::statement("SET time_zone = '-05:00';");
         Validator::extend('unique_user', function ($attribute, $value, $parameters, $validator) {
             $exists = User::where('email', $value)->exists();
             return !$exists;
