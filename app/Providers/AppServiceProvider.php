@@ -30,7 +30,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        DB::statement("SET time_zone = '-05:00';");
+        //DB::statement("SET time_zone = '-05:00';");
         Validator::extend('unique_user', function ($attribute, $value, $parameters, $validator) {
             $exists = User::where('email', $value)->exists();
             return !$exists;
