@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Exports\OutflowsExport;
+use App\Models\Office;
 use App\Models\Outflow;
 use App\Models\PaymentMethod;
 use App\Models\Raffle;
@@ -23,6 +24,7 @@ class OutFlowController extends Controller
         $outflows  = Outflow::orderBy('created_at', 'DESC');
         $raffles = Raffle::select('id','name')->where('disabled',0)->orderBy('name','ASC')->get();
         $paymentMethods = PaymentMethod::where('status',1)->get();
+        $offices = Office::where('status',1)->get();
         if(!empty($req->input('date1'))){
             $date1 = $req->input('date1');
             $date2 = $date1;
@@ -48,9 +50,11 @@ class OutFlowController extends Controller
             $outflows = $outflows->where('raffle_id',$req->input('raffle_id'));
         if($req->input('payment_method_id'))
             $outflows = $outflows->where('payment_method_id',$req->input('payment_method_id'));
+        if($req->input('office_id'))
+            $outflows = $outflows->where('office_id',$req->input('office_id'));
 
         $outflows = $outflows->paginate('50');
-        return view('outflows.index', compact('outflows','raffles','paymentMethods'));
+        return view('outflows.index', compact('outflows','raffles','paymentMethods','offices'));
     }
 
     /**
@@ -62,7 +66,8 @@ class OutFlowController extends Controller
     {
         $raffles = Raffle::where('raffle_date', '>=','NOW()')->where('disabled',0)->orderBy('name','ASC')->get();
         $paymentMethods = PaymentMethod::where('status',1)->get();
-        return view('outflows.create',compact('raffles','paymentMethods'));
+        $offices = Office::where('status',1)->get();
+        return view('outflows.create',compact('raffles','paymentMethods','offices'));
     }
 
     /**

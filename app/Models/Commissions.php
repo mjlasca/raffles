@@ -18,7 +18,8 @@ class Commissions extends Model
         'raffle_id',
         'create_user',
         'edit_user',
-        'payment_method_id'
+        'payment_method_id',
+        'office_id'
     ];
 
     public function user()
@@ -40,5 +41,9 @@ class Commissions extends Model
     {
         return $this->belongsTo(PaymentMethod::class);
     }
-
+    
+    public function office()
+    {
+        return $this->belongsTo(Office::class);
+    }
 }

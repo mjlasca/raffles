@@ -34,7 +34,7 @@
                             </select>
                         </div>
                         <div>
-                            <label for="raffle_id" class="block text-gray-700 text-sm font-bold mb-2">Método de pago</label>
+                            <label for="payment_method_id" class="block text-gray-700 text-sm font-bold mb-2">Método de pago</label>
                             <select name="payment_method_id" id="payment_method_id" class="w-full border rounded-md py-2 px-3" >
                                 <option value="">Seleccione un método</option>
                                 @foreach($paymentMethods as $pay)
@@ -42,6 +42,19 @@
                                         <option value="{{ $pay->id }}" selected>{{ $pay->description }}</option>
                                     @else
                                         <option value="{{ $pay->id }}">{{ $pay->description }}</option>
+                                    @endif
+                                @endforeach
+                            </select>
+                        </div>
+                        <div>
+                            <label for="office_id" class="block text-gray-700 text-sm font-bold mb-2">Oficina</label>
+                            <select name="office_id" id="office_id" class="w-full border rounded-md py-2 px-3" >
+                                <option value="">Seleccione una oficina</option>
+                                @foreach($offices as $office)
+                                    @if ($office->id == Request('office_id'))
+                                        <option value="{{ $office->id }}" selected>{{ $office->description }}</option>
+                                    @else
+                                        <option value="{{ $office->id }}">{{ $office->description }}</option>
                                     @endif
                                 @endforeach
                             </select>
@@ -66,6 +79,7 @@
                             <th class="py-2 px-4 border-b">Fecha</th>
                             <th class="py-2 px-4 border-b">Rifa</th>
                             <th class="py-2 px-4 border-b">Método de pago</th>
+                            <th class="py-2 px-4 border-b">Oficina</th>
                             <th class="py-2 px-4 border-b">Generado por</th>
                             <th class="py-2 px-4 border-b">Detalle</th>
                             <th class="py-2 px-4 border-b text-right">Total</th>
@@ -85,6 +99,11 @@
                                 <td class="py-2 px-4">-- N/A --</td>
                             @else
                                 <td class="py-2 px-4">{{ $outflow->paymentMethod->description }}</td>
+                            @endif
+                            @if (empty($outflow->office->description))
+                                <td class="py-2 px-4">-- N/A --</td>
+                            @else
+                                <td class="py-2 px-4">{{ $outflow->office->description }}</td>
                             @endif
                             <td class="py-2 px-4">{{ $outflow->redited->name }} {{ $outflow->redited->lastname }}</td>
                             <td class="py-2 px-4">{{ $outflow->detail }}</td>

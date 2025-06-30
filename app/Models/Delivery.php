@@ -19,7 +19,8 @@ class Delivery extends Model
         'create_user',
         'edit_user',
         'consecutive',
-        'payment_method_id'
+        'payment_method_id',
+        'office_id'
     ];
 
     public function user()
@@ -45,5 +46,10 @@ class Delivery extends Model
     public function paymentMethod()
     {
         return $this->belongsTo(PaymentMethod::class);
+    }
+
+    public function office()
+    {
+        return $this->belongsTo(Office::class);
     }
 }

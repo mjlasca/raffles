@@ -68,6 +68,19 @@
                         @endforeach
                     </select>
                 </div>
+                <div class="mb-4 md:w-1/2">
+                    <label for="office_id" class="block text-gray-700 text-sm font-bold mb-2">Oficina</label>
+                    <select name="office_id" id="office_id" class="w-full border rounded-md py-2 px-3" required>
+                        <option value="">Seleccione la oficina</option>
+                        @foreach($offices as $office)
+                            @if ($office->id == old("office_id"))
+                                <option value="{{ $office->id }}" selected>{{ $office->description }}</option>
+                            @else
+                            <option value="{{ $office->id }}">{{ $office->description }}</option>
+                            @endif
+                        @endforeach
+                    </select>
+                </div>
 
 
 

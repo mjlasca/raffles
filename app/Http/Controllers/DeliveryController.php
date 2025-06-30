@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Exports\DeliveriesExport;
 use App\Models\Delivery;
+use App\Models\Office;
 use App\Models\PaymentMethod;
 use App\Models\PaymentTicket;
 use App\Models\Raffle;
@@ -28,6 +29,7 @@ class DeliveryController extends Controller
         $sellers_users = User::select('id','name','lastname')->where('role','Vendedor')->orderBy('name','ASC')->get();
         $raffles = Raffle::where('status',1)->select('id','name')->where('disabled',0)->orderBy('name','ASC')->get();
         $paymentMethods = PaymentMethod::where('status',1)->get();
+        $offices = Office::where('status',1)->get();
         if(!empty($req->input('date1'))){
             $date1 = $req->input('date1');
             $date2 = $date1;
@@ -45,6 +47,9 @@ class DeliveryController extends Controller
         if($req->input('payment_method_id')){
             $deliveries = $deliveries->where('payment_method_id',$req->input('payment_method_id'));
         }
+        if($req->input('office_id'))
+            $deliveries = $deliveries->where('office_id',$req->input('office_id'));
+        
 
         if($req->input('keyword')){
             $keyword = $req->input('keyword');
@@ -88,7 +93,7 @@ class DeliveryController extends Controller
         }
 
         $deliveries = $deliveries->paginate('50');
-        return view('deliveries.index', compact('deliveries','sellers_users','raffles','totals','paymentMethods'));
+        return view('deliveries.index', compact('deliveries','sellers_users','raffles','totals','paymentMethods','offices'));
     }
 
     /**
@@ -104,7 +109,8 @@ class DeliveryController extends Controller
         $sellers_users = User::select('id','name','lastname')->where('role','Vendedor')->orderBy('name','ASC')->get();
         $date = date('Y-m-d');
         $paymentMethods = PaymentMethod::where('status',1)->get();
-        return view('deliveries.create', compact('raffles','sellers_users','date','paymentMethods'));
+        $offices = Office::where('status',1)->get();
+        return view('deliveries.create', compact('raffles','sellers_users','date','paymentMethods','offices'));
     }
 
     /**
@@ -214,7 +220,8 @@ class DeliveryController extends Controller
         $raffles = Raffle::where('status',1)->select('id','name')->where('disabled',0)->get();
         $sellers_users = User::select('id','name','lastname')->where('role','Vendedor')->get();
         $paymentMethods = PaymentMethod::where('status',1)->get();
-        return view('deliveries.edit', compact('delivery','raffles','sellers_users','paymentMethods'));
+        $offices = Office::where('status',1)->get();
+        return view('deliveries.edit', compact('delivery','raffles','sellers_users','paymentMethods','offices'));
     }
 
     /**

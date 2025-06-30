@@ -3,8 +3,11 @@
 use App\Http\Controllers\AssignmentController;
 use App\Http\Controllers\CashController;
 use App\Http\Controllers\CommissionController;
+use App\Http\Controllers\ConsolidatedController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DeliveryController;
+use App\Http\Controllers\Office;
+use App\Http\Controllers\OfficeController;
 use App\Http\Controllers\OutFlowController;
 use App\Http\Controllers\PaymentMethodController;
 use App\Http\Controllers\PrizeController;
@@ -99,3 +102,9 @@ Route::get('/', [DashboardController::class, 'index'])->middleware(['auth'])->na
 Route::get('/payment-method/', [PaymentMethodController::class, 'index'])->middleware(['auth','roleAccess:Secretaria-Administrador'])->name('paymentmethod.index');
 Route::post('/payment-method/', [PaymentMethodController::class, 'store'])->middleware(['auth','roleAccess:Secretaria-Administrador'])->name('paymentmethod.index');
 
+//Offices
+Route::get('/oficinas/', [OfficeController::class, 'index'])->middleware(['auth','roleAccess:Secretaria-Administrador'])->name('office.index');
+Route::post('/oficinas/', [OfficeController::class, 'store'])->middleware(['auth','roleAccess:Secretaria-Administrador'])->name('office.index');
+
+//Consolidated
+Route::get('/consolidado/', [ConsolidatedController::class, 'index'])->middleware(['auth','roleAccess:Secretaria-Administrador'])->name('consolidated.index');

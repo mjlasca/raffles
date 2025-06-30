@@ -10,6 +10,7 @@
             <div class="p-6">
                 <p class="mb-4"><strong>Vendedor:</strong> {{ $commission->user->name }} {{ $commission->user->lastname }}</p>
                 <p class="mb-4"><strong>Total liquidado:</strong> ${{  number_format($commission->total,2) }}</p>
+                <p class="mb-4"><strong>Oficina:</strong> {{  empty($commission->office->description) ? '' : $commission->office->description  }}</p>
                 @if ( !empty( $commission->payment_method_id ) )
                     <p class="mb-4"><strong>Método de pago:</strong> ${{  $commission->paymentmethod->description }}</p>
                 @endif
@@ -21,6 +22,7 @@
                             <p>{{$item}}</p>
                         @endforeach
                 </p>
+                
 
             </div>
         </div>

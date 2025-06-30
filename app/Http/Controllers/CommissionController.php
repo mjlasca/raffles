@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Exports\CommissionsExport;
 use App\Models\Commissions;
+use App\Models\Office;
 use App\Models\PaymentMethod;
 use App\Models\Raffle;
 use App\Models\Ticket;
@@ -25,6 +26,7 @@ class CommissionController extends Controller
         $commissions = Commissions::orderBy('updated_at', 'DESC');
         $raffles = Raffle::select('id','name')->where('disabled',0)->orderBy('name','ASC')->get();
         $paymentMethods = PaymentMethod::where('status',1)->get();
+        $offices = Office::where('status',1)->get();
         if(!empty($req->input('date1'))){
             $date1 = $req->input('date1');
             $date2 = $req->input('date2');
@@ -41,11 +43,13 @@ class CommissionController extends Controller
 
             $commissions = $commissions->where('raffle_id',$req->input('raffle_id'));
         }
-        if($req->input('payment_method_id')){
+        if($req->input('payment_method_id'))
             $commissions = $commissions->where('payment_method_id',$req->input('payment_method_id'));
-        }
+        if($req->input('office_id'))
+            $commissions = $commissions->where('office_id',$req->input('office_id'));
+
         $commissions = $commissions->paginate(50);
-        return view('commissions.index', compact('commissions','raffles','paymentMethods'));
+        return view('commissions.index', compact('commissions','raffles','paymentMethods','offices'));
     }
 
     /**
@@ -58,6 +62,7 @@ class CommissionController extends Controller
         $sellers = User::select('id','name','lastname')->where('role','Vendedor')->orderBy('name','ASC')->get();
         $raffles = Raffle::select('id','name')->where('disabled',0)->orderBy('name','ASC')->get();
         $paymentMethods = PaymentMethod::where('status',1)->get();
+        $offices = Office::where('status',1)->get();
         $tickets = Ticket::where('payment_commission', null)->whereHas('raffle', function ($query) {
                             $query->where('raffle_status', '>', -1);
                         })
@@ -98,7 +103,7 @@ class CommissionController extends Controller
             }
         }
 
-        return view('commissions.create', compact('sellers_users','sellers','raffles','paymentMethods','totalCommission'));
+        return view('commissions.create', compact('sellers_users','sellers','raffles','paymentMethods','totalCommission','offices'));
     }
 
     /**
@@ -124,6 +129,7 @@ class CommissionController extends Controller
                 'detail'=> '',
                 'create_user' => $user->id,
                 'edit_user' => $user->id,
+                'office_id' => $request->input('office_id') ,
                 'payment_method_id' => $request->input('payment_method_id')
             ];
 

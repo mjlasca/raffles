@@ -14,6 +14,9 @@
                 <a class="ml-2 p-1 mt-1 bg-green-500 rounded-lg hover:bg-green-500" href="{{route('paymentmethod.index')}}">
                     <img class="h-5" src="{{ asset('img/icons/dollar-icon.svg') }}" alt="Métodos de pago" title="Métodos de pago">
                 </a>
+                <a class="ml-2 p-1 mt-1 bg-green-500 rounded-lg hover:bg-green-500" href="{{route('office.index')}}">
+                    <img class="h-5" src="{{ asset('img/icons/location-icon.svg') }}" alt="Ubicación" title="Ubicación">
+                </a>
             </div>
 
             <div>
@@ -50,6 +53,8 @@
                                 @endforeach
                             </select>
                         </div>
+                    </div>
+                    <div class="mt-3 md:flex">
                         <div>
                             <label for="raffle_id" class="block text-gray-700 text-sm font-bold mb-2">Método de pago</label>
                             <select name="payment_method_id" id="payment_method_id" class="w-full border rounded-md py-2 px-3" >
@@ -59,6 +64,19 @@
                                         <option value="{{ $pay->id }}" selected>{{ $pay->description }}</option>
                                     @else
                                         <option value="{{ $pay->id }}">{{ $pay->description }}</option>
+                                    @endif
+                                @endforeach
+                            </select>
+                        </div>
+                        <div>
+                            <label for="office_id" class="block text-gray-700 text-sm font-bold mb-2">Oficina</label>
+                            <select name="office_id" id="office_id" class="w-full border rounded-md py-2 px-3" >
+                                <option value="">Seleccione una oficina</option>
+                                @foreach($offices as $office)
+                                    @if ($office->id == Request('office_id'))
+                                        <option value="{{ $office->id }}" selected>{{ $office->description }}</option>
+                                    @else
+                                        <option value="{{ $office->id }}">{{ $office->description }}</option>
                                     @endif
                                 @endforeach
                             </select>
@@ -95,6 +113,7 @@
                             <th class="py-2 px-4 border-b">Conse. /Rifa</th>
                             <th class="py-2 px-4 border-b">Fecha</th>
                             <th class="py-2 px-4 border-b">Método de pago</th>
+                            <th class="py-2 px-4 border-b">Oficina</th>
                             <th class="py-2 px-4 border-b">Descripción</th>
                             <th class="py-2 px-4 border-b">Rifa</th>
                             <th class="py-2 px-4 border-b">Vendedor</th>
@@ -118,6 +137,11 @@
                                     <td class="py-2 px-4">-- N/A --</td>
                                 @else
                                     <td class="py-2 px-4">{{ $deliverie->paymentMethod->description }}</td>
+                                @endif
+                                @if (empty($deliverie->office_id))
+                                    <td class="py-2 px-4">-- N/A --</td>
+                                @else
+                                    <td class="py-2 px-4">{{ $deliverie->office->description }}</td>
                                 @endif
                                 <td class="py-2 px-4">{{ $deliverie->description }}</td>
                                 <td class="py-2 px-4">{{ $deliverie->raffle->name }}</td>
