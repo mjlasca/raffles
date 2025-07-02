@@ -67,7 +67,7 @@
         <!--Sidebar-->
         <div class="sidebar-raffle sm:flex h-screen bg-gray-800 hidden">
             
-            <div class="nav-raffle w-64 bg-gray-100">
+            <div class="nav-raffle w-64 bg-red-500">
                 <div class="bg-blue-500 py-4 h-40 flex flex-col items-center">
                     <img src="{{ asset('img/logo.webp') }}" alt="Logo" class="w-2/4">
                 </div>
