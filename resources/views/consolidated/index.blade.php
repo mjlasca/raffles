@@ -27,19 +27,6 @@
                             </select>
                         </div>
                         <div>
-                            <label for="payment_method_id" class="block text-gray-700 text-sm font-bold mb-2">Método de pago</label>
-                            <select name="payment_method_id" id="payment_method_id" class="w-full border rounded-md py-2 px-3" >
-                                <option value="">Seleccione un método</option>
-                                @foreach($paymentMethods as $pay)
-                                    @if ($pay->id == Request('payment_method_id'))
-                                        <option value="{{ $pay->id }}" selected>{{ $pay->description }}</option>
-                                    @else
-                                        <option value="{{ $pay->id }}">{{ $pay->description }}</option>
-                                    @endif
-                                @endforeach
-                            </select>
-                        </div>
-                        <div>
                             <label for="office_id" class="block text-gray-700 text-sm font-bold mb-2">Oficina</label>
                             <select name="office_id" id="office_id" class="w-full border rounded-md py-2 px-3" >
                                 <option value="">Seleccione una oficina</option>
@@ -68,19 +55,87 @@
                 <table class="min-w-full">
                     <thead>
                         <tr class="text-md font-semibold tracking-wide text-left text-white bg-green-500 uppercase border-b border-gray-600">
-                            <th class="py-2 px-4 border-b">id</th>
-                            <th class="py-2 px-4 border-b">Fecha</th>
-                            <th class="py-2 px-4 border-b">Rifa</th>
-                            <th class="py-2 px-4 border-b">Método de pago</th>
-                            <th class="py-2 px-4 border-b">Oficina</th>
-                            <th class="py-2 px-4 border-b">Generado por</th>
-                            <th class="py-2 px-4 border-b">Detalle</th>
-                            <th class="py-2 px-4 border-b text-right">Total</th>
-                            <th class="py-2 px-4 border-b">Acción</th>
+                            <th class="py-2 px-4 border-b border-r bg-yellow-400 text-center text-black" rowspan="2">Fecha</th>
+                            @if (isset($headerConsolidate['deliveries']))
+                            <th class="py-2 px-4 border-b border-r bg-yellow-400 text-center text-black" colspan="{{ count($headerConsolidate['deliveries']) }}">ENTREGAS</th>
+                            @endif
+                            @if (isset($headerConsolidate['outflows']))
+                            <th class="py-2 px-4 border-b border-r bg-yellow-400 text-center text-black" colspan="{{ count($headerConsolidate['outflows']) }}">SALIDAS</th>
+                            @endif
+                            @if (isset($headerConsolidate['commissions']))
+                            <th class="py-2 px-4 border-b border-r bg-yellow-400 text-center text-black" colspan="{{ count($headerConsolidate['commissions']) }}">COMISIONES</th>
+                            @endif
+                            @if (!empty($headerTotals))
+                            <th class="py-2 px-4 border-b border-r bg-yellow-400 text-center text-black" colspan="{{ count($headerTotals) }}">TOTALES</th>
+                            @endif
+                        </tr>
+                        <tr class="text-md font-semibold tracking-wide text-left text-white bg-green-500 uppercase border-b border-gray-600">
+                            @if (isset($headerConsolidate['deliveries']))
+                                @foreach ($headerConsolidate['deliveries'] as $header)
+                                    <th class="py-2 px-4 border-b text-right">{{ $header }}</th>
+                                @endforeach
+                            @endif
+                            @if (isset($headerConsolidate['outflows']))
+                                @foreach ($headerConsolidate['outflows'] as $header)
+                                    <th class="py-2 px-4 border-b text-right">{{ $header }}</th>
+                                @endforeach
+                            @endif
+                            @if (isset($headerConsolidate['commissions']))
+                                @foreach ($headerConsolidate['commissions'] as $header)
+                                    <th class="py-2 px-4 border-b text-right">{{ $header }}</th>
+                                @endforeach
+                            @endif
+                            @foreach ($headerTotals as $header)
+                                <th class="py-2 px-4 border-b bg-blue-500 text-right">{{ $header }}</th>
+                            @endforeach
                         </tr>
                     </thead>
                     <tbody>
-                       
+                       @foreach ($consolidateArr as $key => $consolidate)
+                            <tr class="border-b hover:bg-gray-100">
+                            <td class="text-center">{{$key}}</td>
+                                @if (isset($consolidate))
+                                    @if (isset($headerConsolidate['outflows']))
+                                        @foreach ($headerConsolidate['deliveries'] as $k => $header)
+                                            @if (isset($consolidate['deliveries'.$k]))
+                                                <td class="text-right border-x p-2">${{ number_format($consolidate['deliveries'.$k]) }}</td>    
+                                            @else
+                                                <td class="border-x p-2"></td>
+                                            @endif
+                                        @endforeach
+                                    @endif
+                                    @if (isset($headerConsolidate['outflows']))
+                                        @foreach ($headerConsolidate['outflows'] as $k => $header)
+                                            @if (isset($consolidate['outflows'.$k]))
+                                                <td class="text-right border-x p-2">${{ number_format($consolidate['outflows'.$k]) }}</td>    
+                                            @else
+                                                <td class="border-x p-2"></td>
+                                            @endif
+                                        @endforeach
+                                    @endif
+                                    @if (isset($headerConsolidate['commissions']))
+                                        @foreach ($headerConsolidate['commissions'] as $k => $header)
+                                            @if (isset($consolidate['commissions'.$k]))
+                                                <td class="text-right border-x p-2">${{ number_format($consolidate['commissions'.$k]) }}</td>    
+                                            @else
+                                                <td class="border-x p-2"></td>
+                                            @endif
+                                        @endforeach
+                                    @endif
+                                    @foreach ($headerTotals as $k => $header)
+                                        @if (isset($rowsTotals[$key.$k]))
+                                            @if ( !isset($consolidate['outflows'.$k]) )
+                                                <td class="text-right border-x p-2">${{ number_format($rowsTotals[$key.$k])  }}</td>
+                                            @else     
+                                                <td class="text-right border-x p-2">${{ number_format($rowsTotals[$key.$k] - $consolidate['outflows'.$k] )  }}</td>
+                                            @endif
+                                        @else
+                                            <td class="border-x p-2"></td>
+                                        @endif
+                                    @endforeach
+                                @endif
+                            </tr>
+                       @endforeach
                     </tbody>
                 </table>
 
