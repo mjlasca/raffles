@@ -12,6 +12,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Facades\Excel;
 
@@ -154,8 +155,9 @@ class DeliveryController extends Controller
                 $raffle->update(['status'=>0]);
             if(isset($data['date'])){
                 //$deli = Delivery::find($deliveryQuery->id);
-                $deliveryQuery->created_at = $data['date']." ".date('h:i:s');
-                $deliveryQuery->updated_at = $data['date']." ".date('h:i:s');
+                $timestamp = Carbon::parse($data['date'])->setTimeFromTimeString(date('H:i:s'));
+                $deliveryQuery->created_at = $timestamp;
+                $deliveryQuery->updated_at = $timestamp;
                 $deliveryQuery->save();
             }
         }
