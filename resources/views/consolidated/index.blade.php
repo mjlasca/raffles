@@ -95,7 +95,7 @@
                             <tr class="border-b hover:bg-gray-100">
                             <td class="text-center">{{$key}}</td>
                                 @if (isset($consolidate))
-                                    @if (isset($headerConsolidate['outflows']))
+                                    @if (isset($headerConsolidate['deliveries']))
                                         @foreach ($headerConsolidate['deliveries'] as $k => $header)
                                             @if (isset($consolidate['deliveries'.$k]))
                                                 <td class="text-right border-x p-2">${{ number_format($consolidate['deliveries'.$k]) }}</td>    
