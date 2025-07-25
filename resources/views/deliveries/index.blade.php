@@ -142,7 +142,7 @@
                                                 <img class="h-5" src="{{ asset('img/icons/delete-icon.svg') }}" alt="Anular" title="Anular">
                                             </a>
                                         @else
-                                            @if ( auth()->user()->role === 'Administrador' )
+                                            @if ( auth()->user()->role === 'Administrador' ||  auth()->user()->role  ===  'Secretaria')
                                                 <a href="{{ route('entregas.cancel', $deliverie->id) }}" onclick="return confirm('Está segur@ de anular el registro')" class="text-yellow-500 hover:bg-green-500 p-1 bg-red-500 rounded-md mr-1">
                                                     <img class="h-5" src="{{ asset('img/icons/delete-icon.svg') }}" alt="Anular" title="Anular">
                                                 </a>
