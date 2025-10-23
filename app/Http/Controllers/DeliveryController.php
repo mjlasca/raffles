@@ -179,10 +179,12 @@ class DeliveryController extends Controller
             $arrayPays = explode(';',$pay->detail);
             foreach ($arrayPays as $k => $val) {
                 $arrVal = explode(',',$val);
-                $payments[] = [
-                    'ticket_number'  => $arrVal[0],
-                    'payment' => $arrVal[1]
-                ];
+                if(!empty($arrVal[1])){
+                    $payments[] = [
+                        'ticket_number'  => $arrVal[0],
+                        'payment' => $arrVal[1]
+                    ];    
+                }
             }
         }
         return view('deliveries.show', compact('delivery','payments'));
