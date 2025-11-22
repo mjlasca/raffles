@@ -1,6 +1,7 @@
 @extends('layouts.app')
 @section('pageTitle', 'Boletas')
 @section('content')
+    
     <div class="container mx-auto mt-8">
         <div class="bg-white shadow-md overflow-hidden rounded-md">
             <div class="py-4 px-6 bg-blue-500 flex text-white fill-white">
@@ -160,7 +161,8 @@
             @endisset
         </div>
     </div>
-    <script src="{{ asset('js/tickets-index.js') }}"></script>    
+    <script src="{{ asset('js/tickets-index.js') }}"></script>
+    
 @endsection
 
 
