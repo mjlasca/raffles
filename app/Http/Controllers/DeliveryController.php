@@ -252,7 +252,7 @@ class DeliveryController extends Controller
         $sellers_users = User::select('id','name','lastname')->where('role','Vendedor')->get();
         $paymentMethods = PaymentMethod::where('status',1)->get();
         $offices = Office::where('status',1)->get();
-        return view('deliveries.edit', compact('delivery','raffles','sellers_users','paymentMethods','permission', 'flag','current_user'));
+        return view('deliveries.edit', compact('delivery','raffles','sellers_users','paymentMethods','offices','permission', 'flag','current_user'));
     }
 
     /**
