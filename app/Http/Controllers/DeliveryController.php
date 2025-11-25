@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Exports\DeliveriesExport;
+use App\Services\RequestPermissionService;
 use App\Models\Delivery;
+use App\Models\DeliveryPermission;
 use App\Models\PaymentMethod;
 use App\Models\PaymentTicket;
 use App\Models\Raffle;
@@ -16,8 +18,15 @@ use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Facades\Excel;
 
+
 class DeliveryController extends Controller
 {
+    protected $deliveryPermission;
+
+    public function __construct(RequestPermissionService $deliveryPermission) {
+        $this->deliveryPermission = $deliveryPermission;
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -214,11 +223,29 @@ class DeliveryController extends Controller
      */
     public function edit($id)
     {
+        $current_user =  Auth::user();
         $delivery = Delivery::find($id);
+        $permission = NULL;
+        $flag = TRUE;
+        $resPermission = $this->deliveryPermission->allowPermission($delivery, $current_user);
+        if(empty($resPermission) && $current_user->role != 'Administrador'){
+            $permission = 0;
+            $flag = FALSE;
+        }
+        if(!empty($resPermission) && $current_user->role != 'Administrador'){
+            $permission = $resPermission->status;
+            if($permission == 0){
+                $flag = FALSE;
+                return view('delivery_permission.pending');
+            }
+            if($permission == 2){
+                $flag = FALSE;
+            }
+        }
         $raffles = Raffle::where('status',1)->select('id','name')->where('disabled',0)->get();
         $sellers_users = User::select('id','name','lastname')->where('role','Vendedor')->get();
         $paymentMethods = PaymentMethod::where('status',1)->get();
-        return view('deliveries.edit', compact('delivery','raffles','sellers_users','paymentMethods'));
+        return view('deliveries.edit', compact('delivery','raffles','sellers_users','paymentMethods','permission', 'flag','current_user'));
     }
 
     /**
