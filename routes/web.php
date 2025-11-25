@@ -8,6 +8,8 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DeliveryController;
 use App\Http\Controllers\Office;
 use App\Http\Controllers\OfficeController;
+use App\Http\Controllers\DeliveryPermission;
+use App\Http\Controllers\DeliveryPermissionController;
 use App\Http\Controllers\OutFlowController;
 use App\Http\Controllers\PaymentMethodController;
 use App\Http\Controllers\PrizeController;
@@ -17,12 +19,21 @@ use App\Http\Controllers\UserController;
 use App\Models\PaymentMethod;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 Auth::routes([
     'reset' => false, // Reset Password Routes...
     'verify' => false, // Email Verification Routes...
 ]);
 
+Route::get('/testzone', function () {
+dd([
+    'php_timezone' => date_default_timezone_get(),
+    'laravel_now' => now(),
+    'mysql_now' => DB::select("SELECT NOW() as now")[0]->now
+]);
+
+});
 
 Route::resource('rifas', RaffleController::class)->middleware(['auth',"roleAccess:Administrador-Secretaria"])->parameters([
     'rifas' => 'raffles',
@@ -90,6 +101,13 @@ Route::get('/resultados', [PrizeController::class, 'results'])->name('prizes.res
 Route::resource('entregas', DeliveryController::class)->middleware(['auth','roleAccess:Secretaria-Administrador'])->parameters([
     'entregas' => 'deliveries',
 ]);
+
+Route::get('/permisos-entregas', [DeliveryPermissionController::class, 'index'])->middleware(['auth'])->name('delivery_permission.index');
+Route::post('/permisos-entregas/store', [DeliveryPermissionController::class, 'store'])->middleware(['auth'])->name('permisos-entregas.store');
+Route::get('/permisos-entregas/{id}/edit', [DeliveryPermissionController::class, 'edit'])->middleware(['auth','roleAccess:Administrador'])->name('delivery_permission.edit');
+Route::put('/permisos-entregas/{id}/update', [DeliveryPermissionController::class, 'update'])->middleware(['auth','roleAccess:Administrador'])->name('delivery_permission.update');
+Route::get('/permisos-entregas/pending', [DeliveryPermissionController::class, 'pending'])->middleware(['auth'])->name('delivery_permission.pending');
+
 Route::get('/entregas/pdf/{id}', [DeliveryController::class, 'pdf'])->middleware(['auth'])->name('entregas.pdf');
 Route::get('/deliveries/export', [DeliveryController::class, 'export'])->middleware(['auth'])->name('entregas.export');
 Route::get('/deliveries/payment/{id}', [DeliveryController::class, 'payment'])->middleware(['auth'])->name('entregas.payment');

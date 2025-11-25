@@ -6,18 +6,21 @@
 
     <!-- CSRF Token -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
-
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet">
     <title>{{ config('app.name', 'Rifas') }}</title>
 
     <!-- Scripts -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     <script src="{{ asset('js/app.js') }}" defer></script>
     <script src="{{ asset('js/base.js') }}" defer></script>
+    
 
     <!-- Styles -->
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
     <style>
         @media (prefers-color-scheme: dark) {
-            body,form,input,select,textarea,label    {
+            body,form,input,select,textarea,label,.select2-container,.select2-results, .select2-selection--single, .select2-selection__rendered  {
                 background-color: #2c3e50 !important;
                 color: #ecf0f1 !important;
             }
@@ -28,9 +31,27 @@
             table tr{
                 background-color: #2c3e50 !important;
             }
+        }
 
-            
+        .select2-container, .select2-selection--single{
+            box-sizing: border-box;
+            margin: 0;
+            position: relative;
+            vertical-align: middle;
+            display: block !important;
+            width: 100% !important;
+            border-radius: 0.375rem !important;
+            max-height: 38px !important;
+            min-width: 270px;
+        }
 
+        .select2-container .select2-selection--single{
+            height: auto !important;
+        }
+
+        .select2-selection__rendered{
+            padding: 0.5rem 1rem !important;
+            line-height: none !important;
         }
 
         @media (max-width: 630px) {

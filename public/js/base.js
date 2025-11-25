@@ -2,6 +2,7 @@ const nav_ = document.querySelector('.hamburguer');
 const close_nav = document.querySelector('.close-nav');
 const raffle_sidebar = document.querySelector('.sidebar-raffle');
 const pagination = document.querySelector('.pagination');
+console.log("testtt");
 if(close_nav){
   close_nav.addEventListener('click', function() {
     if(raffle_sidebar){
@@ -34,3 +35,7 @@ if(pagination){
     link.href = link.href + "&" + paramsString;
   });
 }
+
+$(document).ready(function() {
+  $('#user_id').select2();
+});

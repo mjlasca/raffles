@@ -3,6 +3,7 @@
 namespace App\Exports;
 
 use App\Models\Delivery;
+use App\Models\PaymentTicket;
 use App\Models\Raffle;
 use App\Models\Ticket;
 use App\Models\User;
@@ -71,7 +72,7 @@ class TicketsExport implements FromCollection, WithHeadings, WithEvents
             return [
                 BeforeSheet::class => function(BeforeSheet $event) {
                     $sumPrice = Ticket::where('raffle_id',$this->raffleId)->where('user_id',$this->userId)->sum('price');
-                    $sumPayment = Ticket::where('raffle_id',$this->raffleId)->where('user_id',$this->userId)->sum('payment');
+                    $sumPayment = $this->getDeliveryPaymentIds(["raffle_id" =>  $this->raffleId,"user_id" =>  $this->userId]);
                     $countTicket = Ticket::where('raffle_id',$this->raffleId)->where('user_id',$this->userId)->count();
                     $raffle = Raffle::find($this->raffleId);
                     $user = User::find($this->userId);
@@ -95,7 +96,7 @@ class TicketsExport implements FromCollection, WithHeadings, WithEvents
             return [
                 BeforeSheet::class => function(BeforeSheet $event) {
                     $sumPrice = Ticket::where('raffle_id',$this->raffleId)->sum('price');
-                    $sumPayment = Ticket::where('raffle_id',$this->raffleId)->sum('payment');
+                    $sumPayment = $this->getDeliveryPaymentIds(["raffle_id" => $this->raffleId]);
                     $countTicket = Ticket::where('raffle_id',$this->raffleId)->count();
                     $raffle = Raffle::find($this->raffleId);
                     $sheet = $event->sheet->getDelegate();
@@ -115,7 +116,7 @@ class TicketsExport implements FromCollection, WithHeadings, WithEvents
             return [
                 BeforeSheet::class => function(BeforeSheet $event) {
                     $sumPrice = Ticket::where('user_id',$this->userId)->sum('price');
-                    $sumPayment = Ticket::where('user_id',$this->userId)->sum('payment');
+                    $sumPayment = $this->getDeliveryPaymentIds(["user_id" => $this->userId]);
                     $countTicket = Ticket::where('user_id',$this->userId)->count();
                     $user = User::find($this->userId);
                     $sheet = $event->sheet->getDelegate();
@@ -136,6 +137,21 @@ class TicketsExport implements FromCollection, WithHeadings, WithEvents
         }
 
         
+    }
+
+     /**
+     * Get sum payment
+     */
+    public function getDeliveryPaymentIds($arrQuery)
+    {
+        $deliveryIds = Delivery::orderBy('id');
+        foreach ($arrQuery as $key => $value) {
+            $deliveryIds = $deliveryIds->where($key,$value);
+        }
+        $deliveryIds = $deliveryIds->pluck('id');
+        $deliverySum = PaymentTicket::whereIn('delivery_id', $deliveryIds)->sum('payment_value');
+
+        return $deliverySum;
     }
 
     /**
