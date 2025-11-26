@@ -17,7 +17,12 @@ class RequestPermissionService
             'delivery_id' => $deliveryId,
             'status' => 0
         ]);
-        $this->sendNotification($user->email, $requests);
+        $users = User::where('role', 'Administrador')->where('enabled', 1)->get();
+        $emails = [];
+        foreach ($users as $user) {
+            $emails[] = $user->email;
+        }
+        $this->sendNotification($emails, $requests);
     }
 
     protected function sendNotification($email, DeliveryPermission $deliveryPermission)

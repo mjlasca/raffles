@@ -100,6 +100,7 @@ Route::resource('entregas', DeliveryController::class)->middleware(['auth','role
 ]);
 
 Route::get('/permisos-entregas', [DeliveryPermissionController::class, 'index'])->middleware(['auth'])->name('delivery_permission.index');
+Route::get('/permisos-entregas/create/{delivery_id}', [DeliveryPermissionController::class, 'create'])->middleware(['auth'])->name('delivery_permission.create');
 Route::post('/permisos-entregas/store', [DeliveryPermissionController::class, 'store'])->middleware(['auth'])->name('permisos-entregas.store');
 Route::get('/permisos-entregas/{id}/edit', [DeliveryPermissionController::class, 'edit'])->middleware(['auth','roleAccess:Administrador'])->name('delivery_permission.edit');
 Route::put('/permisos-entregas/{id}/update', [DeliveryPermissionController::class, 'update'])->middleware(['auth','roleAccess:Administrador'])->name('delivery_permission.update');

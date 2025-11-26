@@ -210,6 +210,18 @@
                                 </a>
                             </li>
                         @endif
+                        @if (auth()->user()->role === 'Administrador')
+                            <li class="mb-2">
+                                <a href="/permisos-entregas" class="inline-flex items-center @if( str_contains( request()->path(),'permisos-entregas') ) bg-green-500 @else bg-blue-500 @endif px-3 py-3 border  text-sm font-lg rounded-md  hover:bg-green-500 hover:text-white focus:outline-none transition ease-in-out duration-150 w-40">
+                                    <span class="mr-2 p-1 rounded-md bg-blue-500">
+                                        <img class="h-5 fill-white" src="{{ asset('img/icons/stack-icon.svg') }}" alt="">
+                                    </span>
+                                    <p class="mt-1">
+                                        Permisos entregas
+                                    </p>
+                                </a>
+                            </li>
+                        @endif
                         <li class="mb-5 sm:hidden">
                             <a  class="inline-flex items-center bg-green-500 px-3 py-3 border  text-sm font-lg rounded-md  hover:bg-green-500 hover:text-white focus:outline-none transition ease-in-out duration-150 w-40 " href="{{ route('logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
                                 <span>

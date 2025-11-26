@@ -242,6 +242,9 @@ class DeliveryController extends Controller
                 $flag = FALSE;
             }
         }
+        if(!$flag){
+            return redirect()->route('delivery_permission.create',['delivery_id' => $id]);
+        }
         $raffles = Raffle::where('status',1)->select('id','name')->where('disabled',0)->get();
         $sellers_users = User::select('id','name','lastname')->where('role','Vendedor')->get();
         $paymentMethods = PaymentMethod::where('status',1)->get();
@@ -315,6 +318,25 @@ class DeliveryController extends Controller
     {
         $delivery = Delivery::find($id);
         $current_user = Auth::user();
+        $flag = TRUE;
+        $resPermission = $this->deliveryPermission->allowPermission($delivery, $current_user);
+        if(empty($resPermission) && $current_user->role != 'Administrador'){
+            $permission = 0;
+            $flag = FALSE;
+        }
+        if(!empty($resPermission) && $current_user->role != 'Administrador'){
+            $permission = $resPermission->status;
+            if($permission == 0){
+                $flag = FALSE;
+                return view('delivery_permission.pending');
+            }
+            if($permission == 2){
+                $flag = FALSE;
+            }
+        }
+        if(!$flag){
+            return redirect()->route('delivery_permission.create',['delivery_id' => $id]);
+        }
         if($delivery->used > 0){
             $paymentReturn = PaymentTicket::where('delivery_id',$id)->get();
             $data = [];
