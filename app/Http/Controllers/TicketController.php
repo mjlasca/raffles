@@ -133,6 +133,7 @@ class TicketController extends Controller
                       ->get();
         if($req->input('users_deliveries')){
             $selected_user = User::find($req->input('users_deliveries'));
+            
             $deliveries = Delivery::whereColumn('total', '>', 'used')
             ->where('status', 1)
             ->where('user_id',$req->input('users_deliveries'))

@@ -1,10 +1,10 @@
 @extends('layouts.app')
-@section('pageTitle', 'Editar ')
+@section('pageTitle', 'Edición permiso')
 @section('content')
     <div class="container mx-auto mt-8">
         <div class="bg-white shadow-md overflow-hidden rounded-md">
             <div class="py-4 px-6 bg-blue-500 flex text-white fill-white">
-                <h2 class="text-2xl font-semibold">Editar Entrega</h2>
+                <h2 class="text-2xl font-semibold">Permiso para entrega</h2>
             </div>
             <form method="POST" action="{{ route('delivery_permission.update', $deliveryPermission->id) }}" class="p-6">
                 @csrf

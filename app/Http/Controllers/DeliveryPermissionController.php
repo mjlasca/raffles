@@ -104,11 +104,7 @@ class DeliveryPermissionController extends Controller
     public function update(Request $request, $id)
     {
         $currentUser = Auth::user();
-        DeliveryPermission::where('id',$id)->update([
-            'date_permission' => $request->input('date_permission'),
-            'status' => 1,
-            'allow_user' => $currentUser->id
-        ]);
+        $this->permissionService->hasPendingRequest($id,$currentUser,$request->input('date_permission'));
         return redirect()->route('delivery_permission.index');
     }
 
