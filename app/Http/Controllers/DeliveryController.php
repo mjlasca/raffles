@@ -34,6 +34,7 @@ class DeliveryController extends Controller
      */
     public function index(Request $req)
     {
+        $currentUser = Auth::user();
         $deliveries = Delivery::orderBy('id', 'DESC')->orderBy('consecutive','DESC');
         $sellers_users = User::select('id','name','lastname')->where('role','Vendedor')->orderBy('name','ASC')->get();
         $raffles = Raffle::where('status',1)->select('id','name')->where('disabled',0)->orderBy('name','ASC')->get();
@@ -98,7 +99,8 @@ class DeliveryController extends Controller
         }
 
         $deliveries = $deliveries->paginate('50');
-        return view('deliveries.index', compact('deliveries','sellers_users','raffles','totals','paymentMethods'));
+        $flagHeader = $currentUser->role != 'Administrador' && empty($req->input('raffle_id'));
+        return view('deliveries.index', compact('deliveries','sellers_users','raffles','totals','paymentMethods','flagHeader'));
     }
 
     /**
@@ -127,7 +129,8 @@ class DeliveryController extends Controller
     {
         $user = Auth::user();
         $data = $request->all();
-
+        
+        
         if(isset($data['raffle_id'])){
             $raffle_id = $data['raffle_id'];
             $user_ = $data['user_id'];
@@ -227,23 +230,26 @@ class DeliveryController extends Controller
         $delivery = Delivery::find($id);
         $permission = NULL;
         $flag = TRUE;
-        $resPermission = $this->deliveryPermission->allowPermission($delivery, $current_user);
-        if(empty($resPermission) && $current_user->role != 'Administrador'){
-            $permission = 0;
-            $flag = FALSE;
-        }
-        if(!empty($resPermission) && $current_user->role != 'Administrador'){
-            $permission = $resPermission->status;
-            if($permission == 0){
-                $flag = FALSE;
-                return view('delivery_permission.pending');
-            }
-            if($permission == 2){
+        $date = Carbon::parse($delivery->created_at)->format('Y-m-d');
+        if($date != now()->format('Y-m-d')){
+            $resPermission = $this->deliveryPermission->allowPermission($delivery, $current_user);
+            if(empty($resPermission) && $current_user->role != 'Administrador'){
+                $permission = 0;
                 $flag = FALSE;
             }
-        }
-        if(!$flag){
-            return redirect()->route('delivery_permission.create',['delivery_id' => $id]);
+            if(!empty($resPermission) && $current_user->role != 'Administrador'){
+                $permission = $resPermission->status;
+                if($permission == 0){
+                    $flag = FALSE;
+                    return view('delivery_permission.pending');
+                }
+                if($permission == 2){
+                    $flag = FALSE;
+                }
+            }
+            if(!$flag){
+                return redirect()->route('delivery_permission.create',['delivery_id' => $id]);
+            }
         }
         $raffles = Raffle::where('status',1)->select('id','name')->where('disabled',0)->get();
         $sellers_users = User::select('id','name','lastname')->where('role','Vendedor')->get();
