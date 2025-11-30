@@ -6,6 +6,9 @@ use App\Models\DeliveryPermission;
 use App\Models\User;
 use App\Services\RequestPermissionService;
 use Illuminate\Http\Request;
+use Carbon\Carbon;
+use Illuminate\Support\Facades\Auth;
+use App\Models\Delivery;
 
 class DeliveryPermissionController extends Controller
 {
@@ -20,9 +23,17 @@ class DeliveryPermissionController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $req)
     {
-        $deliveryPermission = DeliveryPermission::get();
+        $deliveryPermission = DeliveryPermission::orderBy('id', 'DESC');
+        if(!empty($req->input('date1'))){
+            $date1 = $req->input('date1');
+            $date2 = $date1;
+            if($req->input('date2'))
+                $date2 = $req->input('date2');
+            $deliveryPermission = $deliveryPermission->whereBetween('created_at',[$date1.' 00:00:00',$date2.' 23:59:59']);
+        }
+        $deliveryPermission = $deliveryPermission->paginate('50');
         return view('delivery_permission.index', compact('deliveryPermission'));
     }
 
@@ -31,9 +42,11 @@ class DeliveryPermissionController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function create($delivery_id)
     {
-        //
+        $current_user = Auth::user();
+        $delivery = Delivery::where('id',$delivery_id)->first();
+        return view('delivery_permission.create', compact('current_user','delivery'));
     }
 
     /**
@@ -72,7 +85,13 @@ class DeliveryPermissionController extends Controller
      */
     public function edit($id)
     {
-        //
+        $deliveryPermission = DeliveryPermission::where('id',$id)->first();
+        if($deliveryPermission->status == 1){
+            return redirect()->route('delivery_permission.index');
+        }
+        $dateMin = Carbon::now()->format('Y-m-d');
+        $dateMax = Carbon::now()->addDays(2)->format('Y-m-d');
+        return view('delivery_permission.edit', compact('deliveryPermission','dateMin','dateMax'));
     }
 
     /**
@@ -84,7 +103,9 @@ class DeliveryPermissionController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $currentUser = Auth::user();
+        $this->permissionService->hasPendingRequest($id,$currentUser,$request->input('date_permission'));
+        return redirect()->route('delivery_permission.index');
     }
 
     /**

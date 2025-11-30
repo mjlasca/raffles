@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Mail\AllowRequestsNotificationPermission;
 use App\Mail\RequestsNotificationPermission;
 use App\Models\Delivery;
 use App\Models\DeliveryPermission;
@@ -17,7 +18,12 @@ class RequestPermissionService
             'delivery_id' => $deliveryId,
             'status' => 0
         ]);
-        $this->sendNotification($user->email, $requests);
+        $users = User::where('role', 'Administrador')->where('enabled', 1)->get();
+        $emails = [];
+        foreach ($users as $user) {
+            $emails[] = $user->email;
+        }
+        $this->sendNotification($emails, $requests);
     }
 
     protected function sendNotification($email, DeliveryPermission $deliveryPermission)
@@ -31,10 +37,21 @@ class RequestPermissionService
         return DeliveryPermission::where('user_requests',$user->id)->where('delivery_id', $delivery->id)->first();
     }
 
-    public function hasPendingRequest($userId, $registroId)
+    public function hasPendingRequest($id, $user, $date)
     {
-        return DeliveryPermission::where('user_id', $userId)
-            ->where('status', 'pendiente')
-            ->exists();
+        DeliveryPermission::where('id',$id)->update([
+            'date_permission' => $date,
+            'status' => 1,
+            'allow_user' => $user->id
+        ]);
+        $deliveryPermission = DeliveryPermission::where('id',$id)->first();
+        $this->sendAllowNotification($deliveryPermission->urequests->email, $deliveryPermission);
+    }
+
+    protected function sendAllowNotification($email, DeliveryPermission $deliveryPermission)
+    {
+        Mail::to($email)->send(
+            new AllowRequestsNotificationPermission($deliveryPermission)
+        );
     }
 }

@@ -82,12 +82,11 @@
 <body>
     <div class="container">
 
-        <h1>Permiso solicitado</h1>
+        <h1>Permiso aprobado</h1>
 
         <div class="card">
             <p>
-                <span class="label">Usuario que solicita:</span>
-                {{ $user }}
+                {{ $user }} ha aprobado el permiso solicitado para edición o anulación
             </p>
             <p>
                 <span class="label">Rifa:</span>
@@ -97,15 +96,13 @@
                 <span class="label">Entrega:</span>
                 {{ $delivery }}
             </p>
+            <p>
+                <a href="{{ $url }}" class="button btn-primary">Ir a la entrega</a>
+            </p>
         </div>
-        <p>Para otorgar el permiso haz clic en el siguiente enlace:</p>
-        <p>
-            <a href="{{ $url }}" class="button btn-primary">Dar permiso</a>
-        </p>
         <p class="footer">
             Este es un mensaje automático, por favor no responda a este correo.
         </p>
-
     </div>
 </body>
 
